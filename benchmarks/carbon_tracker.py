@@ -279,9 +279,10 @@ class CarbonTracker:
         top5: Optional[float] = None,
         top10: Optional[float] = None,
         num_samples: Optional[int] = None,
-        batch_size: Optional[int] = None
+        batch_size: Optional[int] = None,
+        save: bool = True
     ) -> None:
-        """Add accuracy metrics to the results."""
+        """Add accuracy metrics to the results and optionally re-save."""
         if self._metrics is None:
             raise RuntimeError("Tracker must be stopped before adding accuracy metrics")
 
@@ -295,6 +296,10 @@ class CarbonTracker:
             self._metrics.num_samples = num_samples
         if batch_size is not None:
             self._metrics.batch_size = batch_size
+
+        # Re-save with updated accuracy if save_results was enabled
+        if save and self.save_results:
+            self.save()
 
     def get_metrics(self) -> Dict[str, Any]:
         """Get metrics as a dictionary."""
