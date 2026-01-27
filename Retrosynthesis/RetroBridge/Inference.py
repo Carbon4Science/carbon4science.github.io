@@ -166,21 +166,21 @@ def _assign_trivial_atom_mapping_numbers(molecule):
 
 
 def run(
-    smiles: str,
-    n_samples: int = 10,
+    smiles,
+    top_k: int = 10,
     n_steps: int = 500,
     checkpoint_path: str = "models/retrobridge.ckpt",
     device: str = None,
     seed: int = 42,
     return_rdkit: bool = False,
     verbose: bool = True,
-) -> list:
+):
     """
     Run retrosynthesis prediction for a given product SMILES.
 
     Args:
-        smiles: Product molecule SMILES string
-        n_samples: Number of reactant samples to generate (default: 10)
+        smiles: Product SMILES string or list of SMILES strings
+        top_k: Number of predictions to return (default: 10)
         n_steps: Number of diffusion steps (default: 500)
         checkpoint_path: Path to model checkpoint (default: "models/retrobridge.ckpt")
         device: Device to use ('cuda:0', 'cpu', or None for auto-detect)
@@ -189,17 +189,24 @@ def run(
         verbose: If True, show progress bar during sampling (default: True)
 
     Returns:
-        List of predicted reactant SMILES strings.
-        If return_rdkit=True, returns tuple of (smiles_list, rdkit_mol_list)
+        List of result dicts, one per input SMILES. Each dict contains:
+            - 'input': Input SMILES string
+            - 'predictions': List of prediction dicts with 'smiles' and 'score'
 
     Example:
-        >>> results = run("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
-        >>> print(results)
-        ['CN.Cn1cnc2c1c(=O)[nH]c(=O)n2C', ...]
+        >>> results = run("CCO")
+        >>> results[0]['predictions'][0]
+        {'smiles': 'C=C.O', 'score': 1.0}
     """
     global _model, _device, _dataset_info
 
     _disable_rdkit_logging()
+
+    # Handle input
+    if isinstance(smiles, str):
+        smiles_list = [smiles]
+    else:
+        smiles_list = list(smiles)
 
     # Set random seed for reproducibility
     from src.utils import set_deterministic
@@ -219,53 +226,64 @@ def run(
     # Set number of diffusion steps
     _model.T = n_steps
 
-    # Parse input SMILES
-    mol = Chem.MolFromSmiles(smiles)
-    if mol is None:
-        raise ValueError(f"Invalid SMILES string: {smiles}")
+    results = []
+    for input_smiles in smiles_list:
+        # Parse input SMILES
+        mol = Chem.MolFromSmiles(input_smiles)
+        if mol is None:
+            results.append({
+                'input': input_smiles,
+                'predictions': [],
+                'error': 'Invalid SMILES'
+            })
+            continue
 
-    pmol, mapping = _assign_trivial_atom_mapping_numbers(mol)
-    r_num_nodes = pmol.GetNumAtoms() + RetroBridgeDatasetInfos.max_n_dummy_nodes
+        pmol, mapping = _assign_trivial_atom_mapping_numbers(mol)
+        r_num_nodes = pmol.GetNumAtoms() + RetroBridgeDatasetInfos.max_n_dummy_nodes
 
-    # Compute graph representation
-    p_x, p_edge_index, p_edge_attr = RetroBridgeDataset.compute_graph(
-        pmol, mapping, r_num_nodes, RetroBridgeDataset.types, RetroBridgeDataset.bonds
-    )
-    p_x = p_x.to(_device)
-    p_edge_index = p_edge_index.to(_device)
-    p_edge_attr = p_edge_attr.to(_device)
-
-    # Create batch of samples
-    dataset, batch = [], []
-    idx_offset = 0
-    for i in range(n_samples):
-        data = Data(idx=i, p_x=p_x, p_edge_index=p_edge_index.clone(), p_edge_attr=p_edge_attr, p_smiles=smiles)
-        data.p_edge_index += idx_offset
-        dataset.append(data)
-        batch.append(torch.ones_like(data.p_x[:, 0]).to(torch.long) * i)
-        idx_offset += len(data.p_x)
-
-    data, _ = RetroBridgeDataset.collate(dataset)
-    data.batch = torch.concat(batch)
-
-    # Run sampling
-    with torch.no_grad():
-        molecule_list = _model.sample_chain_no_true_no_save(
-            data, batch_size=n_samples
+        # Compute graph representation
+        p_x, p_edge_index, p_edge_attr = RetroBridgeDataset.compute_graph(
+            pmol, mapping, r_num_nodes, RetroBridgeDataset.types, RetroBridgeDataset.bonds
         )
+        p_x = p_x.to(_device)
+        p_edge_index = p_edge_index.to(_device)
+        p_edge_attr = p_edge_attr.to(_device)
 
-    # Convert to SMILES
-    smiles_list = []
-    rdmol_list = []
-    for mol_data in molecule_list:
-        rdmol, _ = build_molecule(mol_data[0], mol_data[1], _dataset_info.atom_decoder, return_n_dummy_atoms=True)
-        smi = Chem.MolToSmiles(rdmol)
-        smiles_list.append(smi)
-        rdmol_list.append(rdmol)
+        # Create batch of samples
+        dataset, batch = [], []
+        idx_offset = 0
+        for i in range(top_k):
+            data = Data(idx=i, p_x=p_x, p_edge_index=p_edge_index.clone(), p_edge_attr=p_edge_attr, p_smiles=input_smiles)
+            data.p_edge_index += idx_offset
+            dataset.append(data)
+            batch.append(torch.ones_like(data.p_x[:, 0]).to(torch.long) * i)
+            idx_offset += len(data.p_x)
 
-    if return_rdkit:
-        return smiles_list, rdmol_list
-    return smiles_list
+        data, _ = RetroBridgeDataset.collate(dataset)
+        data.batch = torch.concat(batch)
+
+        # Run sampling
+        with torch.no_grad():
+            molecule_list = _model.sample_chain_no_true_no_save(
+                data, batch_size=top_k
+            )
+
+        # Convert to SMILES and format predictions
+        formatted_preds = []
+        for mol_data in molecule_list:
+            rdmol, _ = build_molecule(mol_data[0], mol_data[1], _dataset_info.atom_decoder, return_n_dummy_atoms=True)
+            smi = Chem.MolToSmiles(rdmol)
+            formatted_preds.append({
+                'smiles': smi,
+                'score': 1.0  # RetroBridge doesn't provide scores
+            })
+
+        results.append({
+            'input': input_smiles,
+            'predictions': formatted_preds
+        })
+
+    return results
 
 
 def reset_model():

@@ -292,29 +292,49 @@ class RSGPTPredictor:
 # Convenience function
 _predictor = None
 
-def run(smiles: str, beam_size: int = 10, device: str = "cuda:0") -> Dict[str, Any]:
+def run(smiles, top_k: int = 10, device: str = "cuda:0") -> List[Dict[str, Any]]:
     """
-    Convenience function to run retrosynthesis prediction.
+    Run retrosynthesis prediction.
 
     Args:
-        smiles: Product SMILES string
-        beam_size: Number of beams for beam search
+        smiles: Product SMILES string or list of SMILES strings
+        top_k: Number of predictions to return
         device: Device to run on
 
     Returns:
-        Dictionary with predictions
+        List of result dicts, one per input SMILES. Each dict contains:
+            - 'input': Input SMILES string
+            - 'predictions': List of prediction dicts with 'smiles' and 'score'
 
     Example:
-        >>> from inference import run
-        >>> result = run('CC(=O)Oc1ccccc1C(=O)O')  # Aspirin
-        >>> print(result['predictions'])
+        >>> results = run("CCO")
+        >>> results[0]['predictions'][0]
+        {'smiles': 'C=C.O', 'score': 1.0}
     """
     global _predictor
 
     if _predictor is None:
         _predictor = RSGPTPredictor(device=device)
 
-    return _predictor.run(smiles, beam_size=beam_size)
+    if isinstance(smiles, str):
+        smiles_list = [smiles]
+    else:
+        smiles_list = list(smiles)
+
+    results = []
+    for smi in smiles_list:
+        raw_result = _predictor.run(smi, beam_size=top_k)
+        formatted_preds = []
+        for pred in raw_result.get('valid_predictions', []):
+            formatted_preds.append({
+                'smiles': pred,
+                'score': 1.0  # RSGPT doesn't provide normalized scores
+            })
+        results.append({
+            'input': smi,
+            'predictions': formatted_preds
+        })
+    return results
 
 
 if __name__ == '__main__':

@@ -48,15 +48,43 @@ def run(smiles, top_k=10, verbose=False):
     Predict retrosynthesis for a given product SMILES.
 
     Args:
-        smiles: Product SMILES string
+        smiles: Product SMILES string or list of SMILES strings
         top_k: Number of top predictions to return (default: 10)
         verbose: Print detailed prediction info (default: False)
 
     Returns:
-        DataFrame with columns: SMILES, Predicted site, Local reaction template, Score, Molecule
+        List of result dicts, one per input SMILES. Each dict contains:
+            - 'input': Input SMILES string
+            - 'predictions': List of prediction dicts with 'smiles' and 'score'
+
+    Example:
+        >>> results = run("CCO")
+        >>> results[0]['predictions'][0]
+        {'smiles': 'C=C.O', 'score': 0.85}
     """
     model = _get_model()
-    return model.retrosnythesis(smiles, top_k=top_k, verbose=verbose)
+
+    if isinstance(smiles, str):
+        smiles_list = [smiles]
+    else:
+        smiles_list = list(smiles)
+
+    results = []
+    for smi in smiles_list:
+        df = model.retrosnythesis(smi, top_k=top_k, verbose=verbose)
+        formatted_preds = []
+        if df is not None and len(df) > 0:
+            for _, row in df.iterrows():
+                formatted_preds.append({
+                    'smiles': row['SMILES'],
+                    'score': float(row['Score'])
+                })
+        results.append({
+            'input': smi,
+            'predictions': formatted_preds
+        })
+
+    return results
 
 
 if __name__ == "__main__":
@@ -72,4 +100,7 @@ if __name__ == "__main__":
 
     results = run(smiles, top_k=top_k, verbose=True)
     print("\nResults:")
-    print(results[['SMILES', 'Score']].to_string())
+    for r in results:
+        print(f"Input: {r['input']}")
+        for i, p in enumerate(r['predictions'], 1):
+            print(f"  {i}. {p['smiles']} (score: {p['score']:.4f})")

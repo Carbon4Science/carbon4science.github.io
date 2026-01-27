@@ -166,7 +166,7 @@ def load_model(
     return _model_instance
 
 
-def run(smiles: Union[str, List[str]], n_beams: Optional[int] = None) -> List[dict]:
+def run(smiles: Union[str, List[str]], top_k: Optional[int] = None) -> List[dict]:
     """
     Run inference on SMILES using the loaded model.
 
@@ -174,16 +174,39 @@ def run(smiles: Union[str, List[str]], n_beams: Optional[int] = None) -> List[di
 
     Args:
         smiles: Single SMILES string or list of SMILES strings
-        n_beams: Number of predictions to return
+        top_k: Number of predictions to return
 
     Returns:
-        List of prediction results
+        List of result dicts, one per input SMILES. Each dict contains:
+            - 'input': Input SMILES string
+            - 'predictions': List of prediction dicts with 'smiles' and 'score'
+
+    Example:
+        >>> load_model("model.ckpt", "vocab.json")
+        >>> results = run("CCO")
+        >>> results[0]['predictions'][0]
+        {'smiles': 'C=C.O', 'score': -0.5}
     """
     if _model_instance is None:
         raise RuntimeError(
             "No model loaded. Call load_model(model_path, vocabulary_path) first."
         )
-    return _model_instance.run(smiles, n_beams=n_beams)
+    raw_results = _model_instance.run(smiles, n_beams=top_k)
+
+    # Convert to uniform format
+    results = []
+    for r in raw_results:
+        formatted_preds = []
+        for pred, score in zip(r['predictions'], r['log_likelihoods']):
+            formatted_preds.append({
+                'smiles': pred,
+                'score': score
+            })
+        results.append({
+            'input': r['input'],
+            'predictions': formatted_preds
+        })
+    return results
 
 
 if __name__ == "__main__":

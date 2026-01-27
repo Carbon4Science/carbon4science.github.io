@@ -101,37 +101,47 @@ class _Proposer:
         return results
 
 
-def run(smiles: Union[str, List[str]], topk: int = 10) -> Dict[str, List[Dict]]:
+def run(smiles: Union[str, List[str]], top_k: int = 10) -> List[Dict]:
     """
     Run retrosynthesis prediction on input SMILES.
 
     Args:
         smiles: A single SMILES string or a list of SMILES strings
-        topk: Number of top predictions to return (default: 10)
+        top_k: Number of top predictions to return (default: 10)
 
     Returns:
-        Dictionary mapping each input SMILES to a list of predictions.
-        Each prediction contains:
-            - 'precursors': List of precursor SMILES strings
-            - 'score': Probability score from the model
-            - 'template': The reaction template used
+        List of result dicts, one per input SMILES. Each dict contains:
+            - 'input': Input SMILES string
+            - 'predictions': List of prediction dicts with 'smiles' and 'score'
 
     Example:
-        >>> results = run("COC(=O)c1cccc2[nH]c(NCC3CCNCC3)nc12")
-        >>> results["COC(=O)c1cccc2[nH]c(NCC3CCNCC3)nc12"][0]
-        {'precursors': ['COC(=O)c1cccc2[nH]c(NCC3CCN(C(=O)OC(C)(C)C)CC3)nc12'],
-         'score': 0.999, 'template': '...'}
+        >>> results = run("CCO")
+        >>> results[0]['predictions'][0]
+        {'smiles': 'C=C.O', 'score': 0.85}
     """
     proposer = _get_proposer()
 
     if isinstance(smiles, str):
         smiles_list = [smiles]
     else:
-        smiles_list = smiles
+        smiles_list = list(smiles)
 
-    results = {}
+    results = []
     for smi in smiles_list:
-        results[smi] = proposer.predict(smi, topk=topk)
+        preds = proposer.predict(smi, topk=top_k)
+        formatted_preds = []
+        for p in preds:
+            # Join multiple precursors with '.'
+            precursor_smiles = '.'.join(p['precursors']) if p['precursors'] else ''
+            if precursor_smiles:
+                formatted_preds.append({
+                    'smiles': precursor_smiles,
+                    'score': p['score']
+                })
+        results.append({
+            'input': smi,
+            'predictions': formatted_preds
+        })
 
     return results
 
