@@ -33,37 +33,46 @@ SUPPORTED_MODELS = {
         "inference_module": "Inference",
         "inference_func": "run",
         "env": "neuralsym",
-        "description": "Template-based Highway-ELU network"
+        "description": "Template-based Highway-ELU network",
+        "requires_init": False,
     },
     "LocalRetro": {
         "path": "Retrosynthesis/LocalRetro",
         "inference_module": "Inference",
         "inference_func": "run",
         "env": "rdenv",
-        "description": "MPNN with global attention"
+        "description": "MPNN with global attention",
+        "requires_init": False,
     },
     "RetroBridge": {
         "path": "Retrosynthesis/RetroBridge",
         "inference_module": "Inference",
         "inference_func": "run",
         "env": "retrobridge",
-        "description": "Markov bridge generative model"
+        "description": "Markov bridge generative model",
+        "requires_init": False,
     },
     "Chemformer": {
         "path": "Retrosynthesis/Chemformer",
         "inference_module": "Inference",
         "inference_func": "run",
         "env": "chemformer",
-        "description": "BART transformer for SMILES"
+        "description": "BART transformer for SMILES",
+        "requires_init": True,  # Needs load_model() first
+        "init_func": "load_model",
     },
     "RSGPT": {
         "path": "Retrosynthesis/RSGPT",
         "inference_module": "inference",
         "inference_func": "run",
         "env": "gpt",
-        "description": "GPT-based causal language model"
+        "description": "GPT-based causal language model",
+        "requires_init": False,
     }
 }
+
+# Uniform interface: All models now return List[Dict] with format:
+# [{'input': str, 'predictions': [{'smiles': str, 'score': float}, ...]}, ...]
 
 
 def load_test_data(model_name: str) -> Tuple[List[str], List[str]]:
@@ -114,7 +123,7 @@ def load_test_data(model_name: str) -> Tuple[List[str], List[str]]:
 
 
 def calculate_accuracy(
-    predictions: List[List[str]],
+    results: List[Dict],
     ground_truth: List[str],
     top_k: List[int] = [1, 5, 10]
 ) -> Dict[str, float]:
@@ -122,7 +131,8 @@ def calculate_accuracy(
     Calculate top-k exact match accuracy.
 
     Args:
-        predictions: List of prediction lists (one list per sample)
+        results: List of result dicts from uniform interface
+                 Each dict has 'input' and 'predictions' keys
         ground_truth: List of ground truth SMILES
         top_k: List of k values to compute accuracy for
 
@@ -141,26 +151,28 @@ def calculate_accuracy(
             pass
         return None
 
-    results = {}
+    accuracy_results = {}
     n_samples = len(ground_truth)
 
     for k in top_k:
         correct = 0
-        for preds, gt in zip(predictions, ground_truth):
+        for result, gt in zip(results, ground_truth):
             gt_canon = canonicalize(gt)
             if gt_canon is None:
                 continue
 
-            # Check if any of top-k predictions match
-            for pred in preds[:k]:
-                pred_canon = canonicalize(pred) if isinstance(pred, str) else None
+            # Get top-k predictions from uniform format
+            predictions = result.get('predictions', [])[:k]
+            for pred in predictions:
+                pred_smiles = pred.get('smiles', '') if isinstance(pred, dict) else pred
+                pred_canon = canonicalize(pred_smiles)
                 if pred_canon == gt_canon:
                     correct += 1
                     break
 
-        results[f"top_{k}"] = correct / n_samples if n_samples > 0 else 0.0
+        accuracy_results[f"top_{k}"] = correct / n_samples if n_samples > 0 else 0.0
 
-    return results
+    return accuracy_results
 
 
 def run_inference_benchmark(
@@ -194,6 +206,11 @@ def run_inference_benchmark(
     try:
         inference_module = __import__(model_config["inference_module"])
         run_func = getattr(inference_module, model_config["inference_func"])
+
+        # Handle models that require initialization (e.g., Chemformer)
+        if model_config.get("requires_init", False):
+            init_func = getattr(inference_module, model_config["init_func"])
+            print(f"Note: {model_name} requires initialization. Call {model_config['init_func']}() first.")
     except ImportError as e:
         print(f"Error: Could not import {model_name} inference module.")
         print(f"Make sure you're in the correct conda environment: {model_config['env']}")
@@ -222,23 +239,26 @@ def run_inference_benchmark(
     )
 
     # Run inference with tracking
-    predictions = []
+    all_results = []
     with tracker:
         for i in range(0, len(products), batch_size):
             batch = products[i:i+batch_size]
             try:
-                batch_preds = run_func(batch)
-                predictions.extend(batch_preds)
+                # All models now use uniform interface: run(smiles, top_k=N)
+                batch_results = run_func(batch, top_k=10)
+                all_results.extend(batch_results)
             except Exception as e:
                 print(f"Warning: Batch {i} failed: {e}")
-                predictions.extend([[] for _ in batch])
+                # Create empty results for failed batch
+                for smi in batch:
+                    all_results.append({'input': smi, 'predictions': []})
 
             # Progress update
             if (i + batch_size) % 500 == 0:
                 print(f"  Processed {min(i + batch_size, len(products))}/{len(products)}")
 
-    # Calculate accuracy
-    accuracy = calculate_accuracy(predictions, ground_truth)
+    # Calculate accuracy using uniform format
+    accuracy = calculate_accuracy(all_results, ground_truth)
     print(f"\nAccuracy: Top-1={accuracy['top_1']:.2%}, Top-10={accuracy['top_10']:.2%}")
 
     # Add metrics
