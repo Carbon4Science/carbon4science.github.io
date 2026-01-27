@@ -218,11 +218,12 @@ class CarbonTracker:
 
         if CODECARBON_AVAILABLE:
             try:
+                # CodeCarbon 3.x API - country_iso_code removed
                 self._tracker = EmissionsTracker(
                     project_name=self.project_name,
                     output_dir=str(self.output_dir),
-                    country_iso_code=self.country_iso_code,
-                    log_level="warning"
+                    log_level="warning",
+                    save_to_file=False,  # We save our own format
                 )
                 self._tracker.start()
             except Exception as e:
