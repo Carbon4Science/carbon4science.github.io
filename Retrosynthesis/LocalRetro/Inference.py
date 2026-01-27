@@ -33,7 +33,14 @@ def _get_model():
     global _model
     if _model is None:
         import torch
-        from Retrosynthesis import LocalRetro
+
+        # Add LocalRetro directory to path for internal imports (scripts, LocalTemplate)
+        _localretro_dir = os.path.dirname(os.path.abspath(__file__))
+        if _localretro_dir not in sys.path:
+            sys.path.insert(0, _localretro_dir)
+
+        # Now import LocalRetro class from Retrosynthesis.py
+        from Retrosynthesis.LocalRetro.Retrosynthesis import LocalRetro
 
         args = _DEFAULT_ARGS.copy()
         if not torch.cuda.is_available():
