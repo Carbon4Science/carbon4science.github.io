@@ -1,0 +1,48 @@
+# Model Configuration
+# Update paths based on your setup
+
+neuralsym:
+  env: neuralsym
+  checkpoint: Retrosynthesis/neuralsym/checkpoint/model.pth.tar
+  checkpoint_url: https://drive.google.com/drive/folders/1NUWo7Ir5bnCRMluAYf2LqAkMm-TmiQRz
+  data_dir: Retrosynthesis/neuralsym/data
+  gpu_memory_mb: 2000  # Approximate GPU memory needed
+
+LocalRetro:
+  env: rdenv
+  checkpoint: Retrosynthesis/LocalRetro/models/LocalRetro_USPTO_50K.pth
+  checkpoint_url: null  # Included in repo
+  data_dir: Retrosynthesis/LocalRetro/data
+  gpu_memory_mb: 4000
+
+RetroBridge:
+  env: retrobridge
+  checkpoint: Retrosynthesis/RetroBridge/models/retrobridge.ckpt
+  checkpoint_url: https://zenodo.org/record/10688201/files/retrobridge.ckpt
+  data_dir: Retrosynthesis/RetroBridge/datasets
+  gpu_memory_mb: 8000
+
+Chemformer:
+  env: chemformer
+  checkpoint: null  # User must specify
+  checkpoint_url: https://az.box.com/s/7eci3nd9vy0xplqniitpk02rbg9q2zcq
+  vocabulary: Retrosynthesis/Chemformer/bart_vocab_downstream.json
+  data_dir: Retrosynthesis/Chemformer/data
+  gpu_memory_mb: 6000
+
+RSGPT:
+  env: gpt
+  checkpoint: Retrosynthesis/RSGPT/weights/finetune_50k.pth
+  checkpoint_url: https://sandbox.zenodo.org/records/203391
+  data_dir: Retrosynthesis/RSGPT/data
+  gpu_memory_mb: 16000  # Large model, needs more memory
+
+# Dataset paths
+datasets:
+  USPTO_50K:
+    train: data/USPTO_50K/train.csv
+    valid: data/USPTO_50K/valid.csv
+    test: data/USPTO_50K/test.csv
+    n_train: 39713
+    n_valid: 4989
+    n_test: 5005

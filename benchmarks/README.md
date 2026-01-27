@@ -2,6 +2,60 @@
 
 This directory contains the standardized benchmarking infrastructure for measuring both accuracy and carbon efficiency of generative AI models.
 
+## Known Issues & Solutions
+
+### Environment Conflicts
+
+Each model requires a different conda environment due to incompatible dependencies:
+
+| Model | Python | Key Dependencies |
+|-------|--------|------------------|
+| neuralsym | 3.6 | PyTorch 1.6, RDChiral |
+| LocalRetro | 3.7 | DGL, DGLLife |
+| RetroBridge | 3.9 | PyTorch Lightning 2.x |
+| Chemformer | 3.7 | Poetry, PyTorch 1.8 |
+| RSGPT | 3.9 | Transformers, DeepSpeed |
+
+**Solution**: Use the wrapper script that handles environment switching:
+
+```bash
+# Setup all environments (one-time)
+chmod +x setup_envs.sh
+./setup_envs.sh
+
+# Run benchmark with automatic environment switching
+chmod +x run.sh
+./run.sh --model neuralsym --smiles "CCO" --track_carbon
+./run.sh --model LocalRetro --smiles "CCO" --track_carbon
+
+# Run all models sequentially
+./run.sh --model all --input test.csv --track_carbon
+```
+
+### Model Checkpoints
+
+Pre-trained models must be downloaded separately. See `configs/models.yaml` for URLs:
+
+```bash
+# RetroBridge
+wget https://zenodo.org/record/10688201/files/retrobridge.ckpt -O Retrosynthesis/RetroBridge/models/retrobridge.ckpt
+
+# RSGPT
+# Download from https://sandbox.zenodo.org/records/203391
+```
+
+### GPU Memory Requirements
+
+| Model | Approx. GPU Memory |
+|-------|-------------------|
+| neuralsym | 2 GB |
+| LocalRetro | 4 GB |
+| Chemformer | 6 GB |
+| RetroBridge | 8 GB |
+| RSGPT | 16 GB |
+
+Use `--device cpu` if GPU memory is insufficient.
+
 ## Quick Start
 
 ### 1. Install Dependencies
