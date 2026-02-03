@@ -1,6 +1,6 @@
 # MLIP (Machine Learning Interatomic Potentials)
 
-**Task Leader:** Junkil Park
+**Task Leader:** Junyoung Choi
 
 Machine learning interatomic potentials: Predict atomic energies, forces, and stresses for molecular dynamics simulations.
 

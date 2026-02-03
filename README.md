@@ -20,7 +20,7 @@ We present **The Carbon Cost of Generative AI for Science**, a benchmarking fram
 | Retrosynthesis | `Retrosynthesis/` | Shuan Chen | In Progress |
 | Molecule Generation | `MolGen/` | Gunwook Nam | Planned |
 | Material Generation | `MatGen/` | Junkil Park | Planned |
-| ML Interatomic Potentials | `MLIP/` | Junkil Park | Planned |
+| ML Interatomic Potentials | `MLIP/` | Junyoung Choi | Planned |
 
 ---
 
@@ -167,7 +167,7 @@ Carbon4Science/
 │
 ├── MolGen/                  # Molecule generation (Gunwook Nam)
 ├── MatGen/                  # Material generation (Junkil Park)
-└── MLIP/                    # ML interatomic potentials (Junkil Park)
+└── MLIP/                    # ML interatomic potentials (Junyoung Choi)
 ```
 
 ---
