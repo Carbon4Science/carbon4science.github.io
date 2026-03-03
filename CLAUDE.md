@@ -98,10 +98,14 @@ When a task leader asks to benchmark their task end-to-end, follow these phases 
 1. **Setup** — Create task directory structure (`<Task>/`, `<Task>/data/`, model subdirectories)
 2. **Evaluate** — Implement `<Task>/evaluate.py` with `METRICS`, `load_test_data()`, and `evaluate()`
 3. **Models** — For each model, implement `Inference.py` with the uniform `run()` interface, create `environment.yml`, and write `CLAUDE.md`
-4. **Register** — Add all models to `benchmarks/run_benchmark.py` (TASKS dict), `benchmarks/run.sh` (MODEL_ENVS), `benchmarks/setup_envs.sh`, and `benchmarks/configs/models.yaml`
-5. **Run** — Execute benchmarks: `./benchmarks/run.sh --model all --limit 1000 --track_carbon`
-6. **Plot** — Generate visualization: `python benchmarks/plot_results.py --task <Task> --combined`
-7. **Report** — Update `<Task>/README.md` and the root `README.md` with results table and figure
+4. **Register** — Add all models to `benchmarks/run_benchmark.py` (TASKS dict), `benchmarks/run.sh` (MODEL_ENVS), `benchmarks/setup_envs.sh`, `benchmarks/configs/models.yaml`, and `benchmarks/plot_results.py` (MODEL_STYLES)
+5. **Run** — Submit benchmarks via Slurm: `sbatch --job-name=<Model> benchmarks/slurm_benchmark.sh <Model>`. Run ALL models on the FULL test set with `--track_carbon`.
+6. **Plot** — Generate normalized plots: `python benchmarks/plot_results.py --task <Task> --combined --norm <N>` where N is chosen by the task leader (e.g., 500 for Retro).
+7. **Report** — Follow Rule 11 (Reporting Format) exactly:
+   - Add three comparison tables to `benchmarks/README.md` (Model Specs, Accuracy, Carbon Efficiency)
+   - Add a combined results table (per-N normalized) to the root `README.md`
+   - Include the accuracy-vs-carbon plot in the root `README.md`
+   - Write 3–5 key observations highlighting accuracy-efficiency tradeoffs
 
 ### Rule 10: Plot Generation
 
@@ -131,7 +135,69 @@ MODEL_STYLES = {
 
 **Output:** Plots are saved to `benchmarks/figures/<Task>/`.
 
-### Rule 11: Slurm Job Submission
+### Rule 11: Reporting Format
+
+After running all benchmarks for a task, produce the following standardized deliverables. Use the `Retro/` results as the reference.
+
+#### Three Comparison Tables in `benchmarks/README.md`
+
+Add a section `## <Task> Model Comparison` with these three tables:
+
+**Table 1 — Model Specifications:**
+
+| Column | Description |
+|--------|-------------|
+| Model | Display name |
+| Year | Publication year |
+| Venue | Publication venue |
+| Architecture | Brief architecture description |
+| Parameters | Parameter count (e.g., "8.6M", "~1.6B") |
+| Model Size | Checkpoint file size on disk |
+| GPU Memory (MB) | `peak_gpu_memory_mb` from results JSON |
+
+**Table 2 — Accuracy:** Task-specific metrics. Sort rows by primary metric (descending). Bold the best model.
+
+**Table 3 — Carbon Efficiency:** Sort rows by Duration (ascending, fastest first).
+
+| Column | Source / Formula |
+|--------|-----------------|
+| Duration (s) | `carbon.duration_seconds` |
+| Speed (s/mol) | `duration_seconds / num_samples` |
+| Energy (Wh) | `carbon.energy_wh` |
+| CO2 (g) | `carbon.emissions_g_co2` |
+| CO2 Intensity (g/s) | `emissions_g_co2 / duration_seconds` |
+
+Include a **Key Observations** section (3–5 bullets) highlighting: best accuracy model, most efficient model, CO2 intensity range, and notable tradeoffs.
+
+#### Combined Results Table in Root `README.md`
+
+Add a section `## <Task> Results` with a single merged table. Costs normalized **per N samples** where N is chosen by the task leader (e.g., 500 for Retro):
+
+| Model | Params | Primary Metric | ... | Time/N (s) | Energy/N (Wh) | CO2/N (g) | Peak GPU (MB) |
+
+Formula: `raw_value / num_samples * N`
+
+Include a plot reference: `![<Task>: Accuracy vs Carbon Cost](benchmarks/figures/<Task>/accuracy_vs_carbon_combined.png)`
+
+#### Plots
+
+Generate all plots with the task's chosen normalization:
+
+```bash
+python benchmarks/plot_results.py --task <Task> --combined --norm <N>
+python benchmarks/plot_results.py --task <Task> --norm <N>
+```
+
+Where `<N>` is the per-sample normalization chosen by the task leader. Examples:
+- Retro: `--norm 500` (500 molecules)
+- MolGen: task leader decides (e.g., `--norm 1000`)
+- MLIP: task leader decides (e.g., `--norm 100`)
+
+This creates 6 files in `benchmarks/figures/<Task>/`:
+- `accuracy_vs_{carbon,energy,speed}_combined.png`
+- `accuracy_vs_{carbon,energy,speed}_panels.png`
+
+### Rule 12: Slurm Job Submission
 
 **ALWAYS** submit benchmark runs via Slurm instead of running them as background processes. Use `benchmarks/slurm_benchmark.sh`:
 
@@ -158,6 +224,63 @@ squeue -u $USER
 Logs are saved to `benchmarks/logs/<jobname>.o<jobid>`.
 
 **NEVER** run long benchmarks as background shell processes. Always use `sbatch`.
+
+### Rule 13: Git Workflow for Contributors
+
+All contributors must follow this branch-based workflow. **NEVER** commit directly to `main`.
+
+#### Starting New Work
+
+```bash
+# 1. Always pull the latest main first
+git checkout main
+git pull origin main
+
+# 2. Create a feature branch
+git checkout -b <your-name>/<short-description>
+# Examples:
+#   git checkout -b gunwook/molgen-setup
+#   git checkout -b junkil/add-cdvae
+#   git checkout -b junyoung/mlip-mace-benchmark
+```
+
+#### Making Changes
+
+```bash
+# 3. Work on your branch — add models, run benchmarks, update READMEs
+#    Follow Rules 4, 9, 11 for the full workflow
+
+# 4. Commit your changes (small, focused commits)
+git add <specific files>
+git commit -m "Add CDVAE model to MatGen benchmarks"
+
+# 5. Push your branch to remote
+git push -u origin <your-branch-name>
+```
+
+#### Submitting for Review
+
+```bash
+# 6. Create a pull request to main
+gh pr create --title "Add CDVAE to MatGen" --body "..."
+# Or use the GitHub web UI
+```
+
+#### Before Starting New Work Again
+
+```bash
+# 7. Switch back to main and pull latest
+git checkout main
+git pull origin main
+
+# 8. Create a new branch for the next task
+git checkout -b <your-name>/<next-task>
+```
+
+**Key rules:**
+- One branch per task/model — don't mix unrelated changes
+- Pull `main` before creating each new branch to avoid merge conflicts
+- Never force-push to `main`
 
 ### Results JSON Schema
 

@@ -54,17 +54,33 @@ When the user invokes this skill:
    - Show accuracy metrics (task-specific)
    - Show carbon metrics (duration, energy, CO2, peak GPU memory)
    - Note the output file location
-   - Update the task README.md with results
 
-5. **Generate plots:**
-   After all models have been benchmarked, generate accuracy vs cost plots:
+5. **Generate plots (normalized):**
+   After all models have been benchmarked, choose a normalization N (task leader decides, e.g., Retro uses 500):
    ```bash
-   python benchmarks/plot_results.py --task <Task> --combined
+   python benchmarks/plot_results.py --task <Task> --combined --norm <N>
+   python benchmarks/plot_results.py --task <Task> --norm <N>
    ```
-   Or use the `/plot` skill. See `.claude/skills/plot.md` for details.
+
+6. **Update READMEs (follow Rule 11 Reporting Format):**
+
+   In `benchmarks/README.md`, add a `## <Task> Model Comparison` section with three tables:
+
+   - **Model Specifications** — Year, Venue, Architecture, Parameters, Model Size, GPU Memory (MB)
+   - **Accuracy** — Task-specific metrics, sorted by primary metric (descending), best model bolded
+   - **Carbon Efficiency** — Duration (s), Speed (s/mol), Energy (Wh), CO2 (g), CO2 Intensity (g/s), sorted by Duration (ascending)
+   - **Key Observations** — 3–5 bullets on accuracy-efficiency tradeoffs
+
+   In root `README.md`, add a `## <Task> Results` section with:
+   - A combined table with costs normalized per N samples
+   - A reference to the accuracy-vs-carbon plot
+   - Key insights (3–5 bullets)
+
+   See the Retro sections as reference.
 
 ## Notes
 - Always run from the repository root directory
 - Results are saved to `benchmarks/results/<Task>/<model>_<N>.json`
-- Use `--limit` for quick tests to avoid long runtimes
+- **Submit via Slurm** for full-dataset runs: `sbatch --job-name=<Model> benchmarks/slurm_benchmark.sh <Model>`
+- Use `--limit` for quick smoke tests only
 - For parallel GPU execution on different models, use `CUDA_VISIBLE_DEVICES=<N>` prefix to assign each model to a different GPU

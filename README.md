@@ -80,11 +80,91 @@ directory structure, and conventions.
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
   (`npm install -g @anthropic-ai/claude-code`)
 
+### Git Workflow
+
+**Never commit directly to `main`.** Always use feature branches and pull requests.
+
+```
+  main (shared timeline)        Your branch (private workspace)
+  ─────────────────────         ────────────────────────────────
+
+       ● Retro complete
+       │
+       │  ① PULL ─ get the latest version
+       │          "git pull origin main"
+       │
+       ●─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┐
+       │                         │  ② BRANCH ─ create your own copy
+       │                         │  "git checkout -b gunwook/molgen"
+       │                         │
+       │                         ● Add evaluate.py
+       │                         │
+       │                         ● Add VAE model
+       │                         │
+       │                         ● Run benchmarks
+       │                         │
+       │                         │  ③ PUSH ─ upload your branch to GitHub
+       │                         │  "git push -u origin gunwook/molgen"
+       │                         │
+       │  ④ PULL REQUEST         │
+       │     "Please review  ◄───┘  "gh pr create ..."
+       │      and merge my
+       │      changes"
+       │
+       ●◄─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─   ⑤ MERGE ─ your work joins main
+       │  (MolGen added!)
+       │
+       │  ⑥ PULL again before next task
+       │
+       ●─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
+       │                      │  New branch: junkil/matgen-cdvae
+       │                      ● ...
+       ▼                      ▼
+```
+
+**Key concepts:**
+- **Pull** = download the latest changes from `main` to stay up to date
+- **Branch** = a private copy where you work without affecting others
+- **Push** = upload your branch to GitHub so others can see it
+- **Pull Request (PR)** = ask the team to review and merge your branch into `main` (requires push first)
+- **Merge** = your branch's changes are added to `main` for everyone
+
+**Commands:**
+
+```bash
+# 1. Clone the repo (first time only)
+git clone https://github.com/shuan4638/Carbon4Science.git
+cd Carbon4Science
+
+# 2. Pull latest main and create your branch
+git checkout main
+git pull origin main
+git checkout -b <your-name>/<description>
+# e.g., git checkout -b gunwook/molgen-setup
+
+# 3. Do your work (add models, run benchmarks, update READMEs)
+claude   # Claude Code guides you through the process
+
+# 4. Commit and push
+git add <files>
+git commit -m "Add VAE model to MolGen benchmarks"
+git push -u origin <your-branch-name>
+
+# 5. Create a pull request
+gh pr create --title "Add VAE to MolGen" --body "..."
+
+# 6. Before starting new work, always pull latest main
+git checkout main
+git pull origin main
+git checkout -b <your-name>/<next-task>
+```
+
 ### Quick Start
 
 ```bash
 git clone https://github.com/shuan4638/Carbon4Science.git
 cd Carbon4Science
+git checkout -b <your-name>/<task>-setup
 claude
 ```
 

@@ -146,4 +146,7 @@ MODEL_STYLES = {
 - [ ] Config added to `benchmarks/configs/models.yaml`
 - [ ] Model style added to `benchmarks/plot_results.py` `MODEL_STYLES`
 - [ ] Quick test passes with `--limit 10`
-- [ ] Results added to task README.md
+- [ ] Full benchmark submitted via Slurm with `--track_carbon`
+- [ ] Three comparison tables updated in `benchmarks/README.md` (Model Specs, Accuracy, Carbon Efficiency)
+- [ ] Combined results table (per-N normalized) updated in root `README.md`
+- [ ] Plots regenerated with `--norm <N>` (N chosen by task leader)

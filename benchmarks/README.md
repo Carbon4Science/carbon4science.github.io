@@ -2,6 +2,56 @@
 
 This directory contains the standardized benchmarking infrastructure for measuring both accuracy and carbon efficiency of generative AI models.
 
+## Retrosynthesis Model Comparison
+
+Full USPTO-50K test set (~5,000 samples). All models run on the same hardware (NVIDIA RTX 5000 Ada, Intel Xeon Platinum 8558, 503 GB RAM).
+
+### Model Specifications
+
+| Model | Year | Venue | Architecture | Parameters | Model Size | GPU Memory (MB) |
+|-------|------|-------|-------------|-----------|------------|-----------------|
+| neuralsym | 2017 | Chem. Eur. J. | MLP (template) | 32.5M | 372 MB | 504 |
+| LocalRetro | 2021 | JACS Au | MPNN + attention | 8.6M | 33 MB | 172 |
+| RSMILES_1x | 2022 | Chem. Sci. | Transformer (seq2seq) | ~30M | 210 MB | 121 |
+| RSMILES_20x | 2022 | Chem. Sci. | Transformer (seq2seq) | ~30M | 210 MB | 924 |
+| Chemformer | 2022 | ML:ST | BART Transformer | 44.7M | 513 MB | 209 |
+| RetroBridge | 2024 | ICLR | Markov Bridge (diffusion) | 4.6M | 82 MB | 601 |
+| RSGPT | 2025 | Nat. Commun. | LLaMA-1B (GPT) | ~1.6B | 6.1 GB | 6,950 |
+
+### Accuracy (Top-k Exact Match)
+
+| Model | Top-1 | Top-5 | Top-10 | Top-50 |
+|-------|-------|-------|--------|--------|
+| **RSGPT** | **76.0%** | **94.5%** | **96.6%** | **97.8%** |
+| RSMILES_20x | 55.3% | 84.8% | 89.6% | 93.0% |
+| Chemformer | 53.6% | 62.0% | 62.8% | 64.0% |
+| LocalRetro | 52.8% | 85.0% | 91.5% | 95.6% |
+| RSMILES_1x | 49.3% | 77.8% | 83.5% | 83.5% |
+| neuralsym | 43.0% | 67.7% | 72.8% | 74.8% |
+| RetroBridge | 22.1% | 39.4% | 44.9% | 52.8% |
+
+### Carbon Efficiency
+
+| Model | Duration (s) | Speed (s/mol) | Energy (Wh) | CO2 (g) | CO2 Intensity (g/s) |
+|-------|-------------|---------------|-------------|---------|---------------------|
+| neuralsym | 1,283 | 0.26 | 87.6 | 35.0 | 0.0273 |
+| LocalRetro | 2,316 | 0.46 | 155.6 | 62.2 | 0.0269 |
+| RSMILES_1x | 3,197 | 0.64 | 349.3 | 139.7 | 0.0437 |
+| RSMILES_20x | 44,092 | 8.81 | 2,709.6 | 1,083.8 | 0.0246 |
+| Chemformer | 84,990 | 16.99 | 6,424.7 | 2,569.9 | 0.0302 |
+| RSGPT | 79,024 | 15.78 | 6,279.3 | 2,511.7 | 0.0318 |
+| RetroBridge | 157,706 | 31.50 | 9,383.1 | 4,040.1 | 0.0256 |
+
+### Key Observations
+
+- **Best accuracy**: RSGPT (76.0% top-1) — but at 2,512 g CO2 total
+- **Best efficiency**: LocalRetro (52.8% top-1 at 62 g CO2) — 40x less carbon than RSGPT for competitive accuracy
+- **CO2 intensity** is similar across models (0.025–0.044 g/s), meaning the carbon difference comes primarily from **how long each model runs**, not how power-hungry it is
+- **Test-time augmentation tradeoff**: RSMILES 1x→20x gains +6% top-1 at 7.7x carbon cost
+- **Diffusion models are expensive**: RetroBridge uses the most carbon (4,040 g) for the lowest accuracy (22.1%)
+
+---
+
 ## Known Issues & Solutions
 
 ### Environment Conflicts
@@ -12,8 +62,9 @@ Each model requires a different conda environment due to incompatible dependenci
 |-------|--------|------------------|
 | neuralsym | 3.6 | PyTorch 1.6, RDChiral |
 | LocalRetro | 3.7 | DGL, DGLLife |
-| RetroBridge | 3.9 | PyTorch Lightning 2.x |
+| RSMILES_1x/20x | 3.7 | OpenNMT-py 2.2.0, RDKit |
 | Chemformer | 3.7 | Poetry, PyTorch 1.8 |
+| RetroBridge | 3.9 | PyTorch Lightning 2.x |
 | RSGPT | 3.9 | Transformers, DeepSpeed |
 
 **Solution**: Use the wrapper script that handles environment switching:

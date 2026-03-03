@@ -29,18 +29,24 @@ If no results are found, tell the user to run benchmarks first (`/benchmark` or 
 
 ### Step 2: Generate plots
 
-Run `plot_results.py` to generate combined and panel plots:
+Run `plot_results.py` to generate combined and panel plots. **Always normalize per N samples** where N is chosen by the task leader:
 
 ```bash
-# Combined view (all top-k metrics on one plot, recommended)
-python benchmarks/plot_results.py --task <Task> --combined
+# Combined view, normalized (RECOMMENDED)
+# N is task-specific: Retro uses 500, other tasks choose their own
+python benchmarks/plot_results.py --task <Task> --combined --norm <N>
 
-# Per-metric panel view (one subplot per accuracy metric)
-python benchmarks/plot_results.py --task <Task>
+# Per-metric panel view, normalized
+python benchmarks/plot_results.py --task <Task> --norm <N>
 
-# For a specific sample count
+# Per-molecule normalization
+python benchmarks/plot_results.py --task <Task> --combined --norm 1
+
+# Raw (unnormalized) values
+python benchmarks/plot_results.py --task <Task> --combined --no-normalize
+
+# Filter to a specific sample count
 python benchmarks/plot_results.py --task <Task> --combined --samples 500
-python benchmarks/plot_results.py --task <Task> --samples 500
 ```
 
 ### Step 3: Report output locations
@@ -83,5 +89,7 @@ Choose distinct colors and markers so models are visually distinguishable.
 
 ## Notes
 - Plots use log-scale x-axis to handle the large range in cost across models
-- By default, cost values are normalized to per-1000 samples. Use `--no-normalize` for raw values.
-- The `--samples N` flag filters to only results with exactly N samples (useful when you have multiple runs at different sizes)
+- **Always normalize** using `--norm N` where N is chosen by the task leader (e.g., Retro uses 500)
+- `--norm N` normalizes cost to per-N samples (e.g., `--norm 1` for per molecule)
+- `--no-normalize` shows raw (total) values
+- `--samples N` filters to only results with exactly N samples (useful when you have multiple runs at different sizes)
