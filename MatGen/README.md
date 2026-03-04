@@ -52,11 +52,11 @@ Material generation: Generate novel crystal structures and materials.
 
 ### SUN Accuracy vs Energy
 
-![SUN vs Energy](./accuracy_vs_energy_panels.png)
+<img src="./accuracy_vs_energy_panels.png" alt="SUN vs Energy" width="50%">
 
 ### SUN Accuracy vs Speed
 
-![SUN vs Speed](./accuracy_vs_speed_panels.png)
+<img src="./accuracy_vs_speed_panels.png" alt="SUN vs Speed" width="50%">
 
 ## Usage
 
