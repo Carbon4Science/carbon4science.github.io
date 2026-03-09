@@ -1,0 +1,31 @@
+{
+  "model": "DPA3",
+  "structure": "LGPS_mp-696128",
+  "temperature_K": 300,
+  "equilibration_ps": 10,
+  "production_ps": 50,
+  "timestep_fs": 2.0,
+  "traj_interval": 50,
+  "num_frames": 501,
+  "accuracy": {
+    "rdf_mae": {
+      "Li-Ge": 0.010931,
+      "Li-Li": 0.030731,
+      "Li-P": 0.023741,
+      "Li-S": 0.064683,
+      "average": 0.032522
+    },
+    "rdf_score": {
+      "Li-Ge": 0.989187,
+      "Li-Li": 0.970185,
+      "Li-P": 0.976809,
+      "Li-S": 0.939247,
+      "average": 0.968857
+    },
+    "msd_mae": 0.949901,
+    "msd_score": 0.512847,
+    "diffusivity_mlip_cm2s": 6.054856609619498e-07,
+    "diffusivity_aimd_cm2s": 1.6321971126047837e-07,
+    "diffusivity_relative_error": 2.709636
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "model": "CHGNet",
+  "structure": "LGPS_mp-696128",
+  "temperature_K": 300,
+  "equilibration_ps": 10,
+  "production_ps": 50,
+  "timestep_fs": 2.0,
+  "traj_interval": 50,
+  "num_frames": 501,
+  "accuracy": {
+    "rdf_mae": {
+      "Li-Ge": 0.01758,
+      "Li-Li": 0.023242,
+      "Li-P": 0.03124,
+      "Li-S": 0.08456,
+      "average": 0.039155
+    },
+    "rdf_score": {
+      "Li-Ge": 0.982724,
+      "Li-Li": 0.977286,
+      "Li-P": 0.969707,
+      "Li-S": 0.922033,
+      "average": 0.962938
+    },
+    "msd_mae": 16.597015,
+    "msd_score": 0.056828,
+    "diffusivity_mlip_cm2s": 1.1630223783181913e-05,
+    "diffusivity_aimd_cm2s": 1.6321971126047837e-07,
+    "diffusivity_relative_error": 70.25502
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "model": "Allegro",
+  "structure": "LGPS_mp-696128",
+  "temperature_K": 300,
+  "equilibration_ps": 10,
+  "production_ps": 50,
+  "timestep_fs": 2.0,
+  "traj_interval": 50,
+  "num_frames": 501,
+  "accuracy": {
+    "rdf_mae": {
+      "Li-Ge": 0.016221,
+      "Li-Li": 0.03653,
+      "Li-P": 0.02437,
+      "Li-S": 0.069351,
+      "average": 0.036618
+    },
+    "rdf_score": {
+      "Li-Ge": 0.984038,
+      "Li-Li": 0.964758,
+      "Li-P": 0.976209,
+      "Li-S": 0.935146,
+      "average": 0.965038
+    },
+    "msd_mae": 0.535635,
+    "msd_score": 0.651196,
+    "diffusivity_mlip_cm2s": 5.096958199400586e-07,
+    "diffusivity_aimd_cm2s": 1.6321971126047837e-07,
+    "diffusivity_relative_error": 2.122759
+  },
+  "timing": {
+    "equil_seconds": 506.81,
+    "prod_seconds": 2407.03
+  }
+}

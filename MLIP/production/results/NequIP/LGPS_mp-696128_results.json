@@ -1,0 +1,31 @@
+{
+  "model": "NequIP",
+  "structure": "LGPS_mp-696128",
+  "temperature_K": 300,
+  "equilibration_ps": 10,
+  "production_ps": 50,
+  "timestep_fs": 2.0,
+  "traj_interval": 50,
+  "num_frames": 501,
+  "accuracy": {
+    "rdf_mae": {
+      "Li-Ge": 0.016283,
+      "Li-Li": 0.036471,
+      "Li-P": 0.027836,
+      "Li-S": 0.075652,
+      "average": 0.03906
+    },
+    "rdf_score": {
+      "Li-Ge": 0.983978,
+      "Li-Li": 0.964813,
+      "Li-P": 0.972918,
+      "Li-S": 0.929668,
+      "average": 0.962844
+    },
+    "msd_mae": 0.793109,
+    "msd_score": 0.557691,
+    "diffusivity_mlip_cm2s": 3.741822505701417e-07,
+    "diffusivity_aimd_cm2s": 1.6321971126047837e-07,
+    "diffusivity_relative_error": 1.292507
+  }
+}

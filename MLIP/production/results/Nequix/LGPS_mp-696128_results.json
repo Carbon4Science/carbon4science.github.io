@@ -1,0 +1,31 @@
+{
+  "model": "Nequix",
+  "structure": "LGPS_mp-696128",
+  "temperature_K": 300,
+  "equilibration_ps": 10,
+  "production_ps": 50,
+  "timestep_fs": 2.0,
+  "traj_interval": 50,
+  "num_frames": 501,
+  "accuracy": {
+    "rdf_mae": {
+      "Li-Ge": 0.015338,
+      "Li-Li": 0.016592,
+      "Li-P": 0.023127,
+      "Li-S": 0.063207,
+      "average": 0.029566
+    },
+    "rdf_score": {
+      "Li-Ge": 0.984894,
+      "Li-Li": 0.983679,
+      "Li-P": 0.977396,
+      "Li-S": 0.940551,
+      "average": 0.97163
+    },
+    "msd_mae": 6.973737,
+    "msd_score": 0.125412,
+    "diffusivity_mlip_cm2s": 4.908921930587893e-06,
+    "diffusivity_aimd_cm2s": 1.6321971126047837e-07,
+    "diffusivity_relative_error": 29.075546
+  }
+}

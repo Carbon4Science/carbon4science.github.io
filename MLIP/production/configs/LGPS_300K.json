@@ -1,0 +1,25 @@
+{
+  "structures": [
+    {
+      "cif": "MLIP/LGPS_mp-696128.cif",
+      "label": "LGPS_mp-696128",
+      "diffusing_species": "Li",
+      "temperature_K": 300,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 10,
+      "production_ps": 50,
+      "traj_interval": 50,
+      "nose_frequency": null,
+      "seed": 42,
+      "rdf": {
+        "pairs": "auto",
+        "rmax": 4.0,
+        "binwidth": 0.05,
+        "analysis_window_ps": null
+      },
+      "msd": {
+        "analysis_window_ps": null
+      }
+    }
+  ]
+}

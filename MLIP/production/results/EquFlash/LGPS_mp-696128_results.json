@@ -1,0 +1,35 @@
+{
+  "model": "EquFlash",
+  "structure": "LGPS_mp-696128",
+  "temperature_K": 300,
+  "equilibration_ps": 10,
+  "production_ps": 50,
+  "timestep_fs": 2.0,
+  "traj_interval": 50,
+  "num_frames": 501,
+  "accuracy": {
+    "rdf_mae": {
+      "Li-Ge": 0.015204,
+      "Li-Li": 0.036679,
+      "Li-P": 0.026744,
+      "Li-S": 0.070624,
+      "average": 0.037313
+    },
+    "rdf_score": {
+      "Li-Ge": 0.985024,
+      "Li-Li": 0.964619,
+      "Li-P": 0.973953,
+      "Li-S": 0.934035,
+      "average": 0.964408
+    },
+    "msd_mae": 1.14427,
+    "msd_score": 0.466359,
+    "diffusivity_mlip_cm2s": 8.140702733935642e-07,
+    "diffusivity_aimd_cm2s": 1.6321971126047837e-07,
+    "diffusivity_relative_error": 3.987573
+  },
+  "timing": {
+    "equil_seconds": 410.43,
+    "prod_seconds": 1990.86
+  }
+}
