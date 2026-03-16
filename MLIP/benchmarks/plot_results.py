@@ -2,14 +2,14 @@
 """
 Plot accuracy vs cost (carbon, energy, or speed) for benchmark models.
 
-Loads benchmark results from benchmarks/results/<task>/ and creates scatter
+Loads benchmark results from <Task>/results/outputs/ and creates scatter
 plots showing top-k accuracy (y-axis) vs cost metric (x-axis).
+Figures are saved to <Task>/results/figures/.
 
 Usage:
-    python benchmarks/plot_results.py                          # all 3 plots
-    python benchmarks/plot_results.py --xaxis duration_seconds # speed only
-    python benchmarks/plot_results.py --combined               # combined view
-    python benchmarks/plot_results.py --task MolGen            # different task
+    python MLIP/benchmarks/plot_results.py --task MLIP                  # all 3 plots
+    python MLIP/benchmarks/plot_results.py --task MLIP --combined       # combined view
+    python MLIP/benchmarks/plot_results.py --task MLIP --xaxis duration_seconds
 """
 
 import argparse
@@ -30,6 +30,8 @@ matplotlib.rcParams.update({
 })
 
 BENCHMARKS_DIR = Path(__file__).resolve().parent
+TASK_DIR = BENCHMARKS_DIR.parent          # e.g. Carbon4Science/MLIP/
+REPO_ROOT = TASK_DIR.parent               # e.g. Carbon4Science/
 
 # Model display settings: color, marker, params, publication venue
 MODEL_STYLES = {
@@ -109,6 +111,25 @@ XAXIS_CONFIG = {
 }
 
 
+def _format_steps(n):
+    """Format step count for axis labels (e.g., 100 -> '100', 1000000 -> '10^6')."""
+    import math
+    if n >= 1000 and math.log10(n) == int(math.log10(n)):
+        exp = int(math.log10(n))
+        return f"$10^{exp}$"
+    return str(n)
+
+
+# Per-metric normalization for MLIP panel plots
+# CPS is a static property -> short MD suffices -> per 100 steps
+# RDF/MSD require long production MD -> per 10^6 steps
+MLIP_METRIC_NORMS = {
+    "CPS": 100,
+    "rdf_score": 1_000_000,
+    "msd_score": 1_000_000,
+}
+
+
 def _xaxis_label(xaxis_key, norm_n=None, is_mlip=False):
     """Build x-axis label. If norm_n is set, append 'per N samples'."""
     base = XAXIS_CONFIG[xaxis_key]["label"]
@@ -116,7 +137,7 @@ def _xaxis_label(xaxis_key, norm_n=None, is_mlip=False):
         return f"{base} per molecule"
     elif norm_n:
         if is_mlip:
-            return f"{base} per {norm_n} MD steps"
+            return f"{base} per {_format_steps(norm_n)} MD steps"
         return f"{base} per {norm_n} samples"
     return base
 
@@ -129,13 +150,13 @@ def load_results(task="Retro", samples=None):
         samples: If set, only load results with exactly this many samples.
                  If None, keeps the largest-N run per model.
 
-    Searches both the task-specific subfolder (results/<task>/) and the flat
-    results/ folder for backward compatibility.
+    Searches <Task>/results/outputs/ under the repo root. Also checks the
+    current task directory's results/outputs/ as fallback.
     """
     results = {}
     search_dirs = [
-        BENCHMARKS_DIR / "results" / task,
-        BENCHMARKS_DIR / "results",
+        REPO_ROOT / task / "results" / "outputs",   # <Task>/results/outputs/
+        TASK_DIR / "results" / "outputs",            # current task's results/outputs/
     ]
     seen_files = set()
 
@@ -192,16 +213,19 @@ def plot_accuracy_vs_cost(results, task="Retro", metrics=None,
     if metrics is None:
         metrics = _detect_metrics(results) or ["top_1", "top_5", "top_10", "top_50"]
 
-    is_score = (task == "MLIP")  # 0-1 scores, not percentages
+    is_mlip = (task == "MLIP")
+    is_score = is_mlip  # 0-1 scores, not percentages
     scale = 1 if is_score else 100
-
-    x_label = _xaxis_label(xaxis_key, norm_n, is_mlip=(task == "MLIP"))
 
     n_metrics = len(metrics)
     fig, axes = plt.subplots(1, n_metrics, figsize=(5.5 * n_metrics, 5), squeeze=False)
     axes = axes[0]
 
     for ax, metric in zip(axes, metrics):
+        # Per-metric norm for MLIP; otherwise use the global norm_n
+        metric_norm = MLIP_METRIC_NORMS.get(metric, norm_n) if is_mlip else norm_n
+        x_label = _xaxis_label(xaxis_key, metric_norm, is_mlip=is_mlip)
+
         for model_name, data in sorted(results.items(), key=lambda x: MODEL_STYLES.get(x[0], {}).get("year", 9999)):
             acc = data.get("accuracy", {}).get(metric)
             cost = data.get("carbon", {}).get(xaxis_key, 0)
@@ -210,8 +234,8 @@ def plot_accuracy_vs_cost(results, task="Retro", metrics=None,
             if acc is None or cost == 0:
                 continue
 
-            if norm_n:
-                cost = cost / n_samples * norm_n
+            if metric_norm:
+                cost = cost / n_samples * metric_norm
 
             style = MODEL_STYLES.get(model_name, {
                 "color": "gray", "marker": "x"
@@ -451,7 +475,7 @@ def main():
     elif args.no_normalize:
         norm_n = None
     elif args.task == "MLIP":
-        norm_n = 1000  # MLIP costs already normalized per 1000 MD steps
+        norm_n = 1000  # MLIP costs are per-step; default display is per 1000 MD steps
     elif args.samples:
         norm_n = args.samples
     else:
@@ -465,7 +489,7 @@ def main():
         if args.output and len(xaxis_list) == 1:
             output = args.output
         else:
-            fig_dir = BENCHMARKS_DIR / "figures" / args.task
+            fig_dir = REPO_ROOT / args.task / "results" / "figures"
             suffix = "combined" if args.combined else "panels"
             n_tag = f"_{args.samples}" if args.samples else ""
             output = str(fig_dir / f"accuracy_vs_{xcfg['file_suffix']}_{suffix}{n_tag}.png")

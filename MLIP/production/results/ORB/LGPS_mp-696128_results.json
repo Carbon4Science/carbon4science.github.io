@@ -1,31 +1,36 @@
 {
   "model": "ORB",
   "structure": "LGPS_mp-696128",
-  "temperature_K": 300,
+  "temperature_K": 600,
   "equilibration_ps": 10,
   "production_ps": 50,
   "timestep_fs": 2.0,
   "traj_interval": 50,
-  "num_frames": 501,
+  "num_seeds": 3,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
   "accuracy": {
     "rdf_mae": {
-      "Li-Ge": 0.011446,
-      "Li-Li": 0.01956,
-      "Li-P": 0.023249,
-      "Li-S": 0.060602,
-      "average": 0.028714
+      "Li-Ge": 0.004021,
+      "Li-Li": 0.012993,
+      "Li-P": 0.00904,
+      "Li-S": 0.027221,
+      "average": 0.013319
     },
     "rdf_score": {
-      "Li-Ge": 0.988683,
-      "Li-Li": 0.980816,
-      "Li-P": 0.977279,
-      "Li-S": 0.942861,
-      "average": 0.97241
+      "Li-Ge": 0.995995,
+      "Li-Li": 0.987173,
+      "Li-P": 0.991041,
+      "Li-S": 0.973501,
+      "average": 0.986927
     },
-    "msd_mae": 0.462472,
-    "msd_score": 0.683774,
-    "diffusivity_mlip_cm2s": 3.8054794054901816e-07,
-    "diffusivity_aimd_cm2s": 1.6321971126047837e-07,
-    "diffusivity_relative_error": 1.331507
+    "msd_mae": 19.049437,
+    "msd_score": 0.049877,
+    "diffusivity_mlip_cm2s": 1.570287639714396e-05,
+    "diffusivity_aimd_cm2s": 2.2067535826699325e-06,
+    "diffusivity_relative_error": 6.115827
   }
 }

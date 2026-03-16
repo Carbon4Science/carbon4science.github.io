@@ -20,6 +20,11 @@ declare -A MODEL_ENVS=(
     ["MACE"]="mace"
     ["ORB"]="orb"
     ["CHGNet"]="chgnet"
+    ["PET"]="pet-oam"
+    ["eSEN_OAM"]="esen"
+    ["EquFlash"]="equflash"
+    ["NequIP_OAM"]="nequip"
+    ["Allegro"]="nequip"
 )
 
 # Parse --model argument

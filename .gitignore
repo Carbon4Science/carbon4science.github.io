@@ -83,3 +83,11 @@ lightning_logs/
 
 # CodeCarbon outputs
 emissions.csv
+
+# Standard output/error files
+*.o*
+*.e*
+
+# GPU monitor_files
+gpu_monitor*.csv
+plot_gpu.py

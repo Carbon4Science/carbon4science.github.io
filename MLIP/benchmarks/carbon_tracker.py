@@ -155,7 +155,7 @@ class CarbonTracker:
 
     Args:
         project_name: Identifier for the experiment
-        output_dir: Directory to save results (default: benchmarks/results)
+        output_dir: Directory to save results (default: MLIP/results/outputs)
         model_name: Name of the model being benchmarked
         task: "training" or "inference"
         save_results: Whether to automatically save results to file
@@ -177,7 +177,7 @@ class CarbonTracker:
     def __init__(
         self,
         project_name: str,
-        output_dir: str = "benchmarks/results",
+        output_dir: str = "MLIP/results/outputs",
         model_name: str = "",
         task: str = "inference",
         save_results: bool = True,
@@ -441,7 +441,7 @@ class CarbonTracker:
         print("=" * 60 + "\n")
 
 
-def aggregate_results(results_dir: str = "benchmarks/results") -> List[Dict[str, Any]]:
+def aggregate_results(results_dir: str = "MLIP/results/outputs") -> List[Dict[str, Any]]:
     """
     Aggregate all benchmark results from JSON files.
 

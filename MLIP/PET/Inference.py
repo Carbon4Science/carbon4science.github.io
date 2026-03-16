@@ -20,14 +20,14 @@ def _get_calculator(device=None):
     return _calculator
 
 
-def run_production(config_path, structure_index=0, carbon_tracker=None):
+def run_production(config_path, structure_index=0, track_carbon=False):
     """Run production MD (equilibration + production) and return accuracy metrics."""
     calc = _get_calculator()
     from MLIP.production.run_production_md import load_config, run_md_simulation, run_analysis
 
     config = load_config(config_path)
     struct_cfg = config["structures"][structure_index]
-    md_info = run_md_simulation(struct_cfg, calculator=calc, model_name="PET", carbon_tracker=carbon_tracker)
+    md_info = run_md_simulation(struct_cfg, calculator=calc, model_name="PET", track_carbon=track_carbon)
     timing = {"equil_seconds": md_info["equil_seconds"], "prod_seconds": md_info["prod_seconds"]}
     analysis = run_analysis("PET", struct_cfg, timing=timing)
     return {**md_info, "accuracy": analysis.get("accuracy", {})}

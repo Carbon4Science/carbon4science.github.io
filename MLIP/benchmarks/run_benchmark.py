@@ -21,8 +21,8 @@ import time
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
-# Add parent directory to path
-ROOT_DIR = Path(__file__).resolve().parent.parent
+# Add repository root to path (up from MLIP/benchmarks/ to Carbon4Science/)
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
 # Task to evaluation module mapping
@@ -420,37 +420,23 @@ def run_mlip_production_benchmark(
         print("=" * 60)
         print()
 
-    # Setup carbon tracker (don't start — run_production handles start/stop internally)
-    tracker = None
-    if track_carbon:
-        from carbon_tracker import CarbonTracker
-        tracker = CarbonTracker(
-            project_name=f"{model_name}_{task_name}_benchmark",
-            model_name=model_name,
-            task="inference",
-            save_results=False,
-        )
-
     # Run production MD
     prod_info = module.run_production(
         config_path=production_config,
         structure_index=structure_index,
-        carbon_tracker=tracker,
+        track_carbon=track_carbon,
     )
 
-    # Get carbon metrics
-    if tracker:
-        carbon_metrics = tracker.get_metrics()
-    else:
-        carbon_metrics = {"duration_seconds": prod_info.get("prod_seconds", 0)}
+    # Get carbon metrics (averaged per-seed, returned by run_md_simulation)
+    carbon_metrics = prod_info.get("carbon_metrics", {"duration_seconds": prod_info.get("prod_seconds", 0)})
 
-    # Normalize carbon per 1000 steps if mode is "production"
+    # Normalize carbon per step (already averaged across seeds)
     prod_steps = prod_info.get("prod_steps", 1)
     if prod_steps > 0:
         for key in ["duration_seconds", "energy_wh", "emissions_g_co2",
                      "gpu_energy_wh", "cpu_energy_wh", "ram_energy_wh"]:
             if key in carbon_metrics:
-                carbon_metrics[key] = round(carbon_metrics[key] * 1000.0 / prod_steps, 6)
+                carbon_metrics[key] = round(carbon_metrics[key] / prod_steps, 6)
 
     # Build accuracy dict
     accuracy_data = prod_info.get("accuracy", {})
@@ -462,15 +448,10 @@ def run_mlip_production_benchmark(
 
     # Compute throughput from production timing
     prod_seconds = prod_info.get("prod_seconds", 0)
-    steps_per_second = prod_steps / prod_seconds if prod_seconds > 0 else 0
-    timestep_fs = 2.0  # default
-    try:
-        from MLIP.production.run_production_md import load_config
-        cfg = load_config(production_config)
-        struct_cfg = cfg["structures"][structure_index]
-        timestep_fs = struct_cfg.get("timestep_fs", 2.0)
-    except Exception:
-        pass
+    num_seeds = prod_info.get("num_seeds", 1)
+    timestep_fs = prod_info.get("timestep_fs", 2.0)
+    # steps_per_second: total steps across all seeds / total wall time
+    steps_per_second = (prod_steps * num_seeds) / prod_seconds if prod_seconds > 0 else 0
     ns_per_day = steps_per_second * timestep_fs * 1e-6 * 86400 if steps_per_second > 0 else 0
 
     speed = {
@@ -517,13 +498,13 @@ def run_mlip_production_benchmark(
         print(f"  ns/day:     {speed['ns_per_day']:.4f}")
         print(f"  Steps:      {speed['steps']}")
         print()
-        print(f"Duration: {carbon_metrics.get('duration_seconds', 0):.1f}s")
+        print(f"Duration: {carbon_metrics.get('duration_seconds', 0):.6f}s (per step)")
         energy_wh = carbon_metrics.get('energy_wh', 0)
         co2_g = carbon_metrics.get('emissions_g_co2', 0)
         if energy_wh > 0:
-            print(f"Energy:   {energy_wh:.4f} Wh")
+            print(f"Energy:   {energy_wh:.6f} Wh (per step)")
         if co2_g > 0:
-            print(f"CO2:      {co2_g:.4f} g")
+            print(f"CO2:      {co2_g:.6f} g (per step)")
         print("=" * 60)
 
     # Save results

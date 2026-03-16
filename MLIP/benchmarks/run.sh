@@ -66,9 +66,9 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Get script directory
+# Get script directory (MLIP/benchmarks/) and repo root (Carbon4Science/)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(dirname "$SCRIPT_DIR")"
+ROOT_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
 
 # Function to run benchmark for a single model
 run_model() {
@@ -90,8 +90,18 @@ run_model() {
     eval "$(conda shell.bash hook)"
     conda activate "$env"
 
+    # Nequix (JAX) needs nvidia pip-installed CUDA libs on LD_LIBRARY_PATH
+    if [ "$env" = "nequix" ]; then
+        NVIDIA_DIR="$CONDA_PREFIX/lib/python3.10/site-packages/nvidia"
+        if [ -d "$NVIDIA_DIR" ]; then
+            for d in "$NVIDIA_DIR"/*/lib; do
+                [ -d "$d" ] && export LD_LIBRARY_PATH="$d:$LD_LIBRARY_PATH"
+            done
+        fi
+    fi
+
     cd "$ROOT_DIR"
-    python benchmarks/run_benchmark.py --task "$task" --model "$model" "${ARGS[@]}"
+    python MLIP/benchmarks/run_benchmark.py --task "$task" --model "$model" "${ARGS[@]}"
 
     conda deactivate
     echo ""

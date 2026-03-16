@@ -1,31 +1,36 @@
 {
   "model": "SevenNet",
   "structure": "LGPS_mp-696128",
-  "temperature_K": 300,
+  "temperature_K": 600,
   "equilibration_ps": 10,
   "production_ps": 50,
   "timestep_fs": 2.0,
   "traj_interval": 50,
-  "num_frames": 501,
+  "num_seeds": 3,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
   "accuracy": {
     "rdf_mae": {
-      "Li-Ge": 0.012639,
-      "Li-Li": 0.019239,
-      "Li-P": 0.02454,
-      "Li-S": 0.064955,
-      "average": 0.030343
+      "Li-Ge": 0.006103,
+      "Li-Li": 0.014078,
+      "Li-P": 0.013888,
+      "Li-S": 0.034894,
+      "average": 0.017241
     },
     "rdf_score": {
-      "Li-Ge": 0.987519,
-      "Li-Li": 0.981124,
-      "Li-P": 0.976048,
-      "Li-S": 0.939007,
-      "average": 0.970925
+      "Li-Ge": 0.993934,
+      "Li-Li": 0.986118,
+      "Li-P": 0.986303,
+      "Li-S": 0.966283,
+      "average": 0.983159
     },
-    "msd_mae": 5.503327,
-    "msd_score": 0.153767,
-    "diffusivity_mlip_cm2s": 5.280847312513395e-06,
-    "diffusivity_aimd_cm2s": 1.6321971126047837e-07,
-    "diffusivity_relative_error": 31.354225
+    "msd_mae": 20.75569,
+    "msd_score": 0.045965,
+    "diffusivity_mlip_cm2s": 1.543345943824653e-05,
+    "diffusivity_aimd_cm2s": 2.2067535826699325e-06,
+    "diffusivity_relative_error": 5.993739
   }
 }
