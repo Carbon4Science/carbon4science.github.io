@@ -39,16 +39,16 @@ Material generation: Generate novel crystal structures and materials.
 
 Stability evaluated with MatterSim (meta-stable: e_hull ≤ 0.1 eV/atom). **mSUN** = meta-Stable ∩ Unique ∩ Novel count. **ICER** = CO₂ (g) / mSUN (lower is better).
 
-| Model | Params | mSUN | Duration (s) | Energy (Wh) | CO₂ (g) | ICER (g CO₂/mSUN) |
+| Model | Params | mSUN | Duration (s) | Energy (Wh) | CO₂ (g) | ICER |
 |-------|--------|------|--------------|-------------|---------|-------------------|
-| CDVAE | 4.92M | 210 | 25,764 | 628.04 | 270.41 | 1.288 |
-| DiffCSP | 12.35M | 273 | 381 | 29.39 | 12.65 | 0.046 |
-| CrystaLLM | 25.89M | 94 | 942 | 44.72 | 19.25 | 0.205 |
-| FlowMM | 28.26M | 221 | 547 | 29.64 | 12.76 | 0.058 |
-| MatterGen | ~100M | 334 | 8,079 | 576.19 | 248.09 | 0.743 |
-| ADiT | ~150M | 276 | 10,512 | 261.26 | 112.49 | 0.408 |
-| CrystalFlow | 20.92M | 203 | 43 | 3.70 | 1.48 | **0.007** |
-| **ChargeDIFF** | — | **335** | 2,994 | 333.76 | 133.50 | 0.399 |
+| CDVAE | 4.9M | 210 | 25,764 | 628.04 | 270.41 | - |
+| DiffCSP | 12.4M | 273 | 381 | 29.39 | 12.65 | -1.44 |
+| CrystaLLM | 25.9M | 94 | 942 | 44.72 | 19.25 | -1.08 |
+| FlowMM | 28.3M | 221 | 547 | 29.64 | 12.76 | -1.35 |
+| MatterGen | 44.6M | 334 | 8,079 | 576.19 | 248.09 | -0.21 |
+| ADiT | 231.9M | 276 | 10,512 | 261.26 | 112.49 | -0.50 |
+| CrystalFlow | 20.9M | 203 | 43 | 3.70 | 1.48 | -2.24 |
+| ChargeDIFF | 59.5M | 335 | 2,994 | 333.76 | 133.50 | -0.48 |
 
 *Hardware: NVIDIA RTX 5000 Ada (32GB), Intel Xeon Platinum 8558 (192 cores), 503 GB RAM.*
 
