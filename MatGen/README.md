@@ -4,22 +4,6 @@
 
 Material generation: Generate novel crystal structures and materials.
 
-## Metrics
-
-| Metric | Description |
-|--------|-------------|
-| `validity` | Fraction of valid crystal structures |
-| `uniqueness` | Fraction of unique structures |
-| `novelty` | Fraction of structures not seen in training data |
-| `SUN` | % Stable, Unique, and Novel structures (joint metric) |
-| `stability` | Fraction predicted to be thermodynamically stable |
-| `coverage` | Fraction of target compositions covered |
-
-## Test Dataset
-
-- **MP-20**: Materials Project dataset with 45,231 experimentally observed stable inorganic materials
-- Models trained and evaluated on the MP-20 train/test split
-
 ## Models
 
 | Model | Paper | Environment | License |
@@ -52,13 +36,6 @@ Stability evaluated with MatterSim (meta-stable: e_hull ≤ 0.1 eV/atom). **mSUN
 
 *Hardware: NVIDIA RTX 5000 Ada (32GB), Intel Xeon Platinum 8558 (192 cores), 503 GB RAM.*
 
-#### Key Observations
-
-- **ChargeDIFF** and **MatterGen** tie for highest mSUN (~335), but MatterGen costs 1.9× more CO₂.
-- **CrystalFlow** achieves the best ICER (0.007 g CO₂/mSUN) — fastest generation (43 s) with minimal energy, though its mSUN (203) is moderate.
-- **CDVAE** has the worst carbon efficiency (ICER 1.288): longest runtime (7+ hours) yet only 210 mSUN.
-- **DiffCSP** offers the best accuracy-efficiency tradeoff among high-mSUN models (273 mSUN, ICER 0.046).
-- CO₂ cost spans **180×** across models (1.48 g for CrystalFlow vs 270 g for CDVAE), while mSUN spans only 3.6×.
 
 ### mSUN vs Carbon Cost
 
@@ -80,22 +57,4 @@ Stability evaluated with MatterSim (meta-stable: e_hull ≤ 0.1 eV/atom). **mSUN
 
 <img src="./results/figures/icer_vs_year.png" alt="ICER vs Year" width="50%">
 
-## Usage
 
-```python
-from MatGen.evaluate import evaluate, METRICS
-
-# Generate structures with your model
-generated_structures = model.generate(num_samples=500)
-
-# Evaluate
-results = evaluate(generated_structures, reference_structures=train_structures)
-print(f"Validity: {results['validity']*100:.2f}%")
-print(f"Uniqueness: {results['uniqueness']*100:.2f}%")
-print(f"Stability: {results['stability']*100:.2f}%")
-print(f"Coverage: {results['coverage']*100:.2f}%")
-```
-
-## Adding a New Model
-
-See `/add-model MatGen <ModelName>` skill or `../.claude/skills/add-model.md`.
