@@ -1,0 +1,38 @@
+{
+  "task": "MLIP_finetune",
+  "model": "CHGNet",
+  "dataset": "MLIP/finetuning_data/dataset_LGPS_n360.xyz",
+  "n_train": 324,
+  "n_val": 36,
+  "epochs": 100,
+  "checkpoint_path": "MLIP/finetuned/CHGNet/checkpoints/bestE.pth.tar",
+  "val_errors": {
+    "energy_mae_eV_atom": 0.002092341108234308,
+    "force_mae_eV_A": 0.06188863205154663
+  },
+  "carbon": {
+    "start_time": "2026-04-03T10:09:33.241342",
+    "end_time": "2026-04-03T10:16:19.484581",
+    "duration_seconds": 406.24323892593384,
+    "energy_wh": 23.38342483689254,
+    "emissions_g_co2": 10.068131081746312,
+    "gpu_energy_wh": 0.0,
+    "cpu_energy_wh": 0.0,
+    "ram_energy_wh": 0.0,
+    "peak_gpu_memory_mb": 4785.2,
+    "peak_cpu_memory_mb": 1505.5,
+    "project_name": "CHGNet_finetune",
+    "model_name": "CHGNet",
+    "task": "finetune",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

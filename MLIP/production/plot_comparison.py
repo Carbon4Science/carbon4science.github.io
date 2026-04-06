@@ -102,20 +102,66 @@ def _order_models(models):
     return ordered
 
 
-def _load_model_accuracy(label, model):
-    """Load accuracy metrics from model's production results JSON."""
+def _get_result_base(variant="pretrained"):
+    """Get result base directory for a variant."""
+    return os.path.join(ROOT, "MLIP", "production", "results", variant)
+
+
+def _get_gt_base(temperature_K=None):
+    """Get ground truth base directory."""
+    if temperature_K is not None:
+        gt = os.path.join(ROOT, "MLIP", "production", "ground_truth", f"{temperature_K}K")
+        if os.path.isdir(gt):
+            return gt
+    return os.path.join(ROOT, "MLIP", "production", "ground_truth")
+
+
+def _load_model_accuracy(label, model, variant="pretrained"):
+    """Load accuracy metrics from model's production results JSON.
+
+    Returns a flat dict with keys like 'rdf_score.average', 'msd_mae', etc.
+    extracted from the accuracy.mean dict.
+    """
     results_path = os.path.join(
-        ROOT, "MLIP", "production", "results", model, f"{label}_results.json"
+        _get_result_base(variant), model, f"{label}_results.json"
     )
     if os.path.exists(results_path):
         with open(results_path) as f:
-            return json.load(f).get("accuracy", {})
+            acc = json.load(f).get("accuracy", {})
+        # New format: accuracy has "mean" and "std" dicts with dotted keys
+        return acc.get("mean", acc)
     return {}
 
 
-def _detect_rdf_pairs(label, models):
+def _compute_rdf_std(result_base, model, label, pair_str):
+    """Compute std of g(r) across per-seed RDF files."""
+    pattern = os.path.join(result_base, model, f"{label}_rdf-*_{pair_str}.csv")
+    seed_files = sorted(glob.glob(pattern))
+    if len(seed_files) < 2:
+        return None
+    g_r_list = []
+    for f in seed_files:
+        data = np.genfromtxt(f, delimiter=",", names=True)
+        g_r_list.append(data["g_r"])
+    return np.std(g_r_list, axis=0, ddof=1)
+
+
+def _compute_msd_std(result_base, model, label):
+    """Compute std of MSD across per-seed MSD files."""
+    pattern = os.path.join(result_base, model, f"{label}_msd-*.csv")
+    seed_files = sorted(glob.glob(pattern))
+    if len(seed_files) < 2:
+        return None
+    msd_list = []
+    for f in seed_files:
+        data = np.genfromtxt(f, delimiter=",", names=True)
+        msd_list.append(data["msd_angstrom2"])
+    return np.std(msd_list, axis=0, ddof=1)
+
+
+def _detect_rdf_pairs(label, models, variant="pretrained"):
     """Auto-detect available RDF pairs from existing result CSV files."""
-    result_base = os.path.join(ROOT, "MLIP", "production", "results")
+    result_base = _get_result_base(variant)
     pairs = []
     for model in models:
         pattern = os.path.join(result_base, model, f"{label}_rdf_*.csv")
@@ -132,15 +178,17 @@ def _detect_rdf_pairs(label, models):
     return pairs
 
 
-def plot_rdf_comparison(config, models, structure_index=0, pair=None, output=None):
+def plot_rdf_comparison(config, models, structure_index=0, pair=None, output=None,
+                        variant="pretrained", errorbars=False):
     """Overlay RDF g(r) for multiple models + AIMD ground truth."""
     struct_cfg = config["structures"][structure_index]
     label = struct_cfg["label"]
+    temp = struct_cfg["temperature_K"]
 
     if pair:
         pairs = [tuple(pair.split("-"))]
     else:
-        pairs = _detect_rdf_pairs(label, models)
+        pairs = _detect_rdf_pairs(label, models, variant=variant)
         if not pairs:
             print("No RDF result files found. Run analysis first.")
             return None
@@ -149,8 +197,8 @@ def plot_rdf_comparison(config, models, structure_index=0, pair=None, output=Non
     fig, axes = plt.subplots(1, n_pairs, figsize=(6 * n_pairs, 5), squeeze=False)
     axes = axes[0]
 
-    result_base = os.path.join(ROOT, "MLIP", "production", "results")
-    gt_base = os.path.join(ROOT, "MLIP", "production", "ground_truth")
+    result_base = _get_result_base(variant)
+    gt_base = _get_gt_base(temp)
 
     for ax, (sp_i, sp_j) in zip(axes, pairs):
         fname = f"{label}_rdf_{sp_i}-{sp_j}.csv"
@@ -169,6 +217,18 @@ def plot_rdf_comparison(config, models, structure_index=0, pair=None, output=Non
                 continue
             data = load_csv(csv_path)
             style = MODEL_STYLES.get(model, {"color": "gray", "ls": "--"})
+
+            if errorbars:
+                # Load per-seed data for std
+                std = _compute_rdf_std(result_base, model, label, f"{sp_i}-{sp_j}")
+                if std is not None:
+                    ax.fill_between(
+                        data["r_angstrom"],
+                        data["g_r"] - std,
+                        data["g_r"] + std,
+                        color=style["color"], alpha=0.15,
+                    )
+
             ax.plot(
                 data["r_angstrom"],
                 data["g_r"],
@@ -196,7 +256,7 @@ def plot_rdf_comparison(config, models, structure_index=0, pair=None, output=Non
         fig_dir = os.path.join(ROOT, "MLIP", "production", "figures")
         os.makedirs(fig_dir, exist_ok=True)
         pair_tag = f"_{pair}" if pair else ""
-        output = os.path.join(fig_dir, f"{label}_rdf{pair_tag}.png")
+        output = os.path.join(fig_dir, f"{label}_rdf{pair_tag}_{variant}.png")
 
     os.makedirs(os.path.dirname(output), exist_ok=True)
     fig.savefig(output, bbox_inches="tight", dpi=200)
@@ -204,17 +264,19 @@ def plot_rdf_comparison(config, models, structure_index=0, pair=None, output=Non
     return fig
 
 
-def plot_msd_comparison(config, models, structure_index=0, output=None):
+def plot_msd_comparison(config, models, structure_index=0, output=None,
+                        variant="pretrained", errorbars=False):
     """Overlay MSD for multiple models + AIMD ground truth."""
     struct_cfg = config["structures"][structure_index]
     label = struct_cfg["label"]
     diff_species = struct_cfg["diffusing_species"]
+    temp = struct_cfg["temperature_K"]
 
     fig, axes = plt.subplots(1, 2, figsize=(14, 5))
     ax_total, ax_xyz = axes
 
-    result_base = os.path.join(ROOT, "MLIP", "production", "results")
-    gt_base = os.path.join(ROOT, "MLIP", "production", "ground_truth")
+    result_base = _get_result_base(variant)
+    gt_base = _get_gt_base(temp)
     fname = f"{label}_msd.csv"
 
     # AIMD ground truth
@@ -244,6 +306,16 @@ def plot_msd_comparison(config, models, structure_index=0, output=None):
         data = load_csv(csv_path)
         data_t_ps = data["t_fs"] / 1000.0
         style = MODEL_STYLES.get(model, {"color": "gray", "ls": "--"})
+
+        if errorbars:
+            std = _compute_msd_std(result_base, model, label)
+            if std is not None:
+                ax_total.fill_between(
+                    data_t_ps,
+                    data["msd_angstrom2"] - std,
+                    data["msd_angstrom2"] + std,
+                    color=style["color"], alpha=0.15,
+                )
 
         ax_total.plot(
             data_t_ps,
@@ -288,7 +360,7 @@ def plot_msd_comparison(config, models, structure_index=0, output=None):
     if output is None:
         fig_dir = os.path.join(ROOT, "MLIP", "production", "figures")
         os.makedirs(fig_dir, exist_ok=True)
-        output = os.path.join(fig_dir, f"{label}_msd.png")
+        output = os.path.join(fig_dir, f"{label}_msd_{variant}.png")
 
     os.makedirs(os.path.dirname(output), exist_ok=True)
     fig.savefig(output, bbox_inches="tight", dpi=200)
@@ -296,7 +368,7 @@ def plot_msd_comparison(config, models, structure_index=0, output=None):
     return fig
 
 
-def plot_rdf_panels(config, models, structure_index=0, output=None):
+def plot_rdf_panels(config, models, structure_index=0, output=None, variant="pretrained"):
     """Per-model RDF panels: 2x4 grid, each subplot shows one model vs AIMD.
 
     All 4 RDF pairs are plotted per panel using pair-specific line styles.
@@ -307,7 +379,7 @@ def plot_rdf_panels(config, models, structure_index=0, output=None):
     rmax = struct_cfg.get("rdf", {}).get("rmax", 8.0)
     temp = struct_cfg["temperature_K"]
 
-    pairs = _detect_rdf_pairs(label, models)
+    pairs = _detect_rdf_pairs(label, models, variant=variant)
     if not pairs:
         print("No RDF result files found. Run analysis first.")
         return None
@@ -320,8 +392,8 @@ def plot_rdf_panels(config, models, structure_index=0, output=None):
         nrows, ncols, figsize=(5 * ncols, 4.5 * nrows), squeeze=False
     )
 
-    result_base = os.path.join(ROOT, "MLIP", "production", "results")
-    gt_base = os.path.join(ROOT, "MLIP", "production", "ground_truth")
+    result_base = _get_result_base(variant)
+    gt_base = _get_gt_base(temp)
 
     for idx, model in enumerate(ordered):
         row, col = divmod(idx, ncols)
@@ -329,9 +401,9 @@ def plot_rdf_panels(config, models, structure_index=0, output=None):
         style = MODEL_STYLES.get(model, {"color": "gray", "ls": "-"})
 
         # Load MAE for annotation
-        acc = _load_model_accuracy(label, model)
-        rdf_mae_avg = acc.get("rdf_mae", {}).get("average")
-        rdf_score_avg = acc.get("rdf_score", {}).get("average")
+        acc = _load_model_accuracy(label, model, variant=variant)
+        rdf_mae_avg = acc.get("rdf_mae.average")
+        rdf_score_avg = acc.get("rdf_score.average")
 
         for sp_i, sp_j in pairs:
             pair_key = f"{sp_i}-{sp_j}"
@@ -398,7 +470,7 @@ def plot_rdf_panels(config, models, structure_index=0, output=None):
     if output is None:
         fig_dir = os.path.join(ROOT, "MLIP", "production", "figures")
         os.makedirs(fig_dir, exist_ok=True)
-        output = os.path.join(fig_dir, f"{label}_rdf_panels.png")
+        output = os.path.join(fig_dir, f"{label}_rdf_panels_{variant}.png")
 
     os.makedirs(os.path.dirname(output), exist_ok=True)
     fig.savefig(output, bbox_inches="tight", dpi=200)
@@ -406,7 +478,7 @@ def plot_rdf_panels(config, models, structure_index=0, output=None):
     return fig
 
 
-def plot_msd_panels(config, models, structure_index=0, output=None):
+def plot_msd_panels(config, models, structure_index=0, output=None, variant="pretrained"):
     """Per-model MSD panels: 2x4 grid, each subplot shows one model vs AIMD.
 
     Each panel shows total MSD: AIMD in black, model in color.
@@ -424,8 +496,8 @@ def plot_msd_panels(config, models, structure_index=0, output=None):
         nrows, ncols, figsize=(5 * ncols, 4.5 * nrows), squeeze=False
     )
 
-    result_base = os.path.join(ROOT, "MLIP", "production", "results")
-    gt_base = os.path.join(ROOT, "MLIP", "production", "ground_truth")
+    result_base = _get_result_base(variant)
+    gt_base = _get_gt_base(temp)
     fname = f"{label}_msd.csv"
 
     # Load AIMD ground truth once
@@ -438,9 +510,10 @@ def plot_msd_panels(config, models, structure_index=0, output=None):
         style = MODEL_STYLES.get(model, {"color": "gray", "ls": "-"})
 
         # Load MAE for annotation
-        acc = _load_model_accuracy(label, model)
+        acc = _load_model_accuracy(label, model, variant=variant)
         msd_mae = acc.get("msd_mae")
         msd_score = acc.get("msd_score")
+
 
         # AIMD
         if gt is not None:
@@ -489,7 +562,7 @@ def plot_msd_panels(config, models, structure_index=0, output=None):
     if output is None:
         fig_dir = os.path.join(ROOT, "MLIP", "production", "figures")
         os.makedirs(fig_dir, exist_ok=True)
-        output = os.path.join(fig_dir, f"{label}_msd_panels.png")
+        output = os.path.join(fig_dir, f"{label}_msd_panels_{variant}.png")
 
     os.makedirs(os.path.dirname(output), exist_ok=True)
     fig.savefig(output, bbox_inches="tight", dpi=200)
@@ -541,6 +614,10 @@ def main():
         default=None,
         help="RDF pair (e.g., Li-S). Only for combined RDF.",
     )
+    parser.add_argument("--variant", default="pretrained", choices=["pretrained", "finetuned"],
+                        help="Model variant: pretrained or finetuned (default: pretrained)")
+    parser.add_argument("--errorbars", action="store_true",
+                        help="Show error bars (std across seeds) on combined plots (default: off)")
     parser.add_argument("--output", "-o", type=str, default=None, help="Output file path")
     parser.add_argument("--structure_index", type=int, default=0)
     args = parser.parse_args()
@@ -560,24 +637,30 @@ def main():
         modes = ["combined", "panels"]
 
     si = args.structure_index
+    v = args.variant
+    eb = args.errorbars
     for prop in props:
         for mode in modes:
             if prop == "rdf" and mode == "combined":
                 plot_rdf_comparison(
                     config, models, structure_index=si,
                     pair=args.pair, output=args.output,
+                    variant=v, errorbars=eb,
                 )
             elif prop == "rdf" and mode == "panels":
                 plot_rdf_panels(
                     config, models, structure_index=si, output=args.output,
+                    variant=v,
                 )
             elif prop == "msd" and mode == "combined":
                 plot_msd_comparison(
                     config, models, structure_index=si, output=args.output,
+                    variant=v, errorbars=eb,
                 )
             elif prop == "msd" and mode == "panels":
                 plot_msd_panels(
                     config, models, structure_index=si, output=args.output,
+                    variant=v,
                 )
 
 

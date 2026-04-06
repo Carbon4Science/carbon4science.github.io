@@ -6,7 +6,7 @@ from typing import List, Dict
 _calculator = None
 
 
-def _get_calculator(device=None):
+def _get_calculator(device=None, checkpoint_path=None):
     global _calculator
     if _calculator is not None:
         return _calculator
@@ -22,10 +22,9 @@ def _get_calculator(device=None):
     from nequix.calculator import NequixCalculator
 
     try:
-        _calculator = NequixCalculator("nequix-mp-1", backend="jax")
+        _calculator = NequixCalculator("nequix-mp-1", backend="torch")
     except ImportError:
-        # Fallback: disable kernel if openequivariance_extjax is not installed
-        _calculator = NequixCalculator("nequix-mp-1", backend="jax", use_kernel=False)
+        _calculator = NequixCalculator("nequix-mp-1", backend="torch", use_kernel=False)
     return _calculator
 
 

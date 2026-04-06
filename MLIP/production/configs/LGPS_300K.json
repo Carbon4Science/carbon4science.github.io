@@ -10,7 +10,7 @@
       "production_ps": 50,
       "traj_interval": 50,
       "nose_frequency": null,
-      "seed": 42,
+      "seeds": [42, 43, 44],
       "rdf": {
         "pairs": "auto",
         "rmax": 4.0,

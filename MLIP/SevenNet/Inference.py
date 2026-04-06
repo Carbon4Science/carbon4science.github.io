@@ -5,9 +5,9 @@ from typing import List, Dict
 _calculator = None
 
 
-def _get_calculator(device=None):
+def _get_calculator(device=None, checkpoint_path=None):
     global _calculator
-    if _calculator is not None:
+    if checkpoint_path is None and _calculator is not None:
         return _calculator
 
     import torch
@@ -16,13 +16,17 @@ def _get_calculator(device=None):
 
     from sevenn.calculator import SevenNetCalculator
 
-    _calculator = SevenNetCalculator(model="7net-l3i5", device=device)
-    return _calculator
+    model = checkpoint_path if checkpoint_path else "7net-l3i5"
+    calc = SevenNetCalculator(model=model, device=device)
+
+    if checkpoint_path is None:
+        _calculator = calc
+    return calc
 
 
-def run_production(config_path, structure_index=0, track_carbon=False):
+def run_production(config_path, structure_index=0, track_carbon=False, checkpoint_path=None):
     """Run production MD (equilibration + production) and return accuracy metrics."""
-    calc = _get_calculator()
+    calc = _get_calculator(checkpoint_path=checkpoint_path)
     from MLIP.production.run_production_md import load_config, run_md_simulation, run_analysis
 
     config = load_config(config_path)

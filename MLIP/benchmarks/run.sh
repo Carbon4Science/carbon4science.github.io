@@ -1,19 +1,31 @@
 #!/bin/bash
+# Run a single MLIP production MD benchmark.
 #
-# Unified benchmark runner that handles conda environments automatically
+# Usage (inside salloc):
+#   srun bash MLIP/benchmarks/run.sh <MODEL> <VARIANT> [--checkpoint PATH]
 #
-# Usage:
-#   ./run.sh --model neuralsym --device cuda:0 --smiles "CCO"
-#   ./run.sh --model LocalRetro --input test.csv --track_carbon
-#   ./run.sh --model all --input test.csv  # Run all models sequentially
-#
+# Examples:
+#   srun bash MLIP/benchmarks/run.sh CHGNet pretrained
+#   srun bash MLIP/benchmarks/run.sh CHGNet finetuned --checkpoint MLIP/finetuned/CHGNet/checkpoints/bestE.pth.tar
+#   srun bash MLIP/benchmarks/run.sh eSEN pretrained
 
 set -e
 
-# Model to conda environment mapping
+MODEL=${1:?"Usage: run.sh MODEL VARIANT [--checkpoint PATH]"}
+VARIANT=${2:?"Usage: run.sh MODEL VARIANT [--checkpoint PATH]"}
+shift 2
+
+CONFIG="MLIP/production/configs/LGPS_300K.json"
+LOGDIR="MLIP/production/logs"
+mkdir -p "$LOGDIR"
+
+# Model-to-conda-env mapping
 declare -A MODEL_ENVS=(
     ["eSEN"]="esen"
+    ["eSEN_OAM"]="esen"
     ["NequIP"]="nequip"
+    ["NequIP_OAM"]="nequip"
+    ["Allegro"]="nequip"
     ["Nequix"]="nequix"
     ["DPA3"]="deepmd"
     ["SevenNet"]="sevennet"
@@ -21,114 +33,70 @@ declare -A MODEL_ENVS=(
     ["ORB"]="orb"
     ["CHGNet"]="chgnet"
     ["PET"]="pet-oam"
-    ["eSEN_OAM"]="esen"
     ["EquFlash"]="equflash"
-    ["NequIP_OAM"]="nequip"
-    ["Allegro"]="nequip"
 )
 
-# Model to task mapping (default: Retro)
-declare -A MODEL_TASK=(
-    ["eSEN"]="MLIP"
-    ["NequIP"]="MLIP"
-    ["Nequix"]="MLIP"
-    ["DPA3"]="MLIP"
-    ["SevenNet"]="MLIP"
-    ["MACE"]="MLIP"
-    ["ORB"]="MLIP"
-    ["CHGNet"]="MLIP"
-    ["PET"]="MLIP"
-    ["eSEN_OAM"]="MLIP"
-    ["EquFlash"]="MLIP"
-    ["NequIP_OAM"]="MLIP"
-    ["Allegro"]="MLIP"
-)
-
-# Parse --model argument
-MODEL=""
-ALL_MODELS=false
-ARGS=()
-
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        --model)
-            if [[ "$2" == "all" ]]; then
-                ALL_MODELS=true
-            else
-                MODEL="$2"
-            fi
-            shift 2
-            ;;
-        *)
-            ARGS+=("$1")
-            shift
-            ;;
-    esac
-done
-
-# Get script directory (MLIP/benchmarks/) and repo root (Carbon4Science/)
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
-
-# Function to run benchmark for a single model
-run_model() {
-    local model=$1
-    local env=${MODEL_ENVS[$model]}
-    local task=${MODEL_TASK[$model]:-Retro}
-
-    if [[ -z "$env" ]]; then
-        echo "Error: Unknown model '$model'"
-        echo "Available models: ${!MODEL_ENVS[@]}"
-        exit 1
-    fi
-
-    echo "=========================================="
-    echo "Running $model (env: $env, task: $task)"
-    echo "=========================================="
-
-    # Activate conda and run
-    eval "$(conda shell.bash hook)"
-    conda activate "$env"
-
-    # Nequix (JAX) needs nvidia pip-installed CUDA libs on LD_LIBRARY_PATH
-    if [ "$env" = "nequix" ]; then
-        NVIDIA_DIR="$CONDA_PREFIX/lib/python3.10/site-packages/nvidia"
-        if [ -d "$NVIDIA_DIR" ]; then
-            for d in "$NVIDIA_DIR"/*/lib; do
-                [ -d "$d" ] && export LD_LIBRARY_PATH="$d:$LD_LIBRARY_PATH"
-            done
-        fi
-    fi
-
-    cd "$ROOT_DIR"
-    python MLIP/benchmarks/run_benchmark.py --task "$task" --model "$model" "${ARGS[@]}"
-
-    conda deactivate
-    echo ""
-}
-
-# Run all models or single model
-if $ALL_MODELS; then
-    echo "Running all models sequentially..."
-    echo ""
-    for model in "${!MODEL_ENVS[@]}"; do
-        run_model "$model" || echo "Warning: $model failed"
-    done
-    echo "Done!"
-else
-    if [[ -z "$MODEL" ]]; then
-        echo "Usage: ./run.sh --model <model_name> [options]"
-        echo ""
-        echo "Models: ${!MODEL_ENVS[@]}"
-        echo ""
-        echo "Options are passed to run_benchmark.py:"
-        echo "  --device cuda:0|cpu"
-        echo "  --task inference|training"
-        echo "  --metric top_1 top_5 top_10"
-        echo "  --smiles \"SMILES\""
-        echo "  --input file.csv"
-        echo "  --track_carbon"
-        exit 1
-    fi
-    run_model "$MODEL"
+ENV=${MODEL_ENVS[$MODEL]}
+if [ -z "$ENV" ]; then
+    echo "ERROR: Unknown model '$MODEL'"
+    echo "Available: ${!MODEL_ENVS[@]}"
+    exit 1
 fi
+
+# Activate conda
+source /home/dgd03153/apps/anaconda3/etc/profile.d/conda.sh
+conda deactivate 2>/dev/null
+conda activate "$ENV"
+
+# Nequix (JAX) needs nvidia pip-installed CUDA libs on LD_LIBRARY_PATH
+# Commented out: switched Nequix to backend="torch" for fair framework comparison
+# if [ "$ENV" = "nequix" ]; then
+#     NVIDIA_DIR="$CONDA_PREFIX/lib/python3.10/site-packages/nvidia"
+#     if [ -d "$NVIDIA_DIR" ]; then
+#         for d in "$NVIDIA_DIR"/*/lib; do
+#             [ -d "$d" ] && export LD_LIBRARY_PATH="$d:$LD_LIBRARY_PATH"
+#         done
+#     fi
+# fi
+
+# Model-specific env vars
+if [ "$MODEL" = "ORB" ]; then
+    export TORCHDYNAMO_DISABLE=1
+fi
+
+# Build command
+CMD="PYTHONUNBUFFERED=1 python MLIP/production/run_production_md.py"
+CMD="$CMD --model $MODEL --config $CONFIG --variant $VARIANT --track_carbon"
+
+# Pass through extra args (e.g. --checkpoint)
+if [ $# -gt 0 ]; then
+    CMD="$CMD $@"
+fi
+
+LOGFILE="${LOGDIR}/${MODEL}_${VARIANT}.log"
+
+echo "=========================================="
+echo "Model:   $MODEL"
+echo "Variant: $VARIANT"
+echo "Env:     $ENV"
+echo "Log:     $LOGFILE"
+echo "CMD:     $CMD"
+echo "Started: $(date)"
+echo "=========================================="
+
+# GPU utilization monitor (every 10s, background)
+GPU_LOG="${LOGDIR}/gpu_monitor_${MODEL}_${VARIANT}.csv"
+while true; do
+    nvidia-smi --query-gpu=index,utilization.gpu,memory.used \
+        --format=csv,noheader,nounits >> "$GPU_LOG" 2>/dev/null
+    sleep 10
+done &
+GPU_MONITOR_PID=$!
+trap "kill $GPU_MONITOR_PID 2>/dev/null" EXIT
+
+eval $CMD 2>&1 | tee "$LOGFILE"
+STATUS=${PIPESTATUS[0]}
+
+echo "Finished $MODEL $VARIANT at $(date) (exit: $STATUS)"
+echo "GPU log: $GPU_LOG"
+exit $STATUS

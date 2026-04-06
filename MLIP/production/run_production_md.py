@@ -47,10 +47,15 @@ def load_config(config_path):
         return json.load(f)
 
 
-def get_calculator(model_name):
-    """Import and return ASE calculator from model's Inference.py."""
+def get_calculator(model_name, checkpoint_path=None):
+    """Import and return ASE calculator from model's Inference.py.
+
+    Args:
+        model_name: Model name (e.g., CHGNet, MACE).
+        checkpoint_path: If provided, loads fine-tuned model from this path.
+    """
     mod = importlib.import_module(f"MLIP.{model_name}.Inference")
-    return mod._get_calculator()
+    return mod._get_calculator(checkpoint_path=checkpoint_path)
 
 
 def resolve_rdf_pairs(struct_cfg, atoms):
@@ -88,7 +93,8 @@ def _import_carbon_tracker():
     return CarbonTracker
 
 
-def run_md_simulation(struct_cfg, calculator=None, model_name=None, track_carbon=False):
+def run_md_simulation(struct_cfg, calculator=None, model_name=None, track_carbon=False,
+                      variant="pretrained", checkpoint_path=None):
     """Run multi-seed equilibration + production MD, saving per-seed production trajectories.
 
     For each seed: equilibrate (no tracking) → start carbon tracker → produce → stop tracker.
@@ -102,6 +108,8 @@ def run_md_simulation(struct_cfg, calculator=None, model_name=None, track_carbon
         calculator: Pre-built ASE calculator. If None, falls back to get_calculator(model_name).
         model_name: Model name (required if calculator is None, used for output paths).
         track_carbon: If True, enables per-seed carbon tracking.
+        variant: 'pretrained' or 'finetuned', determines output directory.
+        checkpoint_path: Path to fine-tuned checkpoint (used when variant='finetuned').
 
     Returns:
         Dict with timing info, per-seed trajectory paths, and averaged carbon_metrics.
@@ -109,10 +117,10 @@ def run_md_simulation(struct_cfg, calculator=None, model_name=None, track_carbon
     if calculator is None:
         if model_name is None:
             raise ValueError("Either calculator or model_name must be provided")
-        calculator = get_calculator(model_name)
+        calculator = get_calculator(model_name, checkpoint_path=checkpoint_path)
 
     label = struct_cfg["label"]
-    traj_dir = os.path.join(ROOT, "MLIP", "production", "trajectories", model_name or "unknown")
+    traj_dir = os.path.join(ROOT, "MLIP", "production", "trajectories", variant, model_name or "unknown")
     os.makedirs(traj_dir, exist_ok=True)
 
     # Load structure template
@@ -216,9 +224,9 @@ def run_md_simulation(struct_cfg, calculator=None, model_name=None, track_carbon
 
     result = {
         "equil_steps": equil_steps,
-        "equil_seconds": round(total_equil_time, 2),
+        "equil_seconds": round(total_equil_time / num_seeds, 2),
         "prod_steps": prod_steps,
-        "prod_seconds": round(total_prod_time, 2),
+        "prod_seconds": round(total_prod_time / num_seeds, 2),
         "num_seeds": num_seeds,
         "seeds": seeds,
         "timestep_fs": timestep_fs,
@@ -230,12 +238,16 @@ def run_md_simulation(struct_cfg, calculator=None, model_name=None, track_carbon
     return result
 
 
-def run_analysis(model_name, struct_cfg, timing=None):
+def run_analysis(model_name, struct_cfg, timing=None, variant="pretrained"):
     """Load per-seed production trajectories, compute per-seed RDF/MSD,
-    then ensemble-average and compare with ground truth."""
+    then ensemble-average and compare with ground truth.
+
+    Stores per-trial accuracy metrics as a list ('trials') in results JSON,
+    along with 'mean' and 'std' computed across trials.
+    """
     label = struct_cfg["label"]
-    traj_dir = os.path.join(ROOT, "MLIP", "production", "trajectories", model_name)
-    result_dir = os.path.join(ROOT, "MLIP", "production", "results", model_name)
+    traj_dir = os.path.join(ROOT, "MLIP", "production", "trajectories", variant, model_name)
+    result_dir = os.path.join(ROOT, "MLIP", "production", "results", variant, model_name)
     os.makedirs(result_dir, exist_ok=True)
 
     seeds = _get_seeds(struct_cfg)
@@ -349,12 +361,37 @@ def run_analysis(model_name, struct_cfg, timing=None):
                delimiter=",", header="t_fs,msd_angstrom2,msd_x,msd_y,msd_z", comments="")
     print(f"  Ensemble-average MSD: {csv_path}")
 
-    # --- Accuracy metrics (compare ensemble averages vs ground truth) ---
-    accuracy = compute_accuracy_metrics(model_name, struct_cfg)
+    # --- Per-seed accuracy metrics (each seed vs GT ensemble average) ---
+    gt_dir = os.path.join(ROOT, "MLIP", "production", "ground_truth",
+                          f"{struct_cfg['temperature_K']}K")
+    if not os.path.isdir(gt_dir):
+        gt_dir = os.path.join(ROOT, "MLIP", "production", "ground_truth")
 
-    # --- Save results JSON ---
+    trials = []
+    for idx in available_indices:
+        seed = _get_seeds(struct_cfg)[idx - 1]
+        trial_accuracy = _compute_per_seed_accuracy(
+            result_dir, gt_dir, label, idx, pairs, diff_species, struct_cfg,
+        )
+        trials.append({"seed": seed, "index": idx, "accuracy": trial_accuracy})
+
+    # --- Mean/std across seeds → final accuracy ---
+    mean_std = _compute_mean_std(trials)
+    accuracy = {}
+    if mean_std:
+        accuracy["mean"] = mean_std["mean"]
+        accuracy["std"] = mean_std["std"]
+
+        # Print summary
+        for key in sorted(mean_std["mean"].keys()):
+            m = mean_std["mean"][key]
+            s = mean_std["std"][key]
+            print(f"    {key}: {m:.6f} ± {s:.6f}")
+
+    # Return analysis results (JSON saving is done by run_benchmark.py)
     results = {
         "model": model_name,
+        "variant": variant,
         "structure": struct_cfg["label"],
         "temperature_K": struct_cfg["temperature_K"],
         "equilibration_ps": struct_cfg["equilibration_ps"],
@@ -363,16 +400,11 @@ def run_analysis(model_name, struct_cfg, timing=None):
         "traj_interval": traj_interval,
         "num_seeds": len(available_indices),
         "seeds": [_get_seeds(struct_cfg)[i - 1] for i in available_indices],
+        "trials": trials,
+        "accuracy": accuracy,
     }
-    if accuracy:
-        results["accuracy"] = accuracy
     if timing:
         results["timing"] = timing
-
-    json_path = os.path.join(result_dir, f"{label}_results.json")
-    with open(json_path, "w") as f:
-        json.dump(results, f, indent=2)
-    print(f"  Results JSON: {json_path}")
 
     return results
 
@@ -451,8 +483,9 @@ def _load_ensemble_avg_msd(directory, label, write=False):
             if t_fs is None:
                 t_fs = data["t_fs"]
             msd_list.append(data["msd_angstrom2"])
-            if all(c in data.dtype.names for c in ("msd_x", "msd_y", "msd_z")):
-                msd_xyz_list.append(np.column_stack([data["msd_x"], data["msd_y"], data["msd_z"]]))
+            xyz_keys = [k for k in ("msd_x", "msd_y", "msd_z") if k in data.dtype.names]
+            if len(xyz_keys) == 3:
+                msd_xyz_list.append(np.column_stack([data[k] for k in xyz_keys]))
         avg_msd = np.mean(msd_list, axis=0) if len(msd_list) > 1 else msd_list[0]
 
         if write and len(seed_files) > 1:
@@ -479,100 +512,86 @@ def _load_ensemble_avg_msd(directory, label, write=False):
     return None
 
 
-def compute_accuracy_metrics(model_name, struct_cfg):
-    """Compare ensemble-averaged MLIP results against ensemble-averaged ground truth.
-
-    Both MLIP results and ground truth may have per-seed files ({label}_rdf-{idx}_{pair}.csv)
-    or single ensemble-averaged files ({label}_rdf_{pair}.csv). Per-seed files are
-    averaged automatically before comparison.
-
-    Returns accuracy metrics dict, or empty dict if ground truth not found.
-    """
-    label = struct_cfg["label"]
-    result_dir = os.path.join(ROOT, "MLIP", "production", "results", model_name)
-    gt_dir = os.path.join(ROOT, "MLIP", "production", "ground_truth")
-
-    if not os.path.isdir(gt_dir):
-        print("  No ground_truth directory found, skipping accuracy metrics.")
-        return {}
-
+def _compute_per_seed_accuracy(result_dir, gt_dir, label, idx, pairs, diff_species, struct_cfg):
+    """Compute accuracy metrics for a single seed by comparing per-seed CSV vs ground truth."""
     accuracy = {}
 
-    # --- RDF MAE per pair ---
+    if not os.path.isdir(gt_dir):
+        return accuracy
+
+    # Per-seed RDF MAE
     rdf_maes = {}
-    rdf_scores = {}
-    import glob as globmod
+    for sp_i, sp_j in pairs:
+        pair_str = f"{sp_i}-{sp_j}"
+        pred_path = os.path.join(result_dir, f"{label}_rdf-{idx}_{pair_str}.csv")
+        if not os.path.exists(pred_path):
+            continue
+        pred = np.genfromtxt(pred_path, delimiter=",", names=True)
 
-    # Discover pairs from MLIP result files (ensemble-averaged: {label}_rdf_{pair}.csv)
-    rdf_pattern = os.path.join(result_dir, f"{label}_rdf_*.csv")
-    rdf_files = sorted(globmod.glob(rdf_pattern))
-    rdf_files = [f for f in rdf_files if not os.path.basename(f).startswith(f"{label}_rdf-")]
-
-    for rdf_file in rdf_files:
-        fname = os.path.basename(rdf_file)
-        pair_str = fname.replace(f"{label}_rdf_", "").replace(".csv", "")
-
-        # Load MLIP ensemble average (already written by run_analysis, read directly)
-        pred = np.genfromtxt(rdf_file, delimiter=",", names=True)
-        pred_r, pred_g_r = pred["r_angstrom"], pred["g_r"]
-
-        # Load ground truth ensemble average (write averaged file if not exists)
-        gt_data = _load_ensemble_avg_rdf(gt_dir, label, pair_str, write=True)
+        gt_data = _load_ensemble_avg_rdf(gt_dir, label, pair_str)
         if gt_data is None:
-            print(f"  No ground truth for {pair_str}, skipping RDF MAE.")
             continue
         gt_r, gt_g_r = gt_data
 
-        mae = compute_rdf_mae(pred_r, pred_g_r, gt_r, gt_g_r)
+        mae = compute_rdf_mae(pred["r_angstrom"], pred["g_r"], gt_r, gt_g_r)
         if mae is not None:
             rdf_maes[pair_str] = round(mae, 6)
-            rdf_scores[pair_str] = round(1 / (1 + mae), 6)
-            print(f"    RDF MAE ({pair_str}): {mae:.6f}")
 
     if rdf_maes:
-        rdf_maes["average"] = round(
-            sum(rdf_maes.values()) / len(rdf_maes), 6
-        )
-        rdf_scores["average"] = round(
-            sum(rdf_scores.values()) / len(rdf_scores), 6
-        )
+        rdf_maes["average"] = round(sum(rdf_maes.values()) / len(rdf_maes), 6)
         accuracy["rdf_mae"] = rdf_maes
-        accuracy["rdf_score"] = rdf_scores
+        accuracy["rdf_score"] = {k: round(1 / (1 + v), 6) for k, v in rdf_maes.items()}
 
-    # --- MSD MAE ---
-    msd_pred_path = os.path.join(result_dir, f"{label}_msd.csv")
-    gt_msd_data = _load_ensemble_avg_msd(gt_dir, label, write=True)
+    # Per-seed MSD MAE
+    msd_path = os.path.join(result_dir, f"{label}_msd-{idx}.csv")
+    gt_msd_data = _load_ensemble_avg_msd(gt_dir, label)
 
-    if os.path.exists(msd_pred_path) and gt_msd_data is not None:
-        pred_msd_raw = np.genfromtxt(msd_pred_path, delimiter=",", names=True)
-        pred_t, pred_msd = pred_msd_raw["t_fs"], pred_msd_raw["msd_angstrom2"]
-        gt_t, gt_msd = gt_msd_data
-
-        mae = compute_msd_mae(pred_t, pred_msd, gt_t, gt_msd)
+    if os.path.exists(msd_path) and gt_msd_data is not None:
+        pred_msd_raw = np.genfromtxt(msd_path, delimiter=",", names=True)
+        mae = compute_msd_mae(pred_msd_raw["t_fs"], pred_msd_raw["msd_angstrom2"],
+                              gt_msd_data[0], gt_msd_data[1])
         if mae is not None:
             accuracy["msd_mae"] = round(mae, 6)
             accuracy["msd_score"] = round(1 / (1 + mae), 6)
-            print(f"    MSD MAE: {mae:.6f}")
 
-        # Diffusivity comparison
-        d_mlip = compute_diffusivity(pred_t, pred_msd)
-        d_aimd = compute_diffusivity(gt_t, gt_msd)
-
+        d_mlip = compute_diffusivity(pred_msd_raw["t_fs"], pred_msd_raw["msd_angstrom2"])
         if d_mlip is not None:
             accuracy["diffusivity_mlip_cm2s"] = d_mlip
-            print(f"    Diffusivity (MLIP): {d_mlip:.4e} cm^2/s")
-        if d_aimd is not None:
-            accuracy["diffusivity_aimd_cm2s"] = d_aimd
-            print(f"    Diffusivity (AIMD): {d_aimd:.4e} cm^2/s")
-        if d_mlip is not None and d_aimd is not None and d_aimd != 0:
-            rel_err = abs(d_mlip - d_aimd) / abs(d_aimd)
-            accuracy["diffusivity_relative_error"] = round(rel_err, 6)
-            print(f"    Diffusivity relative error: {rel_err:.4f}")
-    else:
-        if gt_msd_data is None:
-            print("  No ground truth MSD found, skipping MSD accuracy metrics.")
 
     return accuracy
+
+
+def _compute_mean_std(trials):
+    """Compute mean and std of accuracy metrics across trials."""
+    if not trials or not any(t["accuracy"] for t in trials):
+        return {}
+
+    # Collect all numeric metric paths
+    from collections import defaultdict
+    values = defaultdict(list)
+
+    for trial in trials:
+        acc = trial.get("accuracy", {})
+        for key, val in acc.items():
+            if isinstance(val, dict):
+                for subkey, subval in val.items():
+                    if isinstance(subval, (int, float)):
+                        values[f"{key}.{subkey}"].append(subval)
+            elif isinstance(val, (int, float)):
+                values[key].append(val)
+
+    mean = {}
+    std = {}
+    for path, vals in values.items():
+        if len(vals) >= 2:
+            mean[path] = round(float(np.mean(vals)), 6)
+            std[path] = round(float(np.std(vals, ddof=1)), 6)
+        elif len(vals) == 1:
+            mean[path] = round(vals[0], 6)
+            std[path] = 0.0
+
+    return {"mean": mean, "std": std} if mean else {}
+
 
 
 def main():
@@ -587,10 +606,15 @@ def main():
         default=0,
         help="Index of structure in config (default: 0)",
     )
+    parser.add_argument("--variant", default="pretrained", choices=["pretrained", "finetuned"],
+                        help="Model variant: pretrained or finetuned (default: pretrained)")
+    parser.add_argument("--checkpoint", default=None,
+                        help="Path to fine-tuned checkpoint (required when variant=finetuned)")
     parser.add_argument("--skip_md", action="store_true", help="Skip MD, re-run analysis only")
     parser.add_argument(
         "--skip_analysis", action="store_true", help="Run MD only, skip analysis"
     )
+    parser.add_argument("--track_carbon", action="store_true", help="Track carbon emissions")
     args = parser.parse_args()
 
     config = load_config(args.config)
@@ -598,6 +622,9 @@ def main():
 
     seeds = _get_seeds(struct_cfg)
     print(f"Model: {args.model}")
+    print(f"Variant: {args.variant}")
+    if args.checkpoint:
+        print(f"Checkpoint: {args.checkpoint}")
     print(f"Structure: {struct_cfg['label']} ({struct_cfg['cif']})")
     print(f"Temperature: {struct_cfg['temperature_K']} K")
     print(f"Equilibration: {struct_cfg['equilibration_ps']} ps")
@@ -608,7 +635,10 @@ def main():
 
     md_info = None
     if not args.skip_md:
-        md_info = run_md_simulation(struct_cfg, model_name=args.model)
+        md_info = run_md_simulation(
+            struct_cfg, model_name=args.model, track_carbon=args.track_carbon,
+            variant=args.variant, checkpoint_path=args.checkpoint,
+        )
         print()
 
     timing = None
@@ -620,7 +650,7 @@ def main():
         }
 
     if not args.skip_analysis:
-        run_analysis(args.model, struct_cfg, timing=timing)
+        run_analysis(args.model, struct_cfg, timing=timing, variant=args.variant)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,35 @@
+{
+  "task": "MLIP_finetune",
+  "model": "SevenNet",
+  "dataset": "MLIP/finetuning_data/dataset_LGPS_n360.xyz",
+  "n_train": 324,
+  "n_val": 36,
+  "epochs": 100,
+  "checkpoint_path": "MLIP/finetuned/SevenNet/checkpoint_best.pth",
+  "val_errors": {},
+  "carbon": {
+    "start_time": "2026-04-03T10:16:23.173499",
+    "end_time": "2026-04-03T10:59:37.809826",
+    "duration_seconds": 2594.6363270282745,
+    "energy_wh": 189.90044289005976,
+    "emissions_g_co2": 81.76486399384436,
+    "gpu_energy_wh": 0.0,
+    "cpu_energy_wh": 0.0,
+    "ram_energy_wh": 0.0,
+    "peak_gpu_memory_mb": 0.0,
+    "peak_cpu_memory_mb": 469.9,
+    "project_name": "SevenNet_finetune",
+    "model_name": "SevenNet",
+    "task": "finetune",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

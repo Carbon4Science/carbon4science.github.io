@@ -65,6 +65,7 @@ Thumbs.db
 *.hdf5
 *.lmdb
 *.mdb
+*.tgz
 
 # Exception: allow test data in task data directories
 !Retro/data/*.pickle
@@ -91,3 +92,5 @@ emissions.csv
 # GPU monitor_files
 gpu_monitor*.csv
 plot_gpu.py
+
+

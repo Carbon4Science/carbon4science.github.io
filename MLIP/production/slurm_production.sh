@@ -10,16 +10,24 @@
 #SBATCH --gres=gpu:5000ada:1     # 1 GPU
 
 # Usage:
+#   # Pretrained models (default)
 #   sbatch --job-name=CHGNet_prod MLIP/production/slurm_production.sh CHGNet
-#   sbatch --job-name=MACE_prod MLIP/production/slurm_production.sh MACE --skip_md
 #   sbatch --job-name=all_prod MLIP/production/slurm_production.sh all
+#
+#   # Fine-tuned models
+#   VARIANT=finetuned sbatch --job-name=ft_CHGNet_prod MLIP/production/slurm_production.sh CHGNet
+#   VARIANT=finetuned sbatch --job-name=ft_all_prod MLIP/production/slurm_production.sh all
+#
+#   # Custom config
+#   CONFIG=MLIP/production/configs/LGPS_300K.json sbatch ... MLIP/production/slurm_production.sh CHGNet
 
 MODEL=${1:?Usage: sbatch MLIP/production/slurm_production.sh MODEL_NAME [extra args...]}
 shift
 EXTRA_ARGS="$@"
 
-# Default config
-CONFIG="${CONFIG:-MLIP/production/configs/LGPS_600K.json}"
+# Default config and variant
+CONFIG="${CONFIG:-MLIP/production/configs/LGPS_300K.json}"
+VARIANT="${VARIANT:-pretrained}"
 
 echo "=============================================="
 echo "SUBMIT_DATE           = $(date)"
@@ -29,11 +37,16 @@ echo "SLURM_JOB_PARTITION   = $SLURM_JOB_PARTITION"
 echo "SLURM_JOB_NODELIST    = $SLURM_JOB_NODELIST"
 echo "MODEL                 = $MODEL"
 echo "CONFIG                = $CONFIG"
+echo "VARIANT               = $VARIANT"
 echo "EXTRA_ARGS            = $EXTRA_ARGS"
 echo "working directory     = $SLURM_SUBMIT_DIR"
 echo "=============================================="
 
 cd $SLURM_SUBMIT_DIR
+
+# CUDA_HOME for NequIP/Allegro AOTInductor compilation
+module load cuda/12.6.3
+export CUDA_HOME=/HL9/HCom/cuda/12.6.3
 
 # Model-to-conda-env mapping
 declare -A MODEL_ENVS=(
@@ -52,6 +65,23 @@ declare -A MODEL_ENVS=(
     ["Allegro"]="nequip"
 )
 
+# Fine-tuned model checkpoint paths
+declare -A FT_CHECKPOINTS=(
+    ["CHGNet"]="MLIP/finetuned/CHGNet/checkpoints/bestE.pth.tar"
+    ["MACE"]="MLIP/finetuned/MACE/MACE_finetuned.model"
+    ["SevenNet"]="MLIP/finetuned/SevenNet/checkpoint_best.pth"
+    ["ORB"]="MLIP/finetuned/ORB/best_checkpoint.pt"
+    ["PET"]="MLIP/finetuned/PET/model.pt"
+    ["NequIP"]="MLIP/finetuned/NequIP/NequIP_finetuned.nequip.pt2"
+    ["Allegro"]="MLIP/finetuned/Allegro/Allegro_finetuned.nequip.pt2"
+    ["EquFlash"]="MLIP/finetuned/EquFlash/checkpoint_best.pth"
+)
+
+# Pretrained models list
+PRETRAINED_MODELS="eSEN eSEN_OAM NequIP NequIP_OAM Allegro Nequix DPA3 SevenNet MACE ORB CHGNet PET EquFlash"
+# Fine-tuned models list (no DPA3)
+FINETUNED_MODELS="CHGNet MACE SevenNet ORB PET NequIP Allegro EquFlash"
+
 run_single_model() {
     local model=$1
     local env=${MODEL_ENVS[$model]}
@@ -65,7 +95,7 @@ run_single_model() {
     echo "Conda env: $env"
 
     # Activate conda
-    source /home/hakcile/apps/miniconda3/etc/profile.d/conda.sh
+    source /home/dgd03153/apps/anaconda3/etc/profile.d/conda.sh
     conda activate "$env"
 
     # Model-specific environment variables
@@ -73,20 +103,43 @@ run_single_model() {
         export TORCHDYNAMO_DISABLE=1
     fi
 
-    PYTHONUNBUFFERED=1 python MLIP/production/run_production_md.py \
-        --model "$model" \
-        --config "$CONFIG" \
-        $EXTRA_ARGS
+    # Build command
+    local cmd="PYTHONUNBUFFERED=1 python MLIP/production/run_production_md.py"
+    cmd="$cmd --model $model --config $CONFIG --variant $VARIANT"
+
+    # Add checkpoint for fine-tuned models
+    if [ "$VARIANT" = "finetuned" ]; then
+        local ckpt_pattern=${FT_CHECKPOINTS[$model]}
+        local ckpt=$(ls -1 $ckpt_pattern 2>/dev/null | head -1)
+        if [ -z "$ckpt" ]; then
+            echo "ERROR: Checkpoint not found for $model: $ckpt_pattern"
+            return 1
+        fi
+        echo "Checkpoint: $ckpt"
+        cmd="$cmd --checkpoint $ckpt"
+    fi
+
+    cmd="$cmd $EXTRA_ARGS"
+    echo "CMD: $cmd"
+    eval $cmd
 
     echo "Finished $model at $(date)"
 }
 
 if [ "$MODEL" = "all" ]; then
-    echo "Running all MLIP models sequentially..."
-    for model in CHGNet MACE SevenNet DPA3 ORB NequIP Nequix eSEN; do
-        run_single_model "$model" || echo "Warning: $model failed"
-        echo ""
-    done
+    if [ "$VARIANT" = "finetuned" ]; then
+        echo "Running all fine-tuned MLIP models sequentially..."
+        for model in $FINETUNED_MODELS; do
+            run_single_model "$model" || echo "Warning: $model failed"
+            echo ""
+        done
+    else
+        echo "Running all pretrained MLIP models sequentially..."
+        for model in $PRETRAINED_MODELS; do
+            run_single_model "$model" || echo "Warning: $model failed"
+            echo ""
+        done
+    fi
 else
     run_single_model "$MODEL"
 fi

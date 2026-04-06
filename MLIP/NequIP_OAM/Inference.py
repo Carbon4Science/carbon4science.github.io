@@ -6,7 +6,7 @@ from typing import List, Dict
 _calculator = None
 
 
-def _get_calculator(device=None):
+def _get_calculator(device=None, checkpoint_path=None):
     global _calculator
     if _calculator is not None:
         return _calculator

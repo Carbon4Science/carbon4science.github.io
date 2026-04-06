@@ -6,21 +6,28 @@ from typing import List, Dict
 _calculator = None
 
 
-def _get_calculator(device=None):
+def _get_calculator(device=None, checkpoint_path=None):
     global _calculator
-    if _calculator is not None:
+    if checkpoint_path is None and _calculator is not None:
         return _calculator
 
     from deepmd.calculator import DP
 
-    model_path = os.path.join(os.path.dirname(__file__), "dpa-3.1-mptrj.pth")
-    _calculator = DP(model=model_path)
-    return _calculator
+    if checkpoint_path:
+        model_path = checkpoint_path
+    else:
+        model_path = os.path.join(os.path.dirname(__file__), "dpa-3.1-mptrj.pth")
+
+    calc = DP(model=model_path)
+
+    if checkpoint_path is None:
+        _calculator = calc
+    return calc
 
 
-def run_production(config_path, structure_index=0, track_carbon=False):
+def run_production(config_path, structure_index=0, track_carbon=False, checkpoint_path=None):
     """Run production MD (equilibration + production) and return accuracy metrics."""
-    calc = _get_calculator()
+    calc = _get_calculator(checkpoint_path=checkpoint_path)
     from MLIP.production.run_production_md import load_config, run_md_simulation, run_analysis
 
     config = load_config(config_path)

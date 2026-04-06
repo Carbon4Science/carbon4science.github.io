@@ -5,7 +5,7 @@ from typing import List, Dict
 _calculator = None
 
 
-def _get_calculator(device=None):
+def _get_calculator(device=None, checkpoint_path=None):
     global _calculator
     if _calculator is not None:
         return _calculator
@@ -17,11 +17,11 @@ def _get_calculator(device=None):
     from huggingface_hub import hf_hub_download
     from fairchem.core import OCPCalculator
 
-    checkpoint_path = hf_hub_download(
+    ckpt = checkpoint_path or hf_hub_download(
         repo_id="facebook/OMAT24", filename="esen_30m_mptrj.pt"
     )
     _calculator = OCPCalculator(
-        checkpoint_path=checkpoint_path,
+        checkpoint_path=ckpt,
         cpu=(device == "cpu"),
     )
     return _calculator

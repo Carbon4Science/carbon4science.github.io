@@ -5,24 +5,32 @@ from typing import List, Dict
 _calculator = None
 
 
-def _get_calculator(device=None):
+def _get_calculator(device=None, checkpoint_path=None):
     global _calculator
-    if _calculator is not None:
+    if checkpoint_path is None and _calculator is not None:
         return _calculator
 
     import torch
     if device is None:
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    from mace.calculators import mace_mp
+    if checkpoint_path:
+        from mace.calculators import MACECalculator
+        calc = MACECalculator(
+            model_paths=checkpoint_path, device=device, default_dtype="float64"
+        )
+    else:
+        from mace.calculators import mace_mp
+        calc = mace_mp(model="medium", device=device, default_dtype="float64")
 
-    _calculator = mace_mp(model="medium", device=device, default_dtype="float64")
-    return _calculator
+    if checkpoint_path is None:
+        _calculator = calc
+    return calc
 
 
-def run_production(config_path, structure_index=0, track_carbon=False):
+def run_production(config_path, structure_index=0, track_carbon=False, checkpoint_path=None):
     """Run production MD (equilibration + production) and return accuracy metrics."""
-    calc = _get_calculator()
+    calc = _get_calculator(checkpoint_path=checkpoint_path)
     from MLIP.production.run_production_md import load_config, run_md_simulation, run_analysis
 
     config = load_config(config_path)

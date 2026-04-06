@@ -43,6 +43,10 @@ echo "=============================================="
 source /home/dgd03153/apps/anaconda3/etc/profile.d/conda.sh
 conda activate nequip
 
+# CUDA_HOME is required for AOTInductor C++ compilation
+module load cuda/12.6.3
+export CUDA_HOME=/HL9/HCom/cuda/12.6.3
+
 MLIP_DIR="MLIP"
 
 # Model ID → output path mapping

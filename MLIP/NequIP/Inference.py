@@ -6,9 +6,9 @@ from typing import List, Dict
 _calculator = None
 
 
-def _get_calculator(device=None):
+def _get_calculator(device=None, checkpoint_path=None):
     global _calculator
-    if _calculator is not None:
+    if checkpoint_path is None and _calculator is not None:
         return _calculator
 
     import torch
@@ -17,26 +17,43 @@ def _get_calculator(device=None):
 
     from nequip.ase import NequIPCalculator
 
-    # Try compiled model first, fall back to saved model
-    compiled_path = os.path.join(os.path.dirname(__file__), "NequIP-MP-L.nequip.pt2")
-    if os.path.exists(compiled_path):
-        _calculator = NequIPCalculator.from_compiled_model(
-            compile_path=compiled_path,
-            device=device,
-            chemical_species_to_atom_type_map=True,
-        )
+    if checkpoint_path:
+        if checkpoint_path.endswith(".pt2"):
+            calc = NequIPCalculator.from_compiled_model(
+                compile_path=checkpoint_path,
+                device=device,
+                chemical_species_to_atom_type_map=True,
+            )
+        else:
+            calc = NequIPCalculator._from_saved_model(
+                model_path=checkpoint_path,
+                device=device,
+                chemical_species_to_atom_type_map=True,
+            )
     else:
-        _calculator = NequIPCalculator._from_saved_model(
-            model_path="nequip.net:mir-group/NequIP-MP-L:0.1",
-            device=device,
-            chemical_species_to_atom_type_map=True,
-        )
-    return _calculator
+        # Try compiled model first, fall back to saved model
+        compiled_path = os.path.join(os.path.dirname(__file__), "NequIP-MP-L.nequip.pt2")
+        if os.path.exists(compiled_path):
+            calc = NequIPCalculator.from_compiled_model(
+                compile_path=compiled_path,
+                device=device,
+                chemical_species_to_atom_type_map=True,
+            )
+        else:
+            calc = NequIPCalculator._from_saved_model(
+                model_path="nequip.net:mir-group/NequIP-MP-L:0.1",
+                device=device,
+                chemical_species_to_atom_type_map=True,
+            )
+
+    if checkpoint_path is None:
+        _calculator = calc
+    return calc
 
 
-def run_production(config_path, structure_index=0, track_carbon=False):
+def run_production(config_path, structure_index=0, track_carbon=False, checkpoint_path=None):
     """Run production MD (equilibration + production) and return accuracy metrics."""
-    calc = _get_calculator()
+    calc = _get_calculator(checkpoint_path=checkpoint_path)
     from MLIP.production.run_production_md import load_config, run_md_simulation, run_analysis
 
     config = load_config(config_path)

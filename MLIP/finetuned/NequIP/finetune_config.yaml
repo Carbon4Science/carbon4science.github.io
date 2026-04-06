@@ -1,0 +1,61 @@
+run:
+- train
+seed: 42
+cutoff_radius: 5.0
+model_type_names: ${type_names_from_package:/home/dgd03153/.nequip/model_cache/eac1738e669eebea42129ba64633dc7d228409bf6303074fb8b31c89d1fecaad.nequip.zip}
+chemical_species: ${model_type_names}
+dataloader:
+  _target_: torch.utils.data.DataLoader
+  batch_size: 5
+data:
+  _target_: nequip.data.datamodule.ASEDataModule
+  seed: ${seed}
+  train_file_path: /home/dgd03153/Carbon4Science/MLIP/finetuned/NequIP/train.extxyz
+  val_file_path: /home/dgd03153/Carbon4Science/MLIP/finetuned/NequIP/val.extxyz
+  transforms:
+  - _target_: nequip.data.transforms.ChemicalSpeciesToAtomTypeMapper
+    model_type_names: ${model_type_names}
+    chemical_species_to_atom_type_map: ${list_to_identity_dict:${chemical_species}}
+  - _target_: nequip.data.transforms.NeighborListTransform
+    r_max: ${cutoff_radius}
+  ase_args:
+    format: extxyz
+  train_dataloader: ${dataloader}
+  val_dataloader: ${dataloader}
+  stats_manager:
+    _target_: nequip.data.CommonDataStatisticsManager
+    type_names: ${model_type_names}
+trainer:
+  _target_: lightning.Trainer
+  max_epochs: 100
+  check_val_every_n_epoch: 1
+  log_every_n_steps: 5
+  callbacks:
+  - _target_: lightning.pytorch.callbacks.ModelCheckpoint
+    monitor: val0_epoch/weighted_sum
+    dirpath: ${hydra:runtime.output_dir}
+    filename: best
+    save_last: true
+training_module:
+  _target_: nequip.train.EMALightningModule
+  model:
+    _target_: nequip.model.ModelFromPackage
+    package_path: /home/dgd03153/.nequip/model_cache/eac1738e669eebea42129ba64633dc7d228409bf6303074fb8b31c89d1fecaad.nequip.zip
+    compile_mode: eager
+  loss:
+    _target_: nequip.train.EnergyForceStressLoss
+    per_atom_energy: true
+    coeffs:
+      total_energy: 1.0
+      forces: 1.0
+      stress: 1.0
+  val_metrics:
+    _target_: nequip.train.EnergyForceStressMetrics
+    coeffs:
+      total_energy_mae: 1.0
+      forces_mae: 1.0
+      stress_mae: 1.0
+  test_metrics: ${training_module.val_metrics}
+  optimizer:
+    _target_: torch.optim.Adam
+    lr: 0.0001

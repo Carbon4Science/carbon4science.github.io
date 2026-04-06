@@ -1,0 +1,69 @@
+data:
+  batch_size: 16
+  data_format_args:
+    index: ':'
+  load_trainset_path:
+  - /home/dgd03153/Carbon4Science/MLIP/finetuned/SevenNet/train.extxyz
+  load_validset_path:
+  - /home/dgd03153/Carbon4Science/MLIP/finetuned/SevenNet/val.extxyz
+  scale: force_rms
+  shift: elemwise_reference_energies
+model:
+  channel: 128
+  chemical_species: auto
+  cutoff: 5.0
+  cutoff_function:
+    cutoff_function_name: poly_cut
+    poly_cut_p_value: 6
+  irreps_manual:
+  - 128x0e
+  - 128x0e+64x1e+32x2e+32x3e
+  - 128x0e+64x1e+32x2e+32x3e
+  - 128x0e+64x1e+32x2e+32x3e
+  - 128x0e+64x1e+32x2e+32x3e
+  - 128x0e
+  is_parity: false
+  lmax: 3
+  num_convolution_layer: 5
+  radial_basis:
+    bessel_basis_num: 8
+    radial_basis_name: bessel
+  self_connection_type: linear
+  train_denominator: false
+  train_shift_scale: true
+  weight_nn_hidden_neurons:
+  - 64
+  - 64
+train:
+  continue:
+    checkpoint: 7net-l3i5
+    reset_epoch: true
+    reset_optimizer: true
+    reset_scheduler: true
+    use_statistic_values_of_checkpoint: true
+  epoch: 100
+  error_record:
+  - - Energy
+    - RMSE
+  - - Force
+    - RMSE
+  - - Stress
+    - RMSE
+  - - TotalLoss
+    - None
+  force_loss_weight: 1.0
+  is_train_stress: true
+  loss: Huber
+  loss_param:
+    delta: 0.01
+  optim_param:
+    lr: 0.0001
+  optimizer: adam
+  per_epoch: 10
+  random_seed: 1
+  scheduler: linearlr
+  scheduler_param:
+    end_factor: 1.0e-06
+    start_factor: 1.0
+    total_iters: 100
+  stress_loss_weight: 0.01
