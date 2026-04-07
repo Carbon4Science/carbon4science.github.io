@@ -34,7 +34,7 @@ All models are trained on [ChEMBL 28](https://ftp.ebi.ac.uk/pub/databases/chembl
 | DiGress | 2023 | ICML | 16.2M | `carbon-digress` |
 | REINVENT4 | 2024 | J. Cheminf. | 5.8M | `carbon-reinvent` |
 | SmileyLlama | 2024 | arXiv | 8.0B | `carbon-smileyLlama` |
-| DeFoG | 2024 | NeurIPS | TBD | `carbon-defog` |
+| DeFoG | 2024 | NeurIPS | 16.3M | `carbon-defog` |
 
 ## Results
 
@@ -49,7 +49,7 @@ All models are trained on [ChEMBL 28](https://ftp.ebi.ac.uk/pub/databases/chembl
 | DiGress | 0.8019 | 1.0000 | 0.9958 | 79.85 | 1.770 | 391.99 | 910.41 | +3.606 | +4.348 |
 | **REINVENT4** | **0.9860** | **0.9997** | **0.9604** | **94.67** | **0.241** | **0.09** | **0.21** | **−0.100** | **−0.149** |
 | SmileyLlama | 0.9427 | 0.9998 | 0.9980 | 94.06 | 2.410 | 22.67 | 56.68 | +2.297 | +3.244 |
-| DeFoG | — | — | — | — | — | — | — | — | — |
+| DeFoG | 1.0000 | 0.9826 | 0.9920 | 97.47 | 1.235 | 571.96 | 1429.91 | +3.684 | +4.356 |
 
 **ICER** (Incremental Carbon-Effectiveness Ratio) = log<sub>10</sub>((c<sub>i</sub>/c<sub>o</sub>) / (m<sub>i</sub>/m<sub>o</sub>)), where the reference (o) is REINVENT (2017). Lower is more carbon-efficient; negative means better performance with less carbon. For FCD (lower=better), m<sub>i</sub>/m<sub>o</sub> is inverted to FCD<sub>o</sub>/FCD<sub>i</sub>.
 
