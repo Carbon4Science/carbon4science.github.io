@@ -6,7 +6,7 @@ model_type_names: ${type_names_from_package:/home/dgd03153/.nequip/model_cache/e
 chemical_species: ${model_type_names}
 dataloader:
   _target_: torch.utils.data.DataLoader
-  batch_size: 5
+  batch_size: 16
 data:
   _target_: nequip.data.datamodule.ASEDataModule
   seed: ${seed}

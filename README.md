@@ -1,7 +1,7 @@
 # The Carbon Cost of Generative AI for Science
 
 ## Metrics for CPS
-|     Release       |     Model       |     Params    |     MSD score ↑    |     Energy   (Wh) ↓    |     CO2   (g) ↓    |     ICER (old)   ↓    |     ICER (new) ↓    |
+|     Release       |     Model       |     Params    |     MSD score ↑    |     Energy per 1000 steps  (Wh) ↓    |     CO2 per 1000 steps  (g) ↓    |     ICER (old)   ↓    |     ICER (new) ↓    |
 |-------------------|-----------------|---------------|--------------------|------------------------|--------------------|-----------------------|---------------------|
 |     2023.   2     |     CHGNet      |     413K      |     0.343          |     0.8801             |     0.379          |     -                 |     -               |
 |     2023.   12    |     MACE        |     4.69M     |     0.637          |     2.1638             |     0.9316         |     1.70              |     0.12            |
@@ -13,7 +13,7 @@
 |     2025.   8     |     Nequix      |     708K      |     0.729          |     1.5915             |     0.6853         |     0.72              |     -0.07           |
 
 ## Metrics for MSD score
-|     Release       |     Model       |     Params    |     MSD score ↑    |     Energy   (Wh) ↓    |     CO2   (g) ↓    |     ICER (old)   ↓    |     ICER (new) ↓    |
+|     Release       |     Model       |     Params    |     MSD score ↑    |     Energy per 1000 steps  (Wh) ↓    |     CO2 per 1000 steps  (g) ↓    |     ICER (old)   ↓    |     ICER (new) ↓    |
 |-------------------|-----------------|---------------|--------------------|------------------------|--------------------|-----------------------|---------------------|
 |     2023.   2     |     CHGNet      |     413K      |     0.047          |     0.8801             |     0.379          |     -                 |     -               |
 |     2023.   12    |     MACE        |     4.69M     |     0.095          |     2.1638             |     0.9316         |     10.42             |     0.08            |
