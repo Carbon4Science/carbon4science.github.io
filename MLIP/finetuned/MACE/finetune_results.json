@@ -1,0 +1,35 @@
+{
+  "task": "MLIP_finetune",
+  "model": "MACE",
+  "dataset": "MLIP/finetuning_data/dataset_LGPS_600K_n100.xyz",
+  "n_train": 90,
+  "n_val": 10,
+  "epochs": 100,
+  "checkpoint_path": "MLIP/finetuned/MACE/MACE_finetuned.model",
+  "val_errors": {},
+  "carbon": {
+    "start_time": "2026-04-06T19:02:03.091849",
+    "end_time": "2026-04-06T19:10:24.167237",
+    "duration_seconds": 501.0753884315491,
+    "energy_wh": 31.179463130784473,
+    "emissions_g_co2": 13.42484790183248,
+    "gpu_energy_wh": 0.0,
+    "cpu_energy_wh": 0.0,
+    "ram_energy_wh": 0.0,
+    "peak_gpu_memory_mb": 0.0,
+    "peak_cpu_memory_mb": 460.2,
+    "project_name": "MACE_finetune",
+    "model_name": "MACE",
+    "task": "finetune",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

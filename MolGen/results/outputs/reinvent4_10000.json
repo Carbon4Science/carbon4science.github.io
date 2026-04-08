@@ -1,0 +1,46 @@
+{
+  "task": "MolGen",
+  "model": "REINVENT4",
+  "num_samples": 10000,
+  "num_generated": 10000,
+  "model_params": null,
+  "metrics": [
+    "validity",
+    "uniqueness",
+    "novelty",
+    "diversity",
+    "fcd"
+  ],
+  "accuracy": {
+    "validity": 0.986,
+    "uniqueness": 0.9996957403651116,
+    "novelty": 0.9604342091914375,
+    "diversity": 0.8859892328698749,
+    "fcd": 0.2412676664026776
+  },
+  "carbon": {
+    "start_time": "2026-04-01T17:12:03.257634",
+    "end_time": "2026-04-01T17:12:13.285074",
+    "duration_seconds": 10.027440309524536,
+    "energy_wh": 0.21249354367075607,
+    "emissions_g_co2": 0.09149270761768644,
+    "gpu_energy_wh": 0.0,
+    "cpu_energy_wh": 0.0,
+    "ram_energy_wh": 0.0,
+    "peak_gpu_memory_mb": 103.7,
+    "peak_cpu_memory_mb": 1417.4,
+    "project_name": "REINVENT4_MolGen_benchmark",
+    "model_name": "REINVENT4",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

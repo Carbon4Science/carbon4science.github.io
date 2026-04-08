@@ -1,0 +1,50 @@
+{
+  "task": "Forward",
+  "model": "LocalTransform",
+  "num_samples": 40000,
+  "top_k": 5,
+  "model_params": 9093503,
+  "metrics": [
+    "top_1",
+    "top_2",
+    "top_3",
+    "top_5"
+  ],
+  "accuracy": {
+    "top_1": 0.874025,
+    "top_2": 0.90985,
+    "top_3": 0.921475,
+    "top_5": 0.93035
+  },
+  "correct": {
+    "top_1": 34961,
+    "top_2": 36394,
+    "top_3": 36859,
+    "top_5": 37214
+  },
+  "carbon": {
+    "start_time": "2026-03-24T02:01:54.743802",
+    "end_time": "2026-03-24T06:58:33.687904",
+    "duration_seconds": 17798.94410276413,
+    "energy_wh": 707.196,
+    "emissions_g_co2": 282.8784,
+    "gpu_energy_wh": 230.0019,
+    "cpu_energy_wh": 474.6385,
+    "ram_energy_wh": 2.5556,
+    "peak_gpu_memory_mb": 199.1,
+    "peak_cpu_memory_mb": 1411.4,
+    "project_name": "LocalTransform_Forward_benchmark",
+    "model_name": "LocalTransform",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

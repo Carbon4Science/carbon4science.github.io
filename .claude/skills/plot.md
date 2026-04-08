@@ -87,6 +87,53 @@ MODEL_STYLES = {
 
 Choose distinct colors and markers so models are visually distinguishable.
 
+## Plot Style Rules
+
+**CRITICAL**: All plots MUST follow these rules:
+
+### Font sizes
+- **Model name labels: fontsize >= 20.** This is non-negotiable. Labels must be clearly readable when the figure is scaled to a single paper column.
+- Axis labels: fontsize >= 22
+- Axis tick labels: fontsize >= 18
+- Subplot titles: fontsize >= 26
+- Legend: fontsize >= 16
+- R² annotations: fontsize >= 22
+
+Set these globally at the top of every plotting script:
+```python
+plt.rcParams.update({
+    'font.size': 22, 'axes.titlesize': 26, 'axes.labelsize': 22,
+    'xtick.labelsize': 18, 'ytick.labelsize': 18, 'legend.fontsize': 16,
+})
+```
+
+### Label overlap prevention
+- **Labels MUST NOT overlap with each other or with data points.** Use `adjustText` with strong repulsion forces:
+```python
+from adjustText import adjust_text
+texts = [ax.text(x, y, name, fontsize=20) for ...]
+adjust_text(texts, ax=ax,
+            arrowprops=dict(arrowstyle='->', color='gray', lw=0.8),
+            force_text=(2.0, 2.0), force_points=(2.5, 2.5),
+            expand_text=(1.4, 1.6), expand_points=(1.6, 1.6),
+            lim=300)
+```
+- Use large figure sizes (e.g., `figsize=(30, 18)` for 2x3 subplots) to give `adjust_text` room to work.
+- For log-scale axes where `adjust_text` behaves badly, convert to log-transformed values on linear axes instead (e.g., plot `log10(size)` on a linear axis rather than `size` on a log axis).
+
+### Layout
+- Use 2 rows x 3 columns for 6-task subplots (paper-friendly width)
+- Figure size: `(30, 18)` for 2x3 subplots, `(20, 8)` for 1x2 panels
+- Always use `dpi=300` for publication quality
+- Marker sizes should be large enough to distinguish shapes: minimum 80, scale with model size up to 600+
+
+### Units
+- Carbon: always use "g CO₂ eq / job" (not "g CO₂" or "g")
+- MatGen metric: "mSUN (%)" (not "mSUN" or "SUN")
+- Retro: "Top-50 Exact Match Acc. (%)"
+- Forward: "Top-3 Exact Match Acc. (%)"
+- For log-transformed axes, label as "log₁₀(...)"
+
 ## Notes
 - Plots use log-scale x-axis to handle the large range in cost across models
 - **Always normalize** using `--norm N` where N is chosen by the task leader (e.g., Retro uses 500)

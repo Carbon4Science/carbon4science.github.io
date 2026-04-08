@@ -1,0 +1,50 @@
+{
+  "task": "Forward",
+  "model": "LlaSMol",
+  "num_samples": 40000,
+  "top_k": 5,
+  "model_params": 7241732096,
+  "metrics": [
+    "top_1",
+    "top_2",
+    "top_3",
+    "top_5"
+  ],
+  "accuracy": {
+    "top_1": 0.0379,
+    "top_2": 0.0509,
+    "top_3": 0.059475,
+    "top_5": 0.07055
+  },
+  "correct": {
+    "top_1": 1516,
+    "top_2": 2036,
+    "top_3": 2379,
+    "top_5": 2822
+  },
+  "carbon": {
+    "start_time": "2026-03-25T19:23:30.938680",
+    "end_time": "2026-03-27T00:32:51.060142",
+    "duration_seconds": 104960.12146186829,
+    "energy_wh": 3534.611,
+    "emissions_g_co2": 1413.8444,
+    "gpu_energy_wh": 628.0114,
+    "cpu_energy_wh": 2798.9366,
+    "ram_energy_wh": 107.663,
+    "peak_gpu_memory_mb": 16246.5,
+    "peak_cpu_memory_mb": 10083.6,
+    "project_name": "LlaSMol_Forward_benchmark",
+    "model_name": "LlaSMol",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

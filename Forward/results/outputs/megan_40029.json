@@ -1,0 +1,50 @@
+{
+  "task": "Forward",
+  "model": "MEGAN",
+  "num_samples": 40000,
+  "top_k": 5,
+  "model_params": 9854228,
+  "metrics": [
+    "top_1",
+    "top_2",
+    "top_3",
+    "top_5"
+  ],
+  "accuracy": {
+    "top_1": 0.80115,
+    "top_2": 0.850025,
+    "top_3": 0.8643,
+    "top_5": 0.871475
+  },
+  "correct": {
+    "top_1": 32046,
+    "top_2": 34001,
+    "top_3": 34572,
+    "top_5": 34859
+  },
+  "carbon": {
+    "start_time": "2026-03-27T00:34:00.692387",
+    "end_time": "2026-03-27T02:24:57.531214",
+    "duration_seconds": 6656.838826179504,
+    "energy_wh": 213.3322,
+    "emissions_g_co2": 85.3329,
+    "gpu_energy_wh": 34.6341,
+    "cpu_energy_wh": 177.5157,
+    "ram_energy_wh": 1.1824,
+    "peak_gpu_memory_mb": 151.7,
+    "peak_cpu_memory_mb": 1746.1,
+    "project_name": "MEGAN_Forward_benchmark",
+    "model_name": "MEGAN",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

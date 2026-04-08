@@ -9,7 +9,7 @@ A benchmarking framework for evaluating the **carbon efficiency** of generative 
 
 Artificial intelligence is accelerating scientific discovery, yet current evaluation practices focus almost exclusively on accuracy, neglecting the computational and environmental costs of increasingly complex generative models. This oversight obscures a critical trade-off: **state-of-the-art performance often comes at disproportionate expense**, with order-of-magnitude increases in carbon emissions yielding only marginal improvements.
 
-We present **The Carbon Cost of Generative AI for Science**, a benchmarking framework that systematically evaluates the carbon efficiency of generative models—including diffusion models and large language models—for scientific discovery. Spanning four core tasks (**retrosynthesis**, **molecule generation**, **material generation**, and **machine learning interatomic potentials**), we assess open-source models using standardized protocols that jointly measure predictive performance and carbon footprint.
+We present **The Carbon Cost of Generative AI for Science**, a benchmarking framework that systematically evaluates the carbon efficiency of generative models—including diffusion models and large language models—for scientific discovery. Spanning six tasks across four domains (**retrosynthesis**, **forward reaction prediction**, **molecule generation**, **material generation**, **structure optimization**, and **MD simulation**), we assess open-source models using standardized protocols that jointly measure predictive performance and carbon footprint.
 
 **Key Finding**: Simpler, specialized models frequently match or approach state-of-the-art accuracy while consuming **10-100x less compute**.
 
@@ -18,9 +18,11 @@ We present **The Carbon Cost of Generative AI for Science**, a benchmarking fram
 | Task | Directory | Leader | Status |
 |------|-----------|--------|--------|
 | Retrosynthesis | `Retro/` | Shuan Chen | Complete |
-| Molecule Generation | `MolGen/` | Gunwook Nam | Planned |
-| Material Generation | `MatGen/` | Junkil Park | Planned |
-| ML Interatomic Potentials | `MLIP/` | Junyoung Choi | Planned |
+| Forward Reaction Prediction | `Forward/` | Shuan Chen | Complete |
+| Molecule Generation | `MolGen/` | Gunwook Nam | Complete |
+| Material Generation | `MatGen/` | Junkil Park | Complete |
+| Structure Optimization | `MLIP/` | Junyoung Choi | Complete |
+| MD Simulation | `MLIP/` | Junyoung Choi | Complete |
 
 ---
 
@@ -38,30 +40,116 @@ All tasks follow the same standardized protocol to ensure fair, reproducible com
 
 ---
 
-## Retrosynthesis Results
+## Results Summary
 
-Seven models benchmarked on the full USPTO-50K test set (~5,000 samples), evaluated on top-k exact-match accuracy with full carbon tracking. Costs are averaged per 500 samples for fair comparison.
+All tasks benchmarked on standardized test sets with full carbon tracking on the same hardware.
 
-**Hardware:** NVIDIA RTX 5000 Ada Generation, Intel Xeon Platinum 8558, 503 GB RAM
+**Hardware:** NVIDIA RTX 5000 Ada Generation (32GB), Intel Xeon Platinum 8558 (192 cores), 503 GB RAM
 
-![Retrosynthesis: Accuracy vs Carbon Cost](Retro/results/figures/accuracy_vs_carbon_combined.png)
+### 1. Retrosynthesis (USPTO-50K, 5,007 reactions — metric: Top-50 accuracy)
 
-| Model | Params | Top-1 | Top-5 | Top-10 | Top-50 | Time/500 (s) | Energy/500 (Wh) | CO2/500 (g) | Peak GPU (MB) |
-|-------|--------|-------|-------|--------|--------|-------------|----------------|------------|---------------|
-| neuralsym | 32.5M | 43.0% | 67.7% | 72.8% | 74.8% | 128 | 7.5 | 3.5 | 504 |
-| LocalRetro | 8.6M | 52.8% | 85.0% | 91.5% | 95.6% | 231 | 16.8 | 6.2 | 154 |
-| RSMILES_1x | ~30M | 49.3% | 77.8% | 83.5% | 83.5% | 319 | 34.9 | 14.0 | 121 |
-| RSMILES_20x | ~30M | 55.3% | 84.8% | 89.6% | 93.0% | 4,404 | 270.6 | 108.2 | 924 |
-| Chemformer | 44.7M | 53.6% | 62.0% | 62.8% | 64.0% | 8,492 | 641.9 | 256.7 | 209 |
-| RSGPT | ~1.6B | 76.0% | 94.5% | 96.6% | 97.8% | 7,892 | 627.0 | 250.8 | 6,950 |
-| RetroBridge | 4.6M | 22.1% | 39.4% | 44.9% | 52.8% | 15,749 | 937.2 | 403.5 | 601 |
+![Retro: Accuracy vs Carbon Cost](Retro/results/figures/accuracy_vs_carbon_combined.png)
 
-**Key insights:**
-- **LocalRetro** achieves 52.8% top-1 accuracy at only **6.2 g CO2 per 500 samples** — the most carbon-efficient model with competitive accuracy.
-- **RSGPT** (1.6B params) leads on top-1 accuracy (76.0%) but at **40x the carbon cost** of LocalRetro.
-- **RSMILES 1x vs 20x** demonstrates the test-time augmentation tradeoff: 20x augmentation improves top-1 by +6% but costs **7.7x more carbon** — a clear accuracy-vs-efficiency frontier.
-- **Chemformer** achieves similar top-1 to LocalRetro (53.6% vs 52.8%) but at **41x the carbon cost**, highlighting that larger models don't always pay off.
-- **RetroBridge** (diffusion-based) is both the slowest and lowest accuracy — consuming **403.5 g CO2 per 500 samples** for only 22.1% top-1 accuracy.
+CO₂/call = per molecule; CO₂/task = per 500 molecules (typical retrosynthesis planning session).
+
+| Task | Year | Venue | Model | Architecture | Params | Top-50 | CO₂ eq/call (g) | CO₂ eq/job (g) |
+|------|------|-------|-------|-------------|--------|--------|-------------|-------------|
+| Retro | 2017 | Chem. Eur. J. | neuralsym | MLP | 32.5M | 74.8% | 0.0070 | 3.50 |
+| Retro | 2021 | JCIM | MEGAN | GNN | 9.8M | 90.1% | 0.0103 | 5.15 |
+| Retro | 2021 | JACS Au | LocalRetro | GNN | 8.6M | 95.6% | 0.0124 | 6.20 |
+| Retro | 2022 | Chem. Sci. | RSMILES | LM | 44.6M | 93.0% | 0.2165 | 108.25 |
+| Retro | 2022 | ML:ST | Chemformer | LM | 44.7M | 64.0% | 0.5133 | 256.65 |
+| Retro | 2024 | COLM | LlaSMol | LLM | ~7.2B | 5.0% | 0.2767 | 138.35 |
+| Retro | 2024 | ICLR | RetroBridge | Diffusion | 4.6M | 52.8% | 0.8069 | 403.45 |
+| Retro | 2025 | Nat. Commun. | **RSGPT** | LLM | ~1.6B | **97.8%** | 0.5016 | 250.80 |
+
+### 2. Forward Reaction Prediction (USPTO-MIT, 40,029 reactions — metric: Top-3 accuracy)
+
+![Forward: Accuracy vs Carbon Cost](Forward/results/figures/accuracy_vs_carbon_combined.png)
+
+CO₂/call = per molecule; CO₂/task = per 500 molecules (typical forward prediction session).
+
+| Task | Year | Venue | Model | Architecture | Params | Top-3 | CO₂ eq/call (g) | CO₂ eq/job (g) |
+|------|------|-------|-------|-------------|--------|-------|-------------|-------------|
+| Forward | 2017 | Chem. Eur. J. | neuralsym | MLP | 98.1M | 50.6% | 0.0011 | 0.55 |
+| Forward | 2019 | ACS Cent. Sci. | MolecularTransformer | LM | 11.7M | 91.7% | 0.0090 | 4.50 |
+| Forward | 2021 | JCIM | MEGAN | GNN | 9.9M | 86.4% | 0.0021 | 1.05 |
+| Forward | 2022 | Nat. Mach. Intell. | LocalTransform | GNN | 9.1M | 92.1% | 0.0071 | 3.55 |
+| Forward | 2022 | Chem. Sci. | **RSMILES** | LM | 44.6M | **94.7%** | 0.0154 | 7.70 |
+| Forward | 2024 | COLM | LlaSMol | LLM | ~7.2B | 5.9% | 0.0353 | 17.65 |
+
+### 3. Molecule Generation (ChEMBL 28, 10,000 molecules — metric: VUN%)
+
+| V·U·N vs Carbon Cost | FCD vs Carbon Cost |
+|:---------------------:|:------------------:|
+| ![VUN vs Carbon](MolGen/results/figures/vun_vs_carbon.png) | ![FCD vs Carbon](MolGen/results/figures/fcd_vs_carbon.png) |
+
+CO₂/call = per molecule; CO₂/task = per 10K molecules (typical generation campaign).
+
+| Task | Year | Venue | Model | Architecture | Params | VUN (%) | CO₂ eq/call (g) | CO₂ eq/job (g) |
+|------|------|-------|-------|-------------|--------|---------|-------------|-------------|
+| MolGen | 2017 | J. Cheminf. | REINVENT | LM | 4.4M | 91.12 | 0.000011 | 0.11 |
+| MolGen | 2018 | ICML | JT-VAE | VAE | 7.1M | **99.48** | 0.0020 | 20.00 |
+| MolGen | 2020 | ICML | HierVAE | VAE | 8.0M | 93.48 | 0.0014 | 14.00 |
+| MolGen | 2021 | J. Chem. Inf. Model. | MolGPT | LM | 6.4M | 93.73 | 0.0002 | 2.00 |
+| MolGen | 2023 | ICML | DiGress | Diffusion | 16.2M | 79.85 | 0.0392 | 392.00 |
+| MolGen | 2024 | J. Cheminf. | **REINVENT4** | LM | 5.8M | 94.67 | **0.000009** | **0.09** |
+| MolGen | 2024 | arXiv | SmileyLlama | LLM | 8.0B | 94.06 | 0.0023 | 23.00 |
+| MolGen | 2024 | NeurIPS | DeFoG | Flow Matching | 16.3M | 97.47 | 0.0572 | 572.00 |
+
+### 4. Material Generation (1,000 structures — metric: mSUN %)
+
+<img src="MatGen/results/figures/msun_vs_carbon.png" alt="mSUN vs Carbon" width="60%">
+
+CO₂/call = per structure; CO₂/job = per 1K structures (typical screening campaign).
+
+| Task | Year | Venue | Model | Architecture | Params | mSUN (%) | CO₂ eq/call (g) | CO₂ eq/job (g) |
+|------|------|-------|-------|-------------|--------|----------|-------------|-------------|
+| MatGen | 2022 | ICLR | CDVAE | Diffusion | 4.9M | 22.6 | 0.2704 | 270.40 |
+| MatGen | 2023 | NeurIPS | DiffCSP | Diffusion | 12.4M | 29.0 | 0.0126 | 12.60 |
+| MatGen | 2024 | Nat. Commun. | CrystaLLM | LM | 25.9M | 16.4 | 0.0192 | 19.20 |
+| MatGen | 2024 | ICML | FlowMM | Flow Matching | 28.3M | 23.9 | 0.0128 | 12.80 |
+| MatGen | 2024 | NeurIPS | **ChargeDIFF** | Diffusion | 59.5M | **33.5** | 0.1335 | 133.50 |
+| MatGen | 2025 | Nature | MatterGen | Diffusion | 44.6M | 33.4 | 0.2481 | 248.10 |
+| MatGen | 2025 | ICML | ADiT | Diffusion | 231.9M | 29.6 | 0.1125 | 112.50 |
+| MatGen | 2025 | ICML | CrystalFlow | Flow Matching | 20.9M | 21.7 | **0.0015** | **1.50** |
+
+### 5. Structure Optimization (LGPS, 75K steps — metric: CPS)
+
+CO₂/call = per 1K MD steps; CO₂/task = per 1M steps (typical production run).
+
+| Task | Year | Venue | Model | Architecture | Params | CPS | CO₂ eq/call (g) | CO₂ eq/job (g) |
+|------|------|-------|-------|-------------|--------|-----|-------------|-------------|
+| StructOpt | 2023 | Nat. Mach. Intell. | CHGNet | GNN | 413K | 0.343 | 0.379 | 379 |
+| StructOpt | 2023 | arXiv | MACE | GNN | 4.69M | 0.637 | 0.932 | 932 |
+| StructOpt | 2024 | J. Chem. Theory Comput. | SevenNet | GNN | 1.17M | 0.714 | 0.648 | 648 |
+| StructOpt | 2024 | arXiv | ORB | GNN | 25.2M | 0.470 | **0.155** | **155** |
+| StructOpt | 2025 | arXiv | **eSEN** | GNN | 30.1M | **0.797** | 3.486 | 3,486 |
+| StructOpt | 2025 | arXiv | NequIP | GNN | 9.6M | 0.733 | 0.454 | 454 |
+| StructOpt | 2025 | arXiv | DPA3 | GNN | 4.81M | 0.718 | 1.538 | 1,538 |
+| StructOpt | 2025 | arXiv | Nequix | GNN | 708K | 0.729 | 0.685 | 685 |
+
+### 6. MD Simulation (LGPS, 75K steps — metric: MSD score)
+
+CO₂/call = per 1K MD steps; CO₂/task = per 1M steps (typical production run).
+
+| Task | Year | Venue | Model | Architecture | Params | MSD | CO₂ eq/call (g) | CO₂ eq/job (g) |
+|------|------|-------|-------|-------------|--------|-----|-------------|-------------|
+| MDSim | 2023 | Nat. Mach. Intell. | CHGNet | GNN | 413K | 0.047 | 0.379 | 379 |
+| MDSim | 2023 | arXiv | MACE | GNN | 4.69M | 0.095 | 0.932 | 932 |
+| MDSim | 2024 | J. Chem. Theory Comput. | SevenNet | GNN | 1.17M | 0.531 | 0.648 | 648 |
+| MDSim | 2024 | arXiv | ORB | GNN | 25.2M | 0.385 | **0.155** | **155** |
+| MDSim | 2025 | arXiv | **eSEN** | GNN | 30.1M | **0.720** | 3.486 | 3,486 |
+| MDSim | 2025 | arXiv | NequIP | GNN | 9.6M | 0.361 | 0.454 | 454 |
+| MDSim | 2025 | arXiv | DPA3 | GNN | 4.81M | 0.508 | 1.538 | 1,538 |
+| MDSim | 2025 | arXiv | Nequix | GNN | 708K | 0.203 | 0.685 | 685 |
+
+### Key Insights Across Tasks
+
+- **MLIP is the most carbon-intensive per call**: A single 1M-step MD simulation costs 155–3,486 g CO₂ eq, orders of magnitude more than chemistry tasks where per-molecule costs are <1g
+- **Architecture determines cost, not model size**: Diffusion models cost 10-100x more per call than LM or GNN models due to iterative sampling, regardless of parameter count
+- **Larger models do not predict better performance**: Globally r=0.003; in chemistry tasks (Retro, Forward) the correlation is *negative*
+- **50-75% of models per task are Pareto-dominated**: Another model exists that is both cheaper and better — the carbon was wasted
 
 ---
 
@@ -226,21 +314,12 @@ Carbon4Science/
 ├── CLAUDE.md                 # Instructions for Claude Code
 ├── .claude/skills/           # Claude Code skills (add-model, benchmark, evaluate)
 │
-├── Retro/                   # Retrosynthesis task (Shuan Chen)
-│   ├── benchmarks/          # Benchmark scripts (runner, tracker, plots)
-│   ├── results/
-│   │   ├── outputs/         # JSON result files
-│   │   └── figures/         # Generated plots
-│   ├── neuralsym/           # Template-based, Chem. Eur. J. 2017
-│   ├── LocalRetro/          # MPNN + attention, JACS Au 2021
-│   ├── RSMILES/             # Root-aligned SMILES, Chem. Sci. 2022
-│   ├── Chemformer/          # BART transformer, ML:ST 2022
-│   ├── RetroBridge/         # Markov bridges, ICLR 2024
-│   └── RSGPT/               # GPT 1.6B params, Nat. Comm. 2025
-│
-├── MolGen/                  # Molecule generation (Gunwook Nam) — same structure
-├── MatGen/                  # Material generation (Junkil Park) — same structure
-└── MLIP/                    # ML interatomic potentials (Junyoung Choi) — same structure
+├── Retro/                   # Retrosynthesis (Shuan Chen) — 9 models
+├── Forward/                 # Forward reaction prediction (Shuan Chen) — 6 models
+├── MolGen/                  # Molecule generation (Gunwook Nam) — 8 models
+├── MatGen/                  # Material generation (Junkil Park) — 8 models
+└── MLIP/                    # ML interatomic potentials (Junyoung Choi) — 8 models
+    └── StructOpt + MDSim    # Two sub-tasks evaluated from same runs
 ```
 
 ---

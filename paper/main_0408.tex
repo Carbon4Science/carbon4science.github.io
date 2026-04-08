@@ -1,0 +1,577 @@
+%%%%%%%% ICML 2026 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2026} with \usepackage[nohyperref]{icml2026} above.
+\usepackage{hyperref}
+
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+% \usepackage{icml2026}
+
+% For preprint, use
+% \usepackage[preprint]{icml2026}
+
+% If accepted, instead use the following line for the camera-ready submission:
+\usepackage[accepted]{icml2026}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{makecell}
+\usepackage{float}
+
+
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+%\usepackage[disable,textsize=tiny]{todonotes}
+\usepackage[textsize=tiny]{todonotes}
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{The Carbon Cost of AI for Science}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{The Carbon Cost of AI for Science}
+
+  % It is OKAY to include author information, even for blind submissions: the
+  % style file will automatically remove it for you unless you've provided
+  % the [accepted] option to the icml2026 package.
+
+  % List of affiliations: The first argument should be a (short) identifier you
+  % will use later to specify author affiliations Academic affiliations
+  % should list Department, University, City, Region, Country Industry
+  % affiliations should list Company, City, Region, Country
+
+  % You can specify symbols, otherwise they are numbered in order. Ideally, you
+  % should not use this facility. Affiliations will be numbered in order of
+  % appearance and this is the preferred way.
+  \icmlsetsymbol{equal}{*}
+
+  \begin{icmlauthorlist}
+    \icmlauthor{Shuan Chen}{equal,snu}
+    \icmlauthor{Gunwook Nam}{equal,snu}
+    \icmlauthor{Junkil Park}{equal,snu}
+    \icmlauthor{Junyoung Choi}{equal,snu}
+    % \icmlauthor{Junyoung Choi}{equal,snu}
+    % \icmlauthor{Seongmin Kim}{equal,snu}
+    % \icmlauthor{Roy Schwartz}{hebrew}
+    \icmlauthor{Yousung Jung}{snu}
+  \end{icmlauthorlist}
+
+  \icmlaffiliation{snu}{School of Chemical Biological Engineering, Seoul National University, South Korea}
+  % \icmlaffiliation{hebrew}{School of Computer Science and Engineering, The Hebrew University of Jerusalem, Israel}
+
+  % \icmlcorrespondingauthor{Shuan Chen}{shuan75@snu.ac.kr}
+  \icmlcorrespondingauthor{Yousung Jung}{yousung.jung@snu.ac.kr}
+
+  % You may provide any keywords that you find helpful for describing your
+  % paper; these are used to populate the "keywords" metadata in the PDF but
+  % will not be shown in the document
+  \icmlkeywords{Machine Learning, ICML}
+
+  \vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column listing the
+% affiliations and the copyright notice. The command takes one argument, which
+% is text to display at the start of the footnote. The \icmlEqualContribution
+% command is standard text for equal contribution. Remove it (just {}) if you
+% do not need this facility.
+
+% Use ONE of the following lines. DO NOT remove the command.
+% If you have no special notice, KEEP empty braces:
+\printAffiliationsAndNotice{}  % no special notice (required even if empty)
+% Or, if applicable, use the standard equal contribution text:
+% \printAffiliationsAndNotice{\icmlEqualContribution}
+
+\begin{abstract}
+Artificial intelligence is accelerating scientific discovery, yet current evaluation practices focus almost exclusively on accuracy, neglecting the computational and environmental costs of increasingly complex machine learning (ML) models. This oversight obscures a critical trade-off: state-of-the-art performance often comes at disproportionate expense, with order-of-magnitude increases in carbon emissions yielding only marginal improvements. We present \textit{The Carbon Cost of AI for Science}, a benchmarking framework that systematically evaluates the carbon efficiency of ML models---including diffusion models and large language models---for scientific discovery. Spanning six tasks across three supertasks of AI for chemical science (generation, reaction prediction, and simulation), we benchmark 46 open-source models using standardized protocols that jointly measure predictive performance and carbon footprint. Our analysis reveals that carbon emissions scale almost entirely with inference time ($R^2 > 0.91$ in every task), not model size, and that inference time is determined by architectural choice: diffusion models are 10--50$\times$ slower per parameter than autoregressive or graph-based alternatives. Pareto front analysis shows that 40--71\% of models per task are strictly dominated---another model exists that is both cheaper and better. As AI agents begin to automate scientific workflows, the per-call tool cost will dominate total emissions, making architecture choice the single most impactful lever for sustainable AI-driven science.
+
+
+% Artificial intelligence is accelerating scientific discovery across chemistry and materials science, yet current evaluation practices focus almost exclusively on accuracy, neglecting the computational and environmental costs of increasingly complex models. This oversight obscures a critical trade-off: state-of-the-art performance often comes at disproportionate expense, with order-of-magnitude increases in compute yielding only marginal improvements. We present \textit{The Carbon Cost of Accuracy}, a benchmarking framework that systematically evaluates the sustainability of AI models for scientific discovery. Spanning five organic and inorganic-related scientific discovery tasks, we assess open-source models using standardized protocols that jointly measure predictive performance and computational efficiency. Our analysis reveals that simpler and more specialized models frequently match or approach state-of-the-art accuracy with substantially lower resource consumption. By reframing model evaluation as multi-objective optimization, we hope this work encourages the AI for science community to consider not only accuracy but also computational efficiency in future benchmarking efforts.
+
+\end{abstract}
+
+\section{Introduction}
+
+% --- Hook: AI agents are automating science at scale ---
+Scientific discovery is entering an era of automation. AI-powered agents such as Coscientist~\cite{boiko2023autonomous}, ChemCrow~\cite{bran2024augmenting}, and fully autonomous AI scientists~\cite{lu2024aiscientist} are beginning to design experiments, plan syntheses, and screen materials with minimal human intervention. These agents orchestrate workflows by repeatedly calling specialized AI models---retrosynthesis predictors, molecule generators, molecular dynamics simulators---potentially thousands of times per campaign.
+
+% --- The hidden cost: tools, not reasoning ---
+While the carbon footprint of large language models has received considerable attention~\cite{strubell2019energy, luccioni2024power}, the cost of the \textit{scientific tools} these agents invoke remains unmeasured. Yet our analysis reveals that for compute-intensive tasks like molecular dynamics, the tool cost accounts for 89--99\% of an agent's total emissions---dwarfing the reasoning cost of the LLM itself. As autonomous agents scale toward continuous, large-scale scientific exploration, the carbon cost of these tool calls will compound dramatically.
+
+% --- The accuracy-only paradigm ---
+This cost is invisible under current evaluation practices. Leaderboards and benchmarks such as CASP~\cite{kryshtafovych2019critical}, MatBench~\cite{dunn2020benchmarking, riebesell2025framework}, and GuacaMol~\cite{brown2019guacamol} track accuracy exclusively, implicitly assuming that performance gains justify any computational expense. The Green AI movement~\cite{schwartz2020green} and analyses of NLP model emissions~\cite{strubell2019energy, bender2021dangers} have challenged this assumption---but only for language and vision tasks, leaving AI for scientific discovery unexplored.
+
+\subsection{This Work}
+
+% --- Contribution Green AI for AI4Science ---
+In this work, we present \textit{The Carbon Cost of AI for Science}, 
+the first systematic sustainability analysis of ML models across 
+scientific discovery tasks. Our contributions are:
+\begin{itemize}
+    \item A benchmarking framework jointly evaluating performance and inference-time carbon footprint across six scientific tasks spanning generation, reaction prediction, and simulation.
+    \item Empirical evidence that carbon emissions are determined by inference time ($R^2 > 0.91$), governed by architecture---not model size---providing a clear lever for emission reduction.
+    \item Pareto analysis showing 40--71\% of models per task are strictly dominated, and scaling analysis demonstrating that architecture choice creates 22--4{,}355$\times$ differences as AI agents adopt these tools.
+\end{itemize}
+
+\section{Related Work}
+
+\paragraph{Generative Models for Scientific Discovery.}
+Recent years have witnessed rapid adoption of powerful generative architectures in scientific domains. Diffusion models and large language models have been applied to molecule generation ~\cite{vignac2022digress, yu2024llasmol}, retrosynthesis~\cite{igashov2023retrobridge, deng2025rsgpt}, and materials design ~\cite{xie2021crystal, jiao2023crystal, antunes2024crystal, zeni2025generative}. While these models often achieve state-of-the-art performance, their computational requirements far exceed earlier approaches---a cost that has not been systematically quantified. A recent synthesis planning benchmark discussed the trade-off between accuracy and inference speed~\cite{maziarz2025re}, though not from a sustainability perspective.
+
+\paragraph{Green AI and Sustainable Machine Learning.}
+Strubell et al.~\cite{strubell2019energy} first quantified the carbon footprint of training large NLP models, estimating that training a single Transformer model can emit as much CO$_2$ as five cars over their lifetimes. Schwartz et al.~\cite{schwartz2020green} subsequently introduced the distinction between ``Red AI'' (pursuing accuracy at any cost) and ``Green AI'' (prioritizing efficiency alongside accuracy), advocating for reporting computational costs as standard practice. Bender et al.~\cite{bender2021dangers} extended these concerns to include equity implications, noting that the environmental costs of large models disproportionately burden marginalized communities who are least likely to benefit from them.
+
+Recent work has developed tools for measuring AI's carbon footprint, including CodeCarbon~\cite{codecarbon} and ML CO2 Impact~\cite{lacoste2019quantifying}, as well as comprehensive analyses of inference-time energy consumption across LLMs~\cite{luccioni2024power, jegham2025hungry}. 
+
+% --- Gap ---
+To our knowledge, although there are works evaluating the carbon footprint of computational tools~\cite{lannelongue2021green} for general scientific purposes, no prior work has systematically evaluated the sustainability of deep-learning based AI models across scientific discovery tasks. We address this gap by introducing a unified framework that makes the accuracy-efficiency trade-off explicit and measurable, and convert computational cost to carbon footprint estimates.
+
+% ============================================
+
+\section{Methodology}
+
+% --- 3.1 Overview ---
+\subsection{Benchmarking Framework Overview}
+
+Our framework evaluates models along two axes: (1) task-specific scientific performance and (2) inference-time carbon footprint. We focus on inference rather than training for three reasons: inference costs dominate the lifecycle carbon footprint for deployed models~\cite{patterson2022carbon}; inference measurements are more reproducible across hardware configurations; and inference efficiency directly impacts the practical utility of models for scientific workflows.
+
+\subsection{Scientific Tasks and Performance Metrics}
+
+We evaluate six scientific discovery tasks, deliberately selecting models across a wide computational spectrum---from lightweight rule-based and graph-based methods to large-scale diffusion models and language models---to expose the trade-off between predictive performance and carbon cost. Full dataset details are provided in Appendix~\ref{app:datasets}.
+
+\paragraph{Molecular Generation.}
+De novo molecular generation requires producing novel, chemically valid molecules without conditioning on a specific target. We train and evaluate on ChEMBL~\cite{zdrazil2024chembl} and adopt the VUN score as our primary metric, defined as the fraction of generated molecules that simultaneously satisfy validity, uniqueness, and novelty:
+\begin{equation}
+\text{VUN}
+= \frac{1}{N} \sum_{m \in \mathcal{G}}
+\mathbf{1}\!\left[
+\begin{aligned}
+&V(m) = 1, \\
+&U(m) = 1, \\
+&m \notin \mathcal{T}
+\end{aligned}
+\right]
+\end{equation}
+where $\mathcal{G}$ is the set of $N$ generated molecules, $V(m) = \mathbf{1}$ indicates SMILES validity, $U(m) = \mathbf{1}$ indicates uniqueness within the generated set, and $\mathcal{T}$ is the training set. Individual component metrics are reported in the Supplementary Information. Carbon cost is measured over 10,000 generated molecules, consistent with the scale of a standard virtual screening campaign and the MOSES benchmark protocol~\cite{polykovskiy2020molecular}. 
+
+Models span recurrent~\cite{olivecrona2017molecular}, VAE-based~\cite{jin2018junction, jin2020hierarchical}, graph diffusion ~\cite{vignac2022digress}, flow matching~\cite{dunn2024mixed}, and LLM approaches~\cite{cavanagh2024smileyllama}.
+
+
+\paragraph{Crystal Structure Generation.}
+Crystal structure generation requires producing stable, novel inorganic crystals from scratch. We evaluate on MP-20~\cite{xie2021crystal} and adopt the mSUN score (\%) as our primary metric, defined as the percentage of generated structures that are simultaneously meta-stable, unique, and novel:
+\begin{equation}
+\text{mSUN (\%)}
+= \frac{100}{N} \sum_{m \in \mathcal{G}}
+\mathbf{1}\!\left[
+\begin{aligned}
+&E_\text{hull}(c) < 0.1\ \text{eV/atom}, \\
+&U(m) = 1, \\
+&m \notin \mathcal{T}
+\end{aligned}
+\right]
+\end{equation}
+where $E_\text{hull}(c)$ is the energy above the convex hull verified by DFT relaxation, and structural identity is assessed via \texttt{StructureMatcher} from \texttt{pymatgen}~\cite{ong2013python}. Carbon cost is measured over 1,000 generated structures, reflecting the scale of a typical in-silico screening campaign prior to DFT validation.
+
+Models span VAE~\cite{xie2021crystal}, diffusion~\cite{jiao2023crystal, zeni2025generative}, flow matching~\cite{miller2024flowmm}, and language model~\cite{antunes2024crystal} approaches.
+
+\paragraph{Retrosynthesis.}
+Single-step retrosynthesis predicts the reactants required to synthesize a target molecule, and forms the core subroutine of multi-step synthesis planners where the model is queried repeatedly at each node expansion. We benchmark on USPTO-50K~\cite{schneider2016s} and adopt top-$K$ exact match accuracy as our primary metric:
+\begin{equation}
+    \text{Acc}@K = \frac{1}{|\mathcal{D}|} \sum_{(p,\, r) \in \mathcal{D}} 
+    \mathbf{1}\!\left[ r \in \{\hat{r}_1, \dots, \hat{r}_K\} \right]
+    \label{eq:acc_k}
+\end{equation}
+where $\mathcal{D}$ is the test set, $r$ is the ground-truth reactant set, and $\hat{r}_1, \dots, \hat{r}_K$ are the model's top-$K$ predictions ranked by likelihood. A prediction is correct only if the canonicalized SMILES exactly matches the ground truth. We report Acc@50, as each inference call requests 50 candidate reactant sets for downstream ranking in a planning session. Carbon cost is measured over 500 inference calls, reflecting a realistic single planning session. 
+
+Models span template-based (MLP)~\cite{segler2017neural}, GNN~\cite{megan2021jcim, chen2021deep}, language model~\cite{irwin2022chemformer, zhong2022root}, diffusion~\cite{igashov2023retrobridge}, and LLM~\cite{yu2024llasmol, deng2025rsgpt} approaches.
+
+\paragraph{Reaction Outcome Prediction.}
+Forward reaction prediction anticipates the product given a set of reactants, and is used to validate candidate retrosynthetic steps in synthesis planning. We benchmark on USPTO-MIT~\cite{jin2017predicting} and report Acc@3 (Eq.~\ref{eq:acc_k}), evaluated in the mixed setting where reagents and reactants are not separated. Carbon cost is measured over 500 inference calls for the same reason as retrosynthesis. 
+
+Models span template-based~\cite{segler2017neural}, GNN~\cite{megan2021jcim, chen2022generalized}, Transformer~\cite{schwaller2019molecular, zhong2022root, tu2022permutation}, and LLM~\cite{yu2024llasmol} approaches.
+
+\paragraph{Crystal Structure Optimization.}
+MLIPs serve as the force engine for geometry relaxation, replacing expensive DFT calls at each ionic step. We run each model with the FIRE optimizer~\cite{bitzek2006structural} until convergence (fmax $< 0.05$ eV/\AA) on structures from MPtrj~\cite{deng2023chgnet}, recording total carbon cost over the full relaxation trajectory to convergence. Performance is reported via the Combined Performance Score (CPS), adopted directly from Matbench Discovery~\cite{riebesell2025framework}:
+\begin{equation}
+    \text{CPS} = \frac{1}{3}\left( F_1 + (1 - \text{RMSD}_\text{norm}) + 
+    (1 - \kappa_\text{SRME}) \right)
+    \label{eq:cps}
+\end{equation}
+where $F_1$ is the F1 score for thermodynamic stability classification, $\text{RMSD}_\text{norm}$ is the normalized root mean square displacement between predicted and DFT-relaxed structures, and $\kappa_\text{SRME}$ is the symmetric relative mean error in thermal conductivity prediction. We refer to \citet{riebesell2025framework} for the precise normalization and weighting scheme. 
+
+Models span message-passing~\cite{deng2023chgnet, batatia2022mace, koker2025training}, higher-order equivariant~\cite{batatia2022mace}, and foundation model~\cite{zhang2025graph, neumann2024orb, fu2025learning} approaches.
+
+\paragraph{Molecular Dynamics Simulation.}
+MLIPs also drive finite-temperature MD trajectories as a cheaper alternative to AIMD. We evaluate on MPtrj~\cite{deng2023chgnet} with all simulation conditions
+fixed across models, measuring carbon cost over 75{,}000 MD steps (25{,}000 production steps $\times$ 3 seeds). Carbon costs are reported per 1{,}000 steps (CO$_2$~eq/call) and extrapolated to 1M steps (CO$_2$~eq/job), reflecting typical production MD run lengths. The mean-squared displacement at 
+timestep $t$ is:
+\begin{equation}
+    \text{MSD}(t) = \frac{1}{N_\text{atoms}} \sum_{i=1}^{N_\text{atoms}} 
+    \left\lVert \mathbf{r}_i(t) - \mathbf{r}_i(0) \right\rVert^2
+    \label{eq:msd}
+\end{equation}
+where $\mathbf{r}_i(t)$ is the position of atom $i$ at timestep $t$. Performance is reported via the MSD score, which quantifies agreement with an AIMD reference at $t = 1000$:
+\begin{equation}
+    \text{MSD score} = \frac{1}{1 + \left| \text{MSD}_{1000}^\text{MLIP} 
+    - \text{MSD}_{1000}^\text{AIMD} \right|}
+    \label{eq:msd_score}
+\end{equation}
+where $\text{MSD}_{1000}^\text{MLIP}$ and $\text{MSD}_{1000}^\text{AIMD}$ denote the MSD at $t = 1000$ steps for the MLIP and AIMD trajectories respectively. The MSD score lies in $(0, 1]$, with higher values indicating closer agreement with ab initio dynamics. 
+
+Models span the same selection as crystal structure optimization.
+
+% --- 3.2 Carbon Measurement ---
+\subsection{Carbon Footprint Measurement}
+
+We measure inference-time energy consumption using CodeCarbon~\cite{codecarbon}, which monitors GPU and CPU power draw during model execution. Energy consumption $E$ (in kWh) is converted to carbon emissions $C$ (in gCO$_2$eq) using:
+
+\begin{equation}
+    C = E \times I_{\text{grid}}
+\end{equation}
+
+where $I_{\text{grid}}$ is the carbon intensity of the electricity grid (gCO$_2$/kWh). We report results using the global average carbon intensity of 475 g CO$_2$eq/kWh, while also providing energy measurements to enable region-specific calculations. More implementation and measurement details are given in Appendix.
+
+% ============================================
+% 4. RESULTS
+% ============================================
+\section{Results}
+
+% --- 4.1 Main Results Table ---
+\subsection{Overview of Results}
+
+\begin{table*}[t]
+\centering
+\caption{Summary of performance and carbon footprint across six scientific tasks. CO$_2$~eq/call is the per-inference emission; CO$_2$~eq/job is the emission for a practical workload (MolGen: 10K molecules; MatGen: 1K structures; Retro/Forward: 500 molecules; StructOpt/MDSim: 1M MD steps). \textbf{Bold} = baseline for each task.}
+\label{tab:main_results}
+\small
+\begin{tabular}{llccccc}
+\toprule
+\textbf{Model} & Architecture & Params & Performance $\uparrow$ & \makecell{CO$_2$ eq/call\\(g)} $\downarrow$ & \makecell{CO$_2$ eq/job\\(g)} $\downarrow$ \\
+\midrule
+\multicolumn{6}{l}{\textit{\textbf{Molecular Generation} (VUN \%, 10K molecules)}} \\
+\textbf{REINVENT}~\cite{olivecrona2017molecular} & LM & 4.4M & 91.1 & 1.1$\times$10$^{-5}$ & 0.11 \\
+REINVENT4~\cite{loeffler2024reinvent} & LM & 5.8M & 94.7 & 9$\times$10$^{-6}$ & 0.09 \\
+MolGPT~\cite{bagal2021molgpt} & LM & 6.4M & 93.7 & 2$\times$10$^{-4}$ & 2.0 \\
+JT-VAE~\cite{jin2018junction} & VAE & 7.1M & 99.5 & 0.002 & 20.5 \\
+HierVAE~\cite{jin2020hierarchical} & VAE & 8.0M & 93.5 & 0.001 & 14.4 \\
+SmileyLlama~\cite{cavanagh2024smileyllama} & LLM & 8.0B & 94.1 & 0.002 & 22.7 \\
+DiGress~\cite{vignac2022digress} & Diffusion & 16.2M & 79.9 & 0.039 & 392 \\
+DeFoG~\cite{dunn2024mixed} & Flow Matching & 16.3M & 97.5 & 0.057 & 572 \\
+\midrule
+\multicolumn{6}{l}{\textit{\textbf{Crystal Structure Generation} (mSUN \%, 1K structures)}} \\
+\textbf{CDVAE}~\cite{xie2021crystal} & Diffusion & 4.9M & 22.6 & 0.270 & 270 \\
+DiffCSP~\cite{jiao2023crystal} & Diffusion & 12.4M & 29.0 & 0.013 & 12.7 \\
+CrystalFlow~\cite{crystallflow2025icml} & Flow Matching & 20.9M & 21.7 & 0.002 & 1.5 \\
+CrystaLLM~\cite{antunes2024crystal} & LM & 25.9M & 16.4 & 0.019 & 19.2 \\
+FlowMM~\cite{miller2024flowmm} & Flow Matching & 28.3M & 23.9 & 0.013 & 12.8 \\
+MatterGen~\cite{zeni2025generative} & Diffusion & 44.6M & 33.4 & 0.248 & 248 \\
+ChargeDIFF~\cite{chargediff2024neurips} & Diffusion & 59.5M & 33.5 & 0.134 & 134 \\
+ADiT~\cite{adit2025icml} & Diffusion & 231.9M & 29.6 & 0.113 & 113 \\
+\midrule
+\multicolumn{6}{l}{\textit{\textbf{Retrosynthesis} (Top-50 Acc.\ \%, 500 molecules)}} \\
+\textbf{neuralsym}~\cite{segler2017neural} & MLP & 32.5M & 74.8 & 0.007 & 3.5 \\
+MEGAN~\cite{megan2021jcim} & GNN & 9.8M & 90.1 & 0.010 & 5.2 \\
+LocalRetro~\cite{chen2021deep} & GNN & 8.6M & 95.6 & 0.012 & 6.2 \\
+RSMILES~\cite{zhong2022root} & LM & 44.6M & 93.0 & 0.217 & 108 \\
+Chemformer~\cite{irwin2022chemformer} & LM & 44.7M & 64.0 & 0.513 & 257 \\
+LlaSMol~\cite{yu2024llasmol} & LLM & 7.2B & 5.0 & 0.277 & 138 \\
+RetroBridge~\cite{igashov2023retrobridge} & Diffusion & 4.6M & 52.8 & 0.807 & 403 \\
+RSGPT~\cite{deng2025rsgpt} & LLM & 1.6B & 97.8 & 0.502 & 251 \\
+\midrule
+\multicolumn{6}{l}{\textit{\textbf{Forward Reaction Prediction} (Top-3 Acc.\ \%, 500 molecules)}} \\
+\textbf{neuralsym}~\cite{segler2017neural} & MLP & 98.1M & 50.6 & 0.001 & 0.6 \\
+MEGAN~\cite{megan2021jcim} & GNN & 9.9M & 86.4 & 0.002 & 1.1 \\
+LocalTransform~\cite{chen2022generalized} & GNN & 9.1M & 92.1 & 0.007 & 3.6 \\
+MolecularTransformer~\cite{schwaller2019molecular} & LM & 11.7M & 91.7 & 0.009 & 4.5 \\
+Graph2SMILES~\cite{tu2022permutation} & LM & \todo{} & \todo{} & \todo{} & \todo{} \\
+RSMILES~\cite{zhong2022root} & LM & 44.6M & 94.7 & 0.015 & 7.7 \\
+LlaSMol~\cite{yu2024llasmol} & LLM & 7.2B & 5.9 & 0.035 & 17.7 \\
+\midrule
+\multicolumn{6}{l}{\textit{\textbf{Structure Optimization} (CPS, 1M MD steps)}} \\
+\textbf{CHGNet}~\cite{deng2023chgnet} & GNN & 413K & 0.343 & 0.379 & 379 \\
+MACE~\cite{batatia2022mace} & GNN & 4.69M & 0.637 & 0.932 & 932 \\
+SevenNet~\cite{koker2025training} & GNN & 1.17M & 0.714 & 0.648 & 648 \\
+ORB~\cite{neumann2024orb} & GNN & 25.2M & 0.470 & 0.155 & 155 \\
+NequIP~\cite{nequip2022natcomm} & GNN & 9.6M & 0.733 & 0.454 & 454 \\
+DPA3~\cite{zhang2025graph} & GNN & 4.81M & 0.718 & 1.538 & 1{,}538 \\
+Nequix~\cite{nequix2025arxiv} & GNN & 708K & 0.729 & 0.685 & 685 \\
+eSEN~\cite{fu2025learning} & GNN & 30.1M & 0.797 & 3.486 & 3{,}486 \\
+\midrule
+\multicolumn{6}{l}{\textit{\textbf{Molecular Dynamics Simulation} (MSD score, 1M MD steps)}} \\
+\textbf{CHGNet}~\cite{deng2023chgnet} & GNN & 413K & 0.047 & 0.379 & 379 \\
+MACE~\cite{batatia2022mace} & GNN & 4.69M & 0.095 & 0.932 & 932 \\
+SevenNet~\cite{koker2025training} & GNN & 1.17M & 0.531 & 0.648 & 648 \\
+ORB~\cite{neumann2024orb} & GNN & 25.2M & 0.385 & 0.155 & 155 \\
+NequIP~\cite{nequip2022natcomm} & GNN & 9.6M & 0.361 & 0.454 & 454 \\
+DPA3~\cite{zhang2025graph} & GNN & 4.81M & 0.508 & 1.538 & 1{,}538 \\
+Nequix~\cite{nequix2025arxiv} & GNN & 708K & 0.203 & 0.685 & 685 \\
+eSEN~\cite{fu2025learning} & GNN & 30.1M & 0.720 & 3.486 & 3{,}486 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:main_results} summarizes performance and carbon cost across all six tasks. Per-job costs span five orders of magnitude---from 0.09~g~CO$_2$~eq for 10K molecules with REINVENT4 to 3{,}486~g for a single 1M-step MD simulation with eSEN---highlighting how strongly both task type and model architecture influence emissions.
+
+% --- 4.2 Pareto Frontier Figure ---
+\subsection{Accuracy-Carbon Trade-offs}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/Fig 2 - pareto plot.png}
+    \caption{Accuracy-carbon Pareto frontiers. \textbf{Top}: all 46 models in a single quadrant plot; \textbf{Bottom}: per-task Pareto frontiers with step-wise frontier lines. Axes show relative performance ($\Delta m / m_0$) vs carbon ratio ($c_i / c_0$) against each task's baseline. Shading indicates quadrants: Dominant (green), Tradeoff (yellow), Dominated (red), Inverse (gray).}
+    \label{fig:pareto}
+\end{figure}
+
+Figure~\ref{fig:pareto} visualizes the accuracy-carbon trade-off using relative metrics. Across tasks, 40--71\% of models are strictly dominated---another model is both cheaper and better. Diffusion models consistently appear in the high-cost regions (RetroBridge, DiGress, CDVAE), reflecting the inherent expense of iterative denoising. General-purpose LLMs fare even worse: LlaSMol (7.2B params) lands in the Dominated quadrant for both Retro and Forward, with $>$30$\times$ the carbon cost for substantially \emph{lower} performance. MLIP tasks are the most carbon-intensive overall, with a single 1M-step MD simulation costing 155--3{,}486~g~CO$_2$~eq---orders of magnitude above chemistry tasks.
+
+% --- 4.3 What Drives Carbon Cost ---
+\subsection{What Drives Carbon Cost?}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/Fig 3 - CO2 vs size+time.png}
+    \caption{Carbon cost decomposition per task. \textbf{Top}: model size vs CO$_2$~eq/job---no clear correlation. \textbf{Bottom}: inference time vs CO$_2$~eq/job---strong linear relationship ($R^2 > 0.91$ in every task). Points are colored by architecture type. The contrast demonstrates that inference time, not model size, drives carbon emissions.}
+    \label{fig:co2_decomposition}
+\end{figure}
+
+Figure~\ref{fig:co2_decomposition} reveals a key structural insight: \textbf{carbon emissions are almost entirely determined by inference time, not model size.} Across all 46 models, log(CO$_2$) correlates with log(inference time) at $R^2 = 0.97$, but with log(model size) at only $R^2 = 0.12$ (cross-task view in Figure~\ref{fig:app_cross_task}). A multiple regression confirms this:
+\begin{equation}
+    \log(\text{CO}_2) = 0.06 \cdot \log(\text{size}) + 1.00 \cdot \log(\text{time}) + c
+\end{equation}
+with $R^2 = 0.97$, showing that inference time is ${\sim}18\times$ more important than model size. Critically, model size does \emph{not} predict inference time in any task (all $p > 0.05$; see Figure~\ref{fig:app_size_time}), because architecture determines computational density: diffusion models require 100--1{,}000 forward passes per sample, while template-based and autoregressive models require only one. This means the most effective strategy to reduce carbon is to choose the right architecture, not to shrink the model.
+
+% --- 4.4 Real-world Context ---
+\subsection{Carbon Costs in Context}
+The practical gaps are striking: generating 10{,}000 molecules with DiGress (Diffusion) emits 392~g~CO$_2$~eq while REINVENT4 (LM) emits 0.09~g for higher quality---a 4{,}355$\times$ difference. In retrosynthesis, LocalRetro (GNN) achieves 95.6\% accuracy at 6.2~g per 500 molecules, while RetroBridge (Diffusion) achieves only 52.8\% at 403~g. The gap is largest for MLIP, where a single 1M-step MD simulation with eSEN costs 3{,}486~g---more than running the entire retrosynthesis pipeline 500 times.
+
+These per-call costs compound as AI agents automate scientific workflows. For MLIP-driven materials screening, the tool cost accounts for 89--99\% of total agent emissions, making architecture choice---not agent design---the decisive factor for sustainable AI-driven discovery.
+
+% ============================================
+% 5. DISCUSSION
+% ============================================
+\section{Discussion}
+
+% --- 5.1 Summary ---
+\subsection{The Increasing Carbon Cost of AI for Science}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\columnwidth]{figures/Fig. 1 - year vs. performance+CO2.png}
+    \caption{Year-wise trends across six tasks. \textbf{Left column}: performance vs year; \textbf{Right column}: log$_{10}$(g~CO$_2$~eq/job) vs year. Marker shapes indicate architecture type. Performance has not consistently improved from 2017 to 2025, while carbon costs have grown substantially---particularly with the introduction of diffusion models and LLMs.}
+    \label{fig:year_trends}
+\end{figure}
+
+Our year-wise analysis (Figure~\ref{fig:year_trends}) reveals a concerning trend: while model sizes (Figure~\ref{fig:app_year_size}) and carbon costs have grown substantially from 2017 to 2025, performance has not scaled accordingly. In chemistry tasks (Retro, Forward), later models with $>$1B parameters (LlaSMol, RSGPT) achieve no better---or significantly worse---performance than GNN models with $<$10M parameters from 2021. In Forward prediction, model size is \emph{significantly negatively} correlated with performance ($r = -0.95$, $p = 0.004$), suggesting that these tasks are knowledge-bound, not capacity-bound.
+
+This trajectory is particularly concerning as AI agents begin to automate scientific discovery. Unlike LLM prompts, which run in hyperscaler data centers increasingly powered by renewable energy ($<$2~g~CO$_2$~eq per prompt), AI4Science tools often run on university HPC clusters powered by local grid electricity with higher carbon intensity. As agents scale to thousands of tool calls per day, the carbon-intensive scientific models---not the agent itself---will dominate the total emissions.
+
+% --- 5.2 Carbon reduction ---
+\subsection{Towards Carbon-Aware Model Selection}
+
+Our decomposition analysis (CO$_2 \propto$ inference time, $R^2 > 0.91$; inference time $\propto$ architecture, not model size) points to a clear principle: \textbf{the most effective way to reduce emissions is to choose the right architecture}. Diffusion models pay an inherent tax of 100--1{,}000 forward passes per sample for iterative denoising, while template-based and autoregressive models require only one. This structural difference explains why RetroBridge (4.6M params, Diffusion) costs 65$\times$ more than LocalRetro (8.6M params, GNN) for worse accuracy---it is not about model size, but about how many times the model runs.
+
+This insight reframes the conventional wisdom that ``smaller models are greener.'' Our data shows model size contributes negligibly to emissions (regression coefficient 0.06 vs 1.00 for time). Practitioners should focus on reducing wall-clock time---through distillation, fewer sampling steps, or architectural choice---rather than parameter counts.
+
+More broadly, we advocate that carbon cost become a standard reporting metric in AI4Science benchmarks, following the Green AI principles of~\citet{schwartz2020green}. When 40--71\% of published models are Pareto-dominated, the community would benefit from routinely visualizing accuracy-carbon trade-offs alongside accuracy tables.
+
+% --- 5.3 Limitations ---
+\subsection{Limitations}
+Our benchmark focuses on inference-time carbon footprint rather than training costs. While training large models can incur substantial one-time emissions, these costs are amortized over the model's deployment lifetime and depend heavily on hardware, optimization strategies, and training duration. For practitioners selecting models for deployment, inference efficiency is often the more actionable metric, though we acknowledge that a complete lifecycle analysis would include both phases.
+Several practical constraints also shape the scope of this work. Due to limited computational resources typical of academic research groups, we benchmark only a few representative models per task rather than exhaustively covering all available methods. Additionally, we focus exclusively on open-source models where energy consumption can be directly measured; proprietary API-based models, including large language models accessed through commercial endpoints, present measurement challenges that preclude fair comparison. Finally, our carbon intensity estimates use global averages, which may not accurately reflect emissions in specific deployment regions or times of day when grid composition varies significantly.
+
+% ============================================
+% 6. CONCLUSION
+% ============================================
+\section{Conclusion}
+We have presented \textit{The Carbon Cost of AI for Science}, the first systematic sustainability analysis of ML models across scientific discovery tasks. Across six tasks spanning molecule generation, crystal generation, retrosynthesis, forward reaction prediction, structure optimization, and molecular dynamics simulation, we find three key results:
+
+First, carbon emissions are overwhelmingly determined by inference time ($R^2 > 0.91$ in every task), which is in turn determined by model architecture---not model size. This provides a clear, actionable lever: choosing the right architecture reduces emissions by 22--4{,}355$\times$ with no loss in performance.
+
+Second, 40--71\% of models per task are Pareto-dominated, meaning another model exists that is both cheaper and better. The field is producing substantial wasted computation.
+
+Third, as AI agents adopt these models for automated discovery, the scientific tool cost---not the agent reasoning cost---will dominate the carbon budget. For MLIP-driven materials screening, the tool accounts for 89--99\% of total emissions, making architecture choice the decisive factor for sustainable AI-driven science.
+
+By making these trade-offs explicit, we hope to shift the evaluation paradigm in AI for science: accuracy alone is an insufficient metric when carbon costs vary by orders of magnitude across architecturally equivalent alternatives. Our benchmark framework and data are available at \url{https://github.com/shuan4638/Carbon4Science} to support ongoing efforts toward sustainable scientific AI.
+
+% ============================================
+
+\section*{Software and Data}
+
+All code, benchmarking scripts, and result data are available at \url{https://github.com/shuan4638/Carbon4Science}. Each model is run in an isolated conda environment to ensure reproducibility. Raw energy measurements (JSON) and processed data (CSV) are included.
+
+\section*{Acknowledgements}
+
+\todo{Add acknowledgements.}
+
+\section*{Impact Statement}
+
+This work aims to raise awareness of the environmental costs of AI models used in scientific discovery. By quantifying and comparing carbon emissions across models and tasks, we hope to encourage the community to consider sustainability alongside accuracy when developing and selecting models. We note that carbon intensity varies by region and energy source; our estimates use global averages and should be interpreted as relative comparisons rather than absolute values.
+
+% In the unusual situation where you want a paper to appear in the
+% references without citing it in the main text, use \nocite
+\nocite{langley00}
+
+\bibliography{reference}
+\bibliographystyle{icml2026}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDIX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\appendix
+\onecolumn
+
+\section{Dataset Details}
+\label{app:datasets}
+
+\begin{table}[h]
+\centering
+\caption{Dataset statistics for all six tasks.}
+\label{tab:datasets}
+\begin{tabular}{llrrrrr}
+\toprule
+Task & Dataset & Total & Train & Val & Test & Unit \\
+\midrule
+Mol.\ Generation   & ChEMBL~\cite{zdrazil2024chembl}         
+    & \todo{N} & \todo{N} & \todo{N} & \todo{N} & molecules \\
+Crystal Gen.\      & MP-20~\cite{xie2021crystal}             
+    & 45,231   & 27,138   & 9,046    & 9,047    & structures \\
+Retrosynthesis     & USPTO-50K~\cite{schneider2016s}         
+    & 50,016   & 40,008   & 5,001    & 5,007    & reactions \\
+Reaction Outcome   & USPTO-MIT~\cite{jin2017predicting}      
+    & 479,035  & 409,035  & 30,000   & 40,000   & reactions \\
+Crystal Opt.\ \&   & MPtrj~\cite{deng2023chgnet}             
+    & 1,580,395 & 1,264,316 & 157,990 & 157,955 & structures \\
+MD Simulation      &                                         
+    &          & (116,556) & (14,572) & (14,572) & (materials) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For ChEMBL, we apply an 80/10/10 random split; the exact version and size depend on the preprocessing pipeline and are confirmed in our code repository.\todo{confirm ChEMBL version and size} For MP-20, we follow the standard split established by CDVAE~\cite{xie2021crystal}. For USPTO-50K and USPTO-MIT, all reactions are canonicalized using RDKit prior to training and 
+evaluation. For MPtrj, the split is partitioned by material identity to prevent data leakage between structures from the same relaxation trajectory, following the protocol of \citet{deng2023chgnet}.
+
+\section{Implementation and measurement details.}
+% --- 3.4 Efficiency Metrics ---
+\subsection{Efficiency Metrics}
+
+Beyond raw carbon emissions, we compute normalized efficiency metrics:
+
+\begin{itemize}
+    \item \textbf{Carbon per sample:} gCO$_2$eq per generated molecule / predicted structure / planned route
+    \item \textbf{Accuracy-normalized carbon:} Carbon cost per unit of performance improvement over a baseline model
+    \item \textbf{Pareto efficiency:} Whether a model lies on the accuracy-carbon Pareto frontier
+\end{itemize}
+
+\paragraph{Measurement Protocol.}
+For each model, we:
+\begin{enumerate}
+    \item Warm up the model with 10 inference calls (discarded)
+    \item Measure energy consumption over $N$ standardized inference tasks, where $N$ varies at different tasks
+    \item Report mean and standard deviation across 3 independent runs
+\end{enumerate}
+
+\subsection{Scaling Analysis}
+
+To understand how carbon costs scale in practical deployment, we consider a scenario where an AI agent orchestrates scientific workflows by repeatedly calling these models. We define a ``job'' as the workload of a single practical session: 10{,}000 molecules for generation, 1{,}000 structures for materials screening, 500 molecules for reaction prediction, and 1{,}000{,}000 MD steps for simulation. Table~\ref{tab:main_results} reports both per-call and per-job emissions, enabling users to estimate total carbon cost for their specific workflow scale.
+
+For multi-step pipelines---e.g., an AI agent that generates candidate molecules, predicts synthetic routes, and validates via MD simulation---the total emission is the sum across stages. Because MLIP simulations dominate per-job cost by 1--2 orders of magnitude over chemistry tasks, the simulation stage will typically account for $>$90\% of a pipeline's total carbon footprint.
+
+All experiments were performed on a single NVIDIA RTX 5000 Ada Generation GPU (32GB), Intel Xeon Platinum 8558 CPU (192 cores), and 503 GB RAM, running Linux.
+
+% ===== 新增這段 =====
+\paragraph{Hardware and Model Efficiency.}
+Beyond energy consumption, we report two additional metrics that affect 
+practical deployment:
+
+\begin{itemize}
+    \item \textbf{Model size}: The number of trainable parameters, which 
+          determines storage requirements and download time for model 
+          distribution.
+    \item \textbf{Peak GPU memory}: Maximum GPU memory usage during inference, 
+          recorded using \texttt{torch.cuda.max\_memory\_allocated()}. This 
+          determines the minimum hardware required to run the model.
+\end{itemize}
+
+These metrics complement carbon footprint by capturing different dimensions
+of accessibility: a model may be energy-efficient per inference but still
+impractical for researchers without high-end GPUs or sufficient storage.
+
+\section{Additional Figures}
+\label{app:additional_figures}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/Fig. A1 - year vs model size.png}
+    \caption{Year vs model size (log$_{10}$ scale) for each task. Model sizes have grown modestly from 2017 to 2025, but the growth is not uniform across tasks---MLIP models remain relatively small ($<$30M params), while chemistry tasks have seen the introduction of billion-parameter LLMs.}
+    \label{fig:app_year_size}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/Fig. A2 - model size vs time.png}
+    \caption{Model size vs inference time per task. No task shows a statistically significant correlation (all $p > 0.05$), confirming that model size does not predict inference time. Points are colored by architecture type, revealing that the scatter is explained by architectural differences rather than parameter counts.}
+    \label{fig:app_size_time}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{figures/Fig. A3 - CO2 vs size+time (cross tasks).png}
+    \caption{Cross-task CO$_2$ decomposition. \textbf{Left}: inference time vs CO$_2$ ($R^2 = 0.97$); \textbf{Right}: model size vs CO$_2$ ($R^2 = 0.12$). Points are colored by task and shaped by architecture. The contrast confirms that inference time universally determines carbon cost across all scientific domains, while model size is a poor predictor.}
+    \label{fig:app_cross_task}
+\end{figure}
+
+\end{document}
+
+% This document was modified from the file originally made available by
+% Pat Langley and Andrea Danyluk for ICML-2K. This version was created
+% by Iain Murray in 2018, and modified by Alexandre Bouchard in
+% 2019 and 2021 and by Csaba Szepesvari, Gang Niu and Sivan Sabato in 2022.
+% Modified again in 2023 and 2024 by Sivan Sabato and Jonathan Scarlett.
+% Previous contributors include Dan Roy, Lise Getoor and Tobias
+% Scheffer, which was slightly modified from the 2010 version by
+% Thorsten Joachims & Johannes Fuernkranz, slightly modified from the
+% 2009 version by Kiri Wagstaff and Sam Roweis's 2008 version, which is
+% slightly modified from Prasad Tadepalli's 2007 version which is a
+% lightly changed version of the previous year's version by Andrew
+% Moore, which was in turn edited from those of Kristian Kersting and
+% Codrina Lauth. Alex Smola contributed to the algorithmic style files.

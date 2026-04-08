@@ -1,0 +1,46 @@
+{
+  "task": "MolGen",
+  "model": "SmileyLlama",
+  "num_samples": 10000,
+  "num_generated": 10000,
+  "model_params": 8030261248,
+  "metrics": [
+    "validity",
+    "uniqueness",
+    "novelty",
+    "diversity",
+    "fcd"
+  ],
+  "accuracy": {
+    "validity": 0.9427,
+    "uniqueness": 0.9997878434284502,
+    "novelty": 0.9979840848806366,
+    "diversity": 0.8756146751364071,
+    "fcd": 2.410108406558294
+  },
+  "carbon": {
+    "start_time": "2026-04-02T05:33:07.927567",
+    "end_time": "2026-04-02T05:43:53.352478",
+    "duration_seconds": 645.4249110221863,
+    "energy_wh": 56.6792,
+    "emissions_g_co2": 22.6717,
+    "gpu_energy_wh": 38.3992,
+    "cpu_energy_wh": 17.2113,
+    "ram_energy_wh": 1.0687,
+    "peak_gpu_memory_mb": 17349.0,
+    "peak_cpu_memory_mb": 16276.6,
+    "project_name": "SmileyLlama_MolGen_benchmark",
+    "model_name": "SmileyLlama",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

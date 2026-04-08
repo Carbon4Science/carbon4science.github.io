@@ -1,0 +1,50 @@
+{
+  "task": "Forward",
+  "model": "MolecularTransformer",
+  "num_samples": 40000,
+  "top_k": 5,
+  "model_params": null,
+  "metrics": [
+    "top_1",
+    "top_2",
+    "top_3",
+    "top_5"
+  ],
+  "accuracy": {
+    "top_1": 0.868475,
+    "top_2": 0.90535,
+    "top_3": 0.91655,
+    "top_5": 0.924275
+  },
+  "correct": {
+    "top_1": 34739,
+    "top_2": 36214,
+    "top_3": 36662,
+    "top_5": 36971
+  },
+  "carbon": {
+    "start_time": "2026-03-23T18:36:51.718705",
+    "end_time": "2026-03-23T22:02:08.941499",
+    "duration_seconds": 12317.222794532776,
+    "energy_wh": 899.8977,
+    "emissions_g_co2": 359.9591,
+    "gpu_energy_wh": 567.2423,
+    "cpu_energy_wh": 329.1436,
+    "ram_energy_wh": 3.5118,
+    "peak_gpu_memory_mb": 75.6,
+    "peak_cpu_memory_mb": 2802.8,
+    "project_name": "MolecularTransformer_Forward_benchmark",
+    "model_name": "MolecularTransformer",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-redhat-9.6-Blue_Onyx"
+    }
+  }
+}

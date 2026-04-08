@@ -1,0 +1,50 @@
+{
+  "task": "Retro",
+  "model": "LlaSMol",
+  "num_samples": 5007,
+  "top_k": 50,
+  "model_params": 7241732096,
+  "metrics": [
+    "top_1",
+    "top_5",
+    "top_10",
+    "top_50"
+  ],
+  "accuracy": {
+    "top_1": 0.020770920711004594,
+    "top_5": 0.041741561813461156,
+    "top_10": 0.04953065708008788,
+    "top_50": 0.04953065708008788
+  },
+  "correct": {
+    "top_1": 104,
+    "top_5": 209,
+    "top_10": 248,
+    "top_50": 248
+  },
+  "carbon": {
+    "start_time": "2026-03-29T14:02:09.756276",
+    "end_time": "2026-03-30T00:54:08.929825",
+    "duration_seconds": 39119.17354941368,
+    "energy_wh": 3463.5068,
+    "emissions_g_co2": 1385.4027,
+    "gpu_energy_wh": 2149.9246,
+    "cpu_energy_wh": 1273.5464,
+    "ram_energy_wh": 40.0358,
+    "peak_gpu_memory_mb": 17525.1,
+    "peak_cpu_memory_mb": 10060.7,
+    "project_name": "LlaSMol_Retro_benchmark",
+    "model_name": "LlaSMol",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}
