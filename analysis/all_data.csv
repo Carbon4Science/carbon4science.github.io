@@ -1,47 +1,49 @@
 task,year,venue,model,model type,model size,performance,CO2_per_call,call_unit,inference_time_s,CO2_total,baseline?
-MatGen,2022,ICLR,CDVAE,Diffusion,4.9M,22.6,0.2704,g/structure,25764.0,270.41,True
-MatGen,2023,NeurIPS,DiffCSP,Diffusion,12.4M,28.999999999999996,0.0126,g/structure,381.0,12.65,False
-MatGen,2024,Nat. Commun.,CrystaLLM,LM,25.9M,16.400000000000002,0.0192,g/structure,942.0,19.25,False
-MatGen,2024,ICML,FlowMM,Flow Matching,28.3M,23.9,0.0128,g/structure,547.0,12.76,False
-MatGen,2024,NeurIPS,ChargeDIFF,Diffusion,59.5M,33.5,0.1335,g/structure,2994.0,133.5,False
-MatGen,2025,Nature,MatterGen,Diffusion,44.6M,33.4,0.2481,g/structure,8079.0,248.09,False
-MatGen,2025,ICML,ADiT,Diffusion,231.9M,29.599999999999998,0.1125,g/structure,10512.0,112.49,False
-MatGen,2025,ICML,CrystalFlow,Flow Matching,20.9M,21.7,0.0015,g/structure,43.0,1.48,False
-MolGen,2017,J. Cheminf.,REINVENT,LM,4.4M,91.12,1.1e-05,g/mol,10.4,0.11,True
-MolGen,2018,ICML,JT-VAE,VAE,7.1M,99.48,0.002,g/mol,1284.0,20.45,False
-MolGen,2020,ICML,HierVAE,VAE,8.0M,93.48,0.0014,g/mol,788.0,14.39,False
-MolGen,2021,J. Chem. Inf. Model.,MolGPT,LM,6.4M,93.73,0.0002,g/mol,60.0,1.85,False
-MolGen,2023,ICML,DiGress,Diffusion,16.2M,79.85,0.0392,g/mol,11931.0,391.99,False
-MolGen,2024,J. Cheminf.,REINVENT4,LM,5.8M,94.67,9e-06,g/mol,10.0,0.09,False
-MolGen,2024,arXiv,SmileyLlama,LLM,8.0B,94.06,0.0023,g/mol,645.0,22.67,False
-MolGen,2024,NeurIPS,DeFoG,Flow Matching,16.3M,97.47,0.0572,g/mol,,571.96,False
-Retro,2017,Chem. Eur. J.,neuralsym,MLP,32.5M,74.8,0.007,g/mol,1283.0,35.0,True
-Retro,2021,JCIM,MEGAN,GNN,9.8M,90.1,0.0103,g/mol,2951.0,51.7,False
-Retro,2021,JACS Au,LocalRetro,GNN,8.6M,95.6,0.0124,g/mol,2316.0,62.2,False
-Retro,2022,Chem. Sci.,RSMILES,LM,44.6M,93.0,0.2165,g/mol,44092.0,1083.8,False
-Retro,2022,ML:ST,Chemformer,LM,44.7M,64.0,0.5133,g/mol,84990.0,2569.9,False
-Retro,2024,COLM,LlaSMol,LLM,7.2B,5.0,0.2767,g/mol,39119.0,1385.4,False
-Retro,2024,ICLR,RetroBridge,Diffusion,4.6M,52.8,0.8069,g/mol,157706.0,4040.1,False
-Retro,2025,Nat. Commun.,RSGPT,LLM,1.6B,97.8,0.5016,g/mol,79024.0,2511.7,False
-Forward,2017,Chem. Eur. J.,neuralsym,MLP,98.1M,50.6,0.0011,g/mol,2732.0,43.9,True
-Forward,2019,ACS Cent. Sci.,MolecularTransformer,LM,11.7M,91.7,0.009,g/mol,12317.0,360.0,False
-Forward,2021,JCIM,MEGAN,GNN,9.9M,86.4,0.0021,g/mol,6657.0,85.3,False
-Forward,2022,Nat. Mach. Intell.,LocalTransform,GNN,9.1M,92.1,0.0071,g/mol,17799.0,282.9,False
-Forward,2022,Chem. Sci.,RSMILES,LM,44.6M,94.7,0.0154,g/mol,46209.0,614.7,False
-Forward,2024,COLM,LlaSMol,LLM,7.2B,5.9,0.0353,g/mol,104960.0,1413.8,False
-StructOpt,2023,Nat. Mach. Intell.,CHGNet,GNN,413K,0.343,0.379,g/1K steps,2129.0,28.4,True
-StructOpt,2023,arXiv,MACE,GNN,4.69M,0.637,0.932,g/1K steps,3832.0,69.9,False
-StructOpt,2024,J. Chem. Theory Comput.,SevenNet,GNN,1.17M,0.714,0.648,g/1K steps,2829.0,48.6,False
-StructOpt,2024,arXiv,ORB,GNN,25.2M,0.47,0.155,g/1K steps,737.0,11.6,False
-StructOpt,2025,arXiv,eSEN,GNN,30.1M,0.797,3.486,g/1K steps,9983.0,261.4,False
-StructOpt,2025,arXiv,NequIP,GNN,9.6M,0.733,0.454,g/1K steps,1121.0,34.0,False
-StructOpt,2025,arXiv,DPA3,GNN,4.81M,0.718,1.538,g/1K steps,7538.0,115.4,False
-StructOpt,2025,arXiv,Nequix,GNN,708K,0.729,0.685,g/1K steps,2628.0,51.4,False
-MDSim,2023,Nat. Mach. Intell.,CHGNet,GNN,413K,0.047,0.379,g/1K steps,2129.0,28.4,True
-MDSim,2023,arXiv,MACE,GNN,4.69M,0.095,0.932,g/1K steps,3832.0,69.9,False
-MDSim,2024,J. Chem. Theory Comput.,SevenNet,GNN,1.17M,0.531,0.648,g/1K steps,2829.0,48.6,False
-MDSim,2024,arXiv,ORB,GNN,25.2M,0.385,0.155,g/1K steps,737.0,11.6,False
-MDSim,2025,arXiv,eSEN,GNN,30.1M,0.72,3.486,g/1K steps,9983.0,261.4,False
-MDSim,2025,arXiv,NequIP,GNN,9.6M,0.361,0.454,g/1K steps,1121.0,34.0,False
-MDSim,2025,arXiv,DPA3,GNN,4.81M,0.508,1.538,g/1K steps,7538.0,115.4,False
-MDSim,2025,arXiv,Nequix,GNN,708K,0.203,0.685,g/1K steps,2628.0,51.4,False
+MatGen,2021,ICLR,CDVAE,Diffusion,4.9M,22.6,0.2704,g/structure,25764,270.41,TRUE
+MatGen,2023,NeurIPS,DiffCSP,Diffusion,12.4M,29,0.0126,g/structure,381,12.65,FALSE
+MatGen,2024,Nat. Commun.,CrystaLLM,LM,25.9M,16.4,0.0192,g/structure,942,19.25,FALSE
+MatGen,2024,ICML,FlowMM,Flow Matching,28.3M,23.9,0.0128,g/structure,547,12.76,FALSE
+MatGen,2025,arXiv,ChargeDIFF,Diffusion,59.5M,33.5,0.1335,g/structure,2994,133.5,FALSE
+MatGen,2025,Nature,MatterGen,Diffusion,44.6M,33.4,0.2481,g/structure,8079,248.09,FALSE
+MatGen,2025,ICML,ADiT,Diffusion,231.9M,29.6,0.1125,g/structure,10512,112.49,FALSE
+MatGen,2025,ICML,CrystalFlow,Flow Matching,20.9M,21.7,0.0015,g/structure,43,1.48,FALSE
+MolGen,2017,J. Cheminf.,REINVENT,LM,4.4M,87.9,1.80E-05,g/mol,10.4,0.18,TRUE
+MolGen,2018,ICML,JT-VAE,VAE,7.1M,91.4,0.001,g/mol,1284,10.6,FALSE
+MolGen,2020,ICML,HierVAE,VAE,8.0M,92.1,0.001,g/mol,788,12,FALSE
+MolGen,2021,J. Chem. Inf. Model.,MolGPT,LM,6.4M,77.2,0.0001,g/mol,60,1.1,FALSE
+MolGen,2023,ICML,DiGress,Diffusion,16.2M,82.5,0.018,g/mol,11931,175.4,FALSE
+MolGen,2024,J. Cheminf.,REINVENT4,LM,5.8M,94.2,7.00E-06,g/mol,10,0.07,FALSE
+MolGen,2024,arXiv,SmileyLlama,LLM,8.0B,94.3,0.002,g/mol,645,21.8,FALSE
+MolGen,2024,NeurIPS,DeFoG,Flow Matching,16.3M,82.3,0.036,g/mol,20957,355.2,FALSE
+Retro,2017,Chem. Eur. J.,neuralsym,MLP,32.5M,74.8,0.007,g/mol,128.3,3.5,TRUE
+Retro,2021,JCIM,MEGAN,GNN,9.8M,90.1,0.0103,g/mol,295.1,5.17,FALSE
+Retro,2021,JACS Au,LocalRetro,GNN,8.6M,97.3,0.0124,g/mol,231.6,6.22,FALSE
+Retro,2022,ML:ST,Chemformer,LM,44.7M,64,0.5133,g/mol,8499,256.99,FALSE
+Retro,2022,Chem. Sci.,RSMILES,LM,44.6M,93,0.2165,g/mol,4409.2,108.38,FALSE
+Retro,2024,COLM,LlaSMol,LLM,7.2B,5,0.2767,g/mol,3911.9,138.54,FALSE
+Retro,2024,ICLR,RetroBridge,Diffusion,4.6M,52.8,0.8069,g/mol,15770.6,404.01,FALSE
+Retro,2025,Nat. Commun.,RSGPT,LLM,1.6B,97.8,0.5016,g/mol,79024,251.17,FALSE
+Forward,2017,Chem. Eur. J.,neuralsym,MLP,98.1M,50.6,0.0011,g/mol,34.15,0.55,TRUE
+Forward,2019,ACS Cent. Sci.,MolecularTransformer,LM,11.7M,91.7,0.009,g/mol,154,4.5,FALSE
+Forward,2021,JCIM,MEGAN,GNN,9.9M,86.4,0.0021,g/mol,83.2,1.05,FALSE
+Forward,2022,ML:ST,Chemformer,LM,44.7M,90.3,0.0174,g/mol,490,8.7,FALSE
+Forward,2022,Chem. Sci.,RSMILES,LM,44.6M,94.7,0.0154,g/mol,578,7.7,FALSE
+Forward,2022,JCIM,Graph2SMILES,LM,18M,89.9,0.0074,g/mol,221,3.7,FALSE
+Forward,2022,Nat. Mach. Intell.,LocalTransform,GNN,9.1M,95.1,0.0072,g/mol,222.5,3.55,FALSE
+Forward,2024,COLM,LlaSMol,LLM,7.2B,5.9,0.0353,g/mol,1312,17.65,FALSE
+StructOpt,2023,Nat. Mach. Intell.,CHGNet,GNN,413K,0.343,0.000379,g/ step,28386.66667,379,TRUE
+StructOpt,2023,arXiv,MACE,GNN,4.69M,0.637,0.000932,g/ step,51093.33333,932,FALSE
+StructOpt,2024,J. Chem. Theory Comput.,SevenNet,GNN,1.17M,0.714,0.000648,g/ step,37720,648,FALSE
+StructOpt,2024,arXiv,ORB,GNN,25.2M,0.47,0.000155,g/ step,9826.666667,155,FALSE
+StructOpt,2025,arXiv,eSEN,GNN,30.1M,0.797,0.003486,g/ step,133106.6667,3486,FALSE
+StructOpt,2025,arXiv,NequIP,GNN,9.6M,0.733,0.000454,g/ step,14946.66667,454,FALSE
+StructOpt,2025,arXiv,DPA3,GNN,4.81M,0.718,0.001538,g/ step,100506.6667,1538,FALSE
+StructOpt,2025,arXiv,Nequix,GNN,708K,0.729,0.000685,g/ step,35040,685,FALSE
+MDSim,2023,Nat. Mach. Intell.,CHGNet,GNN,413K,0.047,0.000379,g/ step,28386.66667,379,TRUE
+MDSim,2023,arXiv,MACE,GNN,4.69M,0.095,0.000932,g/ step,51093.33333,932,FALSE
+MDSim,2024,J. Chem. Theory Comput.,SevenNet,GNN,1.17M,0.531,0.000648,g/ step,37720,648,FALSE
+MDSim,2024,arXiv,ORB,GNN,25.2M,0.385,0.000155,g/ step,9826.666667,155,FALSE
+MDSim,2025,arXiv,eSEN,GNN,30.1M,0.72,0.003486,g/ step,133106.6667,3486,FALSE
+MDSim,2025,arXiv,NequIP,GNN,9.6M,0.361,0.000454,g/ step,14946.66667,454,FALSE
+MDSim,2025,arXiv,DPA3,GNN,4.81M,0.508,0.001538,g/ step,100506.6667,1538,FALSE
+MDSim,2025,arXiv,Nequix,GNN,708K,0.203,0.000685,g/ step,35040,685,FALSE

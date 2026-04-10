@@ -178,7 +178,17 @@ def plot_fig1(df):
                 lw = 2.0 if is_base else 0.6
                 ax.scatter(row['year'], yval, color=c, marker=m, s=marker_size(m),
                            edgecolors=ec, linewidths=lw, zorder=3)
-                texts.append(ax.text(row['year'], yval, row['model'],
+                # Nudge overlapping labels: Forward performance column
+                tx, ty = row['year'], yval
+                if task == 'Forward' and j == 2 and row['model'] == 'RSMILES':
+                    ty += 3.0
+                elif task == 'Forward' and j == 2 and row['model'] == 'LocalTransform':
+                    ty -= 3.0
+                elif task == 'MolGen' and j == 2 and row['model'] == 'SmileyLlama':
+                    ty += 3.0
+                elif task == 'MolGen' and j == 2 and row['model'] == 'REINVENT4':
+                    ty -= 3.0
+                texts.append(ax.text(tx, ty, row['model'],
                                      fontsize=14, zorder=5))
             # Set limits BEFORE adjust_text so it adjusts within correct bounds
             ax.set_xlim(xlim)
@@ -345,12 +355,15 @@ def plot_fig3(df):
         for j, (xcol, ycol, xlabel, ylabel) in enumerate(panels):
             ax = axes[i, j]
             texts3 = []
+            log_xs, log_ys = [], []
             for _, row in grp.iterrows():
                 xv, yv = row[xcol], row[ycol]
                 if pd.isna(xv) or pd.isna(yv) or xv <= 0 or yv <= 0:
                     continue
                 log_xv = np.log10(xv)
                 log_yv = np.log10(yv)
+                log_xs.append(log_xv)
+                log_ys.append(log_yv)
                 m = ARCH_MARKERS.get(row['model type'], 'o')
                 is_base = row.get('baseline?', False)
                 sz = marker_size(m)
@@ -359,6 +372,18 @@ def plot_fig3(df):
                 ax.scatter(log_xv, log_yv, color=c, marker=m, s=sz,
                            edgecolors=ec, linewidths=lw, zorder=3)
                 texts3.append(ax.text(log_xv, log_yv, row['model'], fontsize=14, zorder=5))
+            # Regression + R² for inference time vs CO₂ (column 1)
+            if j == 1 and len(log_xs) > 1:
+                log_xs_arr = np.array(log_xs)
+                log_ys_arr = np.array(log_ys)
+                coef = np.polyfit(log_xs_arr, log_ys_arr, 1)
+                r2 = 1 - np.sum((log_ys_arr - np.polyval(coef, log_xs_arr))**2) / \
+                         np.sum((log_ys_arr - log_ys_arr.mean())**2)
+                xfit = np.linspace(log_xs_arr.min(), log_xs_arr.max(), 50)
+                ax.plot(xfit, np.polyval(coef, xfit), 'k--', lw=1.2, alpha=0.5, zorder=2)
+                ax.text(0.05, 0.95, f'R²={r2:.2f}', transform=ax.transAxes,
+                        fontsize=16, va='top',
+                        bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
             # Shared x-limits per column
             ax.set_xlim(col_xlims[j])
             ax.tick_params(labelsize=16)
@@ -427,7 +452,7 @@ def plot_fig4():
     for i, (val, unit) in enumerate(zip(values, units)):
         label = (f'{val / 1000:.1f} kg CO₂ eq/{unit}' if val >= 1000
                  else f'{val:.1f} g CO₂ eq/{unit}')
-        ax.text(val * 1.4, i, label, va='center', fontsize=8.5, fontweight='bold')
+        ax.text(val * 1.4, i, label, va='center', fontsize=8.5)
 
     ax.set_yticks(range(len(ref_data)))
     ax.set_yticklabels([''] * len(ref_data))
@@ -438,8 +463,8 @@ def plot_fig4():
                 ha='right', va='center', fontsize=8.5, fontstyle='italic', color='#777777')
 
     ax.set_xscale('log')
-    ax.set_xlabel('CO₂ Emission (g CO₂ eq, log scale)', fontsize=14)
-    ax.set_title('CO₂ Emission Reference Points', fontsize=16, fontweight='bold')
+    ax.set_xlabel('CO₂ Emission (g CO₂ eq)', fontsize=14)
+    # ax.set_title('CO₂ Emission Reference Points', fontsize=16, fontweight='bold')
     ax.tick_params(labelsize=12)
     ax.set_xlim(0.5, 5e8)
 
@@ -520,17 +545,17 @@ ALT_METRICS = {
     'Retro':   {'neuralsym': 72.8, 'MEGAN': 87.0, 'LocalRetro': 91.5, 'RSMILES': 89.6,
                 'Chemformer': 62.8, 'LlaSMol': 5.0, 'RetroBridge': 44.9, 'RSGPT': 96.6},
     'Forward': {'neuralsym': 49.5, 'MEGAN': 80.1, 'Graph2SMILES': 88.5, 'Chemformer': 89.0,
-                'LocalTransform': 87.4, 'MolecularTransformer': 86.8, 'RSMILES': 89.4, 'LlaSMol': 3.8},
+                'LocalTransform': 89.4, 'MolecularTransformer': 86.8, 'RSMILES': 89.4, 'LlaSMol': 3.8},
 }
-# MolGen SUN is already in the pretrained data loaded in load_data()
-MOLGEN_SUN = {
-    'REINVENT': 74.40, 'JT-VAE': 75.70, 'HierVAE': 77.98, 'MolGPT': 65.00,
-    'DiGress': 78.71, 'REINVENT4': 75.65, 'SmileyLlama': 77.75, 'DeFoG': 75.90,
+# MolGen VUNS is already in the pretrained data loaded in load_data()
+MOLGEN_VUNS = {
+    'REINVENT': 67.11, 'JT-VAE': 75.63, 'HierVAE': 74.18, 'MolGPT': 82.00,
+    'DiGress': 56.14, 'REINVENT4': 74.27, 'SmileyLlama': 65.95, 'DeFoG': 64.75
 }
 
 ALT_TASK_ORDER = ['MatGen', 'MolGen', 'Retro', 'Forward']
 ALT_LABELS = {
-    'MatGen': 'SUN (%)', 'MolGen': 'SUN (%)',
+    'MatGen': 'SUN (%)', 'MolGen': 'VUNS (%)',
     'Retro': 'Top-10 Acc (%)', 'Forward': 'Top-1 Acc (%)',
 }
 
@@ -544,8 +569,8 @@ def plot_fig6(df):
     df['alt_perf'] = np.nan
     for idx, row in df.iterrows():
         task, model = row['task'], row['model']
-        if task == 'MolGen' and model in MOLGEN_SUN:
-            df.at[idx, 'alt_perf'] = MOLGEN_SUN[model]
+        if task == 'MolGen' and model in MOLGEN_VUNS:
+            df.at[idx, 'alt_perf'] = MOLGEN_VUNS[model]
         elif task in ALT_METRICS and model in ALT_METRICS[task]:
             df.at[idx, 'alt_perf'] = ALT_METRICS[task][model]
 
@@ -603,7 +628,12 @@ def plot_fig6(df):
                        edgecolors=ec, linewidths=lw, zorder=4)
             label = f"{row['model']} ({row['year']})"
             fw = 'bold' if is_base else 'normal'
-            texts6.append(ax.text(row['log_co2_ratio'], row['delta_alt_pct'], label,
+            tx6, ty6 = row['log_co2_ratio'], row['delta_alt_pct']
+            if task == 'Forward' and row['model'] == 'Graph2SMILES':
+                ty6 += 5.0
+            elif task == 'Forward' and row['model'] == 'LocalTransform':
+                ty6 -= 5.0
+            texts6.append(ax.text(tx6, ty6, label,
                                   fontsize=14, fontweight=fw, zorder=5))
 
         ax.set_xlim(xmin, xmax)
