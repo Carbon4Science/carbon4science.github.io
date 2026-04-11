@@ -53,8 +53,8 @@ ARCH_MARKERS = {
     'LM':            '^',
     'LLM':           '*',
     'VAE':           's',
-    'Diffusion':     'X',
-    'Flow Matching': 'P',
+    'Diffusion':     'P',
+    'Flow Matching': 'X',
 }
 
 # Reference point categories (Figure 5)
@@ -244,6 +244,21 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
             ax.plot(step_x, step_y, color='black', linewidth=1.5, linestyle='--',
                     alpha=0.6, zorder=2)
 
+        # Manual label positions for crowded subplots: absolute (x, y) in data coords
+        # Also optionally reduce fontsize per task
+        MANUAL_POSITIONS = {
+            'Forward': {
+                'MEGAN': (-0.2, 80),
+                'RSMILES': (1.2, 95.0),
+                'LocalTransform': (-0.1, 95.0),
+                'MolecularTransformer': (0.3, 55.0),
+                'Graph2SMILES': (0.1, 35.0),
+                'Chemformer': (1.2, 70.0),
+            },
+        }
+        positions = MANUAL_POSITIONS.get(task, {})
+        label_fs = 14 
+
         # plot points
         texts2 = []
         for _, row in grp.iterrows():
@@ -257,8 +272,14 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
                        edgecolors=ec, linewidths=lw, zorder=4)
             label = f"{row['model']} ({row['year']})"
             fw = 'bold' if is_base else 'normal'
-            texts2.append(ax.text(row['log_co2_ratio'], row['delta_perf_pct'], label,
-                                  fontsize=14, fontweight=fw, zorder=5))
+            pos = positions.get(row['model'], None)
+            if pos is not None:
+                ax.annotate(label, xy=(row['log_co2_ratio'], row['delta_perf_pct']),
+                            xytext=pos, fontsize=label_fs, fontweight=fw, zorder=5,
+                            arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
+            else:
+                texts2.append(ax.text(row['log_co2_ratio'], row['delta_perf_pct'], label,
+                                      fontsize=label_fs, fontweight=fw, zorder=5))
 
         # Set limits and styling BEFORE adjust_text
         ax.set_xlim(xmin, xmax)
@@ -269,10 +290,11 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
         ax.tick_params(labelsize=16)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
-        # adjust_text AFTER axis setup
-        adjust_text(texts2, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
-                    force_points=(2.0, 2.0), iterations=200,
-                    arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
+        # adjust_text AFTER axis setup (skip if all labels were manually placed)
+        if texts2:
+            adjust_text(texts2, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
+                        force_points=(2.0, 2.0), iterations=200,
+                        arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
 
     # shared legend
     arch_handles = get_arch_legend_handles()
