@@ -459,7 +459,7 @@ def plot_fig5(df):
     fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(20, 9))
 
     for panel_ax, xcol, xlabel in [
-        (ax_left,  'inference_time_per_exp', 'log₁₀(Inference Time)'),
+        (ax_left,  'inference_time_per_exp', 'log₁₀(Inference Time/exp)'),
         (ax_right, '_size_num',              'log₁₀(Model Size)'),
     ]:
         all_logx, all_logy = [], []
