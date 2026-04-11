@@ -400,7 +400,7 @@
           <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" opacity=".7"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/></svg>
           <span class="stat-value" id="stat-co2range">—</span>
         </div>
-        <span class="stat-label">CO₂/job range (g)</span>
+        <span class="stat-label">CO₂ eq./job range (g)</span>
       </div>
     </div>
   </div>
@@ -456,7 +456,7 @@
   <!-- Chart (reference on All tab; Pareto scatter on task tabs via toggle) -->
   <div class="chart-card" id="chart-card">
     <div class="chart-header">
-      <span class="chart-title" id="chart-title">CO₂ Emission Reference Points</span>
+      <span class="chart-title" id="chart-title">CO₂ eq. Emission Reference Points</span>
       <span class="chart-hint" id="chart-hint">Log scale · Hover for details</span>
     </div>
     <div id="ref-chart"></div>
@@ -668,7 +668,8 @@ function buildTabs() {
       state.activeTask  = task;
       state.sortCol     = 'major_metric';
       state.sortDir     = -1;
-      state.showPareto  = false;
+      // Keep showPareto state when switching between task tabs; reset only when going to All
+      if (task === 'All') state.showPareto = false;
       render();
     });
     container.appendChild(btn);
@@ -711,7 +712,7 @@ function getColumns() {
       { key: 'modelType',              label: 'Arch',           sort: 'modelType',     cls: '' },
       { key: 'modelSize',              label: 'Size',           sort: null,            cls: '' },
       { key: 'major_metric',           label: 'Primary Metric', sort: 'major_metric',  cls: 'num' },
-      { key: 'CO2_per_job',            label: 'CO₂/job (g)',    sort: 'CO2_per_job',   cls: 'co2-cell' },
+      { key: 'CO2_per_job',            label: 'CO₂ eq./job (g)',    sort: 'CO2_per_job',   cls: 'co2-cell' },
       { key: 'inference_time_per_exp', label: 'Time/exp',       sort: 'inference_time_per_exp', cls: 'num' },
     ];
   }
@@ -728,7 +729,7 @@ function getColumns() {
     cols.push({ key: 'minor_metric', label: cfg.minorLabel,  sort: 'minor_metric',  cls: 'num' });
   }
   cols.push(
-    { key: 'CO2_per_job',            label: 'CO₂/job (g)',    sort: 'CO2_per_job',   cls: 'co2-cell' },
+    { key: 'CO2_per_job',            label: 'CO₂ eq./job (g)',    sort: 'CO2_per_job',   cls: 'co2-cell' },
     { key: 'inference_time_per_exp', label: 'Time/exp',       sort: 'inference_time_per_exp', cls: 'num' },
   );
   return cols;
@@ -873,7 +874,7 @@ function renderTable(rows) {
 
         case 'CO2_per_job': {
           td.className = 'co2-cell';
-          td.title = 'CO₂/job: normalized per fixed workload unit (e.g. 500 reactions for Retro, 10K molecules for MolGen)';
+          td.title = 'CO₂ eq./job: normalized per fixed workload unit (e.g. 500 reactions for Retro, 10K molecules for MolGen)';
           const wrap = document.createElement('div');
           wrap.className = 'co2-bar-wrap';
           const track = document.createElement('div');
@@ -977,7 +978,7 @@ function renderChart() {
 
 /* ── CO₂ Reference Points (All tab) ── */
 function renderRefChart() {
-  document.getElementById('chart-title').textContent = 'CO₂ Emission Reference Points';
+  document.getElementById('chart-title').textContent = 'CO₂ eq. Emission Reference Points';
   document.getElementById('chart-hint').textContent  = 'Log scale · Error bars show range across all models · Hover for details';
 
   // Pre-compute min/max CO2_per_job per task for error bars
@@ -1007,7 +1008,7 @@ function renderRefChart() {
   const chartH = Math.max(480, sorted.length * barPx + 80);
   document.getElementById('ref-chart').style.height = chartH + 'px';
 
-  function fmtCO2(v) { return v >= 1000 ? `${(v/1000).toFixed(1)} kg CO₂` : `${v.toFixed(2)} g CO₂`; }
+  function fmtCO2(v) { return v >= 1000 ? `${(v/1000).toFixed(1)} kg CO₂ eq.` : `${v.toFixed(2)} g CO₂ eq.`; }
 
   const customs = sorted.map(d => {
     const rng = d.taskKey && taskRanges[d.taskKey];
@@ -1064,9 +1065,9 @@ function renderRefChart() {
 
   const layout = {
     xaxis: {
-      title:          { text: 'CO₂ Emission (g)', font: { size: 12 } },
+      title:          { text: 'CO₂ eq. Emission (g)', font: { size: 12 } },
       type:           'log',
-      range:          [Math.log10(0.5), Math.log10(8e8)],
+      range:          [Math.log10(0.5), Math.log10(Math.max(...sorted.map(d => d._barVal)) * 4)],
       dtick:          1,
       exponentformat: 'power',
       showgrid:       true, gridcolor: '#f1f5f9', zeroline: false,
@@ -1124,7 +1125,7 @@ function renderScatterChart(task) {
 
   document.getElementById('chart-title').textContent = `${task}: Accuracy vs. Carbon Cost`;
   document.getElementById('chart-hint').textContent  =
-    'X-axis: CO₂/job (log) · Pareto frontier shown as dashed line · Hover for details';
+    'X-axis: CO₂ eq./job (log) · Pareto frontier shown as dashed line · Hover for details';
 
   const traces = [];
 
@@ -1163,7 +1164,7 @@ function renderScatterChart(task) {
         '<b>%{customdata.model}</b> <i>(%{customdata.year})</i>',
         '%{customdata.arch} · %{customdata.size} · %{customdata.venue}',
         '%{customdata.mlabel}: <b>%{customdata.metric}</b>',
-        'CO₂/job: <b>%{customdata.co2:.2f} g</b>',
+        'CO₂ eq./job: <b>%{customdata.co2:.2f} g</b>',
         'Time/exp: %{customdata.time}',
         '<extra>%{customdata.pareto ? "⚡ Pareto-optimal" : ""}</extra>',
       ].join('<br>'),
@@ -1188,7 +1189,7 @@ function renderScatterChart(task) {
 
   const layout = {
     xaxis: {
-      title:          { text: 'CO₂/job (g)', font: { size: 12 } },
+      title:          { text: 'CO₂ eq./job (g)', font: { size: 12 } },
       type:           'log',
       dtick:          1,
       exponentformat: 'power',
