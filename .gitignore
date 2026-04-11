@@ -67,9 +67,7 @@ Thumbs.db
 *.mdb
 
 # Exception: allow test data in task data directories
-!Retro/data/*.pickle
-!MolGen/data/*.pickle
-!MatGen/data/*.pickle
+!Example/data/*.pickle
 
 # Logs
 logs/
@@ -77,9 +75,17 @@ logs/
 wandb/
 lightning_logs/
 
-# Benchmark results (per-task results dirs)
-*/results/outputs/*.json
-*/results/outputs/*.csv
+# Benchmark outputs (raw predictions, large files)
+*/results/outputs/
+*_predictions.json
+
+# Large data files in model dirs
+**/data/*.csv
+**/data/*.txt
+
+# Attention visualizations and other binary outputs
+**/attentions/
+**/r-smiles_data_and_models/
 
 # CodeCarbon outputs
 emissions.csv
