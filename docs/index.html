@@ -102,6 +102,10 @@
       font-size: 11px; opacity: .65;
       text-transform: uppercase; letter-spacing: .07em;
     }
+    .stat-icon {
+      display: flex; align-items: center; gap: 7px;
+    }
+    .stat-icon svg { opacity: .55; flex-shrink: 0; }
 
     /* ─── MAIN LAYOUT ────────────────────────────────────── */
     main { max-width: 1280px; margin: 0 auto; padding: 24px 16px 56px; }
@@ -264,6 +268,7 @@
     tbody tr:hover { background: #f8fafc; }
     tbody tr.pareto-row { background: #f0fdf4; }
     tbody tr.pareto-row:hover { background: #dcfce7; }
+    tbody tr.pareto-row td:first-child { border-left: 3px solid #059669; padding-left: 11px; }
 
     td { padding: 10px 14px; vertical-align: middle; }
     td.rank { font-family: var(--mono); font-size: 12px; color: var(--text-muted); width: 44px; }
@@ -339,7 +344,7 @@
       .controls { flex-direction: column; align-items: stretch; }
       .search-wrap { max-width: 100%; }
       .controls-right { margin-left: 0; }
-      #scatter-chart { height: 360px; }
+      #ref-chart { height: 340px; }
       .chart-hint { display: none; }
     }
   </style>
@@ -370,20 +375,32 @@
     </p>
     <div class="stats-bar">
       <div class="stat-item">
-        <span class="stat-value" id="stat-models">—</span>
+        <div class="stat-icon">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" opacity=".7"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <span class="stat-value" id="stat-models">—</span>
+        </div>
         <span class="stat-label">Visible models</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value" id="stat-tasks">6</span>
+        <div class="stat-icon">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" opacity=".7"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          <span class="stat-value" id="stat-tasks">6</span>
+        </div>
         <span class="stat-label">Tasks</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value" id="stat-pareto">—</span>
+        <div class="stat-icon">
+          <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24" opacity=".7"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <span class="stat-value" id="stat-pareto">—</span>
+        </div>
         <span class="stat-label">Pareto-optimal</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value" id="stat-co2range">—</span>
-        <span class="stat-label">CO₂ range (g)</span>
+        <div class="stat-icon">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" opacity=".7"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 8v4l3 3"/></svg>
+          <span class="stat-value" id="stat-co2range">—</span>
+        </div>
+        <span class="stat-label">CO₂/job range (g)</span>
       </div>
     </div>
   </div>
@@ -535,8 +552,8 @@ function computeParetoSet(rows) {
       const dominated = group.some(o =>
         o !== r &&
         o.major_metric >= r.major_metric &&
-        o.CO2_per_exp  <= r.CO2_per_exp  &&
-        (o.major_metric > r.major_metric || o.CO2_per_exp < r.CO2_per_exp)
+        o.CO2_per_job  <= r.CO2_per_job  &&
+        (o.major_metric > r.major_metric || o.CO2_per_job < r.CO2_per_job)
       );
       if (!dominated) paretoSet.add(r);
     });
@@ -683,7 +700,6 @@ function getColumns() {
       { key: 'major_metric',           label: 'Primary Metric', sort: 'major_metric',  cls: 'num' },
       { key: 'CO2_per_job',            label: 'CO₂/job (g)',    sort: 'CO2_per_job',   cls: 'co2-cell' },
       { key: 'inference_time_per_exp', label: 'Time/exp',       sort: 'inference_time_per_exp', cls: 'num' },
-      { key: 'pareto',                 label: 'Pareto',         sort: null,            cls: '' },
     ];
   }
   const cols = [
@@ -701,7 +717,6 @@ function getColumns() {
   cols.push(
     { key: 'CO2_per_job',            label: 'CO₂/job (g)',    sort: 'CO2_per_job',   cls: 'co2-cell' },
     { key: 'inference_time_per_exp', label: 'Time/exp',       sort: 'inference_time_per_exp', cls: 'num' },
-    { key: 'pareto',                 label: 'Pareto',         sort: null,            cls: '' },
   );
   return cols;
 }
@@ -779,6 +794,13 @@ function renderTable(rows) {
           name.className = 'model-name';
           name.textContent = row.model;
           wrap.appendChild(name);
+          if (GLOBAL_PARETO.has(row)) {
+            const p = document.createElement('span');
+            p.title = 'Pareto-optimal within task';
+            p.style.cssText = 'font-size:11px;color:#059669;margin-left:2px;';
+            p.textContent = '⚡';
+            wrap.appendChild(p);
+          }
           td.appendChild(wrap);
           break;
         }
@@ -838,6 +860,7 @@ function renderTable(rows) {
 
         case 'CO2_per_job': {
           td.className = 'co2-cell';
+          td.title = 'CO₂/job: normalized per fixed workload unit (e.g. 500 reactions for Retro, 10K molecules for MolGen)';
           const wrap = document.createElement('div');
           wrap.className = 'co2-bar-wrap';
           const track = document.createElement('div');
@@ -861,14 +884,6 @@ function renderTable(rows) {
           td.textContent = fmtTime(row.inference_time_per_exp);
           break;
 
-        case 'pareto':
-          if (isPareto) {
-            const badge = document.createElement('span');
-            badge.className = 'pareto-badge';
-            badge.innerHTML = '⚡ Pareto';
-            td.appendChild(badge);
-          }
-          break;
       }
 
       tr.appendChild(td);
@@ -975,6 +990,10 @@ function renderRefChart() {
     return { ...d, _barVal: d.value, _errMinus: 0 };
   });
 
+  const barPx = 42;
+  const chartH = Math.max(480, sorted.length * barPx + 80);
+  document.getElementById('ref-chart').style.height = chartH + 'px';
+
   function fmtCO2(v) { return v >= 1000 ? `${(v/1000).toFixed(1)} kg CO₂` : `${v.toFixed(2)} g CO₂`; }
 
   const customs = sorted.map(d => {
@@ -1046,7 +1065,19 @@ function renderRefChart() {
       bordercolor: '#e2e8f0', borderwidth: 1,
       title: { text: 'Category', font: { size: 11 } },
     },
-    margin:        { t: 12, b: 50, l: 10, r: 220 },
+    annotations: sorted.map(d => ({
+      x:        d._barVal,
+      y:        d.label,
+      xref:     'x',
+      yref:     'y',
+      text:     fmtCO2(d._barVal),
+      xanchor:  'left',
+      yanchor:  'middle',
+      xshift:   7,
+      showarrow: false,
+      font:     { size: 9, family: 'JetBrains Mono, monospace', color: '#64748b' },
+    })),
+    margin:        { t: 12, b: 50, l: 10, r: 260 },
     plot_bgcolor:  '#ffffff', paper_bgcolor: '#ffffff',
     hovermode:     'closest',
     hoverlabel:    { font: { family: 'Inter, sans-serif', size: 12 }, align: 'left' },
@@ -1153,6 +1184,21 @@ function renderScatterChart(task) {
       bordercolor: '#e2e8f0', borderwidth: 1,
       title: { text: 'Architecture', font: { size: 11 } },
     },
+    annotations: taskRows
+      .filter(r => GLOBAL_PARETO.has(r))
+      .map(r => ({
+        x:         r.CO2_per_job,
+        y:         r.major_metric,
+        xref:      'x',
+        yref:      'y',
+        text:      r.model,
+        xanchor:   'left',
+        yanchor:   'bottom',
+        xshift:    8,
+        yshift:    5,
+        showarrow: false,
+        font:      { size: 10, family: 'Inter, sans-serif', color: darkenHex(cfg.color, 25) },
+      })),
     margin:        { t: 18, b: 50, l: 60, r: 180 },
     plot_bgcolor:  '#ffffff', paper_bgcolor: '#ffffff',
     hovermode:     'closest',
