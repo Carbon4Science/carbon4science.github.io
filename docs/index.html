@@ -62,14 +62,14 @@
       display: flex; flex-direction: column; align-items: center;
       gap: 12px; width: 100%;
     }
-    .logo { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .logo { display: flex; flex-direction: row; align-items: center; gap: 14px; }
     .logo-icon {
-      width: 80px; height: 80px;
+      width: 120px; height: 120px;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
-    .logo-text h1 { font-size: 28px; font-weight: 700; letter-spacing: -.4px; color: var(--text); }
-    .logo-text p  { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+    .logo-text h1 { font-size: 28px; font-weight: 700; letter-spacing: -.4px; color: var(--text); text-align: left; }
+    .logo-text p  { font-size: 13px; color: var(--text-muted); margin-top: 3px; text-align: left; }
 
 .header-desc {
       margin-top: 14px; font-size: 13.5px; color: var(--text-muted);
@@ -365,7 +365,7 @@
   <div class="header-inner">
     <div class="header-top">
       <div class="logo">
-        <div class="logo-icon"><img src="noah.svg" alt="Carbon4Science logo" style="width:72px;height:72px;object-fit:contain;display:block;" /></div>
+        <div class="logo-icon"><img src="noah.svg" alt="Carbon4Science logo" style="width:112px;height:112px;object-fit:contain;display:block;" /></div>
         <div class="logo-text">
           <h1>Carbon4Science</h1>
           <p>Accuracy &amp; Carbon Efficiency Leaderboard</p>
@@ -487,6 +487,7 @@
     Carbon4Science · Data updated April 2026 ·
     <a href="https://github.com/shuan4638/Carbon4Science" target="_blank" rel="noopener">GitHub</a>
   </p>
+  <p style="margin-top:6px;">© 2026 Shuan Chen. Released under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.</p>
 </footer>
 
 <!-- ═══════════════════════════ SCRIPT ══════════════════════════════ -->
@@ -1070,10 +1071,13 @@ function renderRefChart() {
       dtick:          1,
       exponentformat: 'power',
       showgrid:       true, gridcolor: '#f1f5f9', zeroline: false,
+      showline:       true, linecolor: '#94a3b8', linewidth: 1.5,
+      ticks:          'outside', ticklen: 4, tickwidth: 1.5, tickcolor: '#94a3b8',
       tickfont:       { family: 'JetBrains Mono, monospace', size: 11 },
       automargin:     true,
     },
-    yaxis: { automargin: true, tickfont: { size: 12 } },
+    yaxis: { automargin: true, tickfont: { size: 12 }, showline: true, linecolor: '#94a3b8', linewidth: 1.5,
+             ticks: 'outside', ticklen: 4, tickwidth: 1.5, tickcolor: '#94a3b8' },
     legend: {
       orientation: 'v', x: 1.01, y: 0,
       font: { size: 11 }, bgcolor: 'rgba(255,255,255,.88)',
@@ -1186,12 +1190,16 @@ function renderScatterChart(task) {
       dtick:          1,
       exponentformat: 'power',
       showgrid:       true, gridcolor: '#f1f5f9', zeroline: false,
+      showline:       true, linecolor: '#94a3b8', linewidth: 1.5,
+      ticks:          'outside', ticklen: 4, tickwidth: 1.5, tickcolor: '#94a3b8',
       tickfont:       { family: 'JetBrains Mono, monospace', size: 11 },
       automargin:     true,
     },
     yaxis: {
       title:      { text: cfg.majorLabel, font: { size: 12 } },
       showgrid:   true, gridcolor: '#f1f5f9', zeroline: false,
+      showline:   true, linecolor: '#94a3b8', linewidth: 1.5,
+      ticks:      'outside', ticklen: 4, tickwidth: 1.5, tickcolor: '#94a3b8',
       tickfont:   { family: 'JetBrains Mono, monospace', size: 11 },
       automargin: true,
     },
