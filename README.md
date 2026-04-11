@@ -1,5 +1,10 @@
 # The Carbon Cost of AI for Science
 
+<p align="center">
+  <img src="docs/noah.svg" alt="Carbon4Science logo" width="120" />
+</p>
+
+[![Website](https://img.shields.io/badge/Website-carbon4science-green.svg)](https://shuan4638.github.io/Carbon4Science/)
 [![Paper](https://img.shields.io/badge/Paper-arXiv-red.svg)](https://arxiv.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
