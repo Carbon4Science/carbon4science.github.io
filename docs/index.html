@@ -63,20 +63,17 @@
       gap: 12px; width: 100%;
     }
     .logo { display: flex; flex-direction: row; align-items: center; gap: 14px; }
+    .logo-text { display: flex; flex-direction: column; justify-content: center; }
     .logo-icon {
       width: 120px; height: 120px;
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
-    .logo-text h1 { font-size: 28px; font-weight: 700; letter-spacing: -.4px; color: var(--text); text-align: left; }
-    .logo-text p  { font-size: 13px; color: var(--text-muted); margin-top: 3px; text-align: left; }
+    .logo-text h1 { font-size: 40px; font-weight: 700; letter-spacing: -.6px; color: var(--text); text-align: left; }
+    .logo-text p  { font-size: 17px; color: var(--text-muted); margin-top: 5px; text-align: left; }
 
-.header-desc {
-      margin-top: 14px; font-size: 13.5px; color: var(--text-muted);
-      max-width: 680px; line-height: 1.65;
-    }
 
-    /* Stats bar inside header */
+/* Stats bar inside header */
     .stats-bar {
       display: flex; gap: 40px; flex-wrap: wrap; justify-content: center;
       margin-top: 22px; padding-top: 18px;
@@ -347,7 +344,10 @@
     /* ─── RESPONSIVE ─────────────────────────────────────── */
     @media (max-width: 720px) {
       header { padding: 22px 16px 18px; }
-      .logo-text h1 { font-size: 19px; }
+      .logo-icon { width: 72px; height: 72px; }
+      .logo-icon img { width: 68px !important; height: 68px !important; }
+      .logo-text h1 { font-size: 24px; }
+      .logo-text p  { font-size: 13px; }
       .stat-value { font-size: 18px; }
       .stats-bar { gap: 20px; }
       .controls { flex-direction: column; align-items: stretch; }
@@ -368,16 +368,11 @@
         <div class="logo-icon"><img src="noah.svg" alt="Carbon4Science logo" style="width:112px;height:112px;object-fit:contain;display:block;" /></div>
         <div class="logo-text">
           <h1>Carbon4Science</h1>
-          <p>Accuracy &amp; Carbon Efficiency Leaderboard</p>
+          <p>A Carbon Efficiency Leaderboard for AI4Science</p>
         </div>
       </div>
     </div>
 
-    <p class="header-desc">
-      Benchmarking predictive performance <em>and</em> carbon cost of AI for scientific
-      discovery — retrosynthesis, forward prediction, molecule generation, material generation,
-      structure optimization, and MD simulation.
-    </p>
     <div class="stats-bar">
       <div class="stat-item">
         <div class="stat-icon">
@@ -425,6 +420,8 @@
     <span class="task-banner-label" id="banner-label"></span>
     <span class="task-banner-sep">·</span>
     <span class="task-banner-desc" id="banner-desc"></span>
+    <span class="task-banner-sep">·</span>
+    <span class="task-banner-desc" id="banner-job"></span>
   </div>
 
   <!-- Controls row (hidden on All tab) -->
@@ -498,12 +495,12 @@
    CONFIGURATION
 ────────────────────────────────────────────────────── */
 const TASK_CONFIG = {
-  Retro:     { majorLabel: 'Top-50 (%)', minorLabel: 'Top-10 (%)', color: '#17becf', desc: 'USPTO-50K · 5,007 reactions' },
-  Forward:   { majorLabel: 'Top-3 (%)',  minorLabel: 'Top-1 (%)',  color: '#ff7f0e', desc: 'USPTO-MIT · 40,029 reactions' },
-  MolGen:    { majorLabel: 'VUN (%)',    minorLabel: 'SUN (%)',     color: '#1f77b4', desc: 'ChEMBL 28 · 10,000 molecules' },
-  MatGen:    { majorLabel: 'mSUN (%)',   minorLabel: 'SUN (%)',     color: '#2ca02c', desc: 'MP-20 · 1,000 structures' },
-  StructOpt: { majorLabel: 'CPS',        minorLabel: null,          color: '#d62728', desc: 'LGPS · 75K steps × 3 seeds' },
-  MDSim:     { majorLabel: 'MSD',        minorLabel: null,          color: '#9467bd', desc: 'LGPS · 75K steps × 3 seeds' },
+  Retro:     { majorLabel: 'Top-50 (%)', minorLabel: 'Top-10 (%)', color: '#17becf', desc: 'USPTO-50K · 5,007 reactions',  job: '1 job = 500 inputs' },
+  Forward:   { majorLabel: 'Top-3 (%)',  minorLabel: 'Top-1 (%)',  color: '#ff7f0e', desc: 'USPTO-MIT · 40,000 reactions', job: '1 job = 500 inputs' },
+  MolGen:    { majorLabel: 'VUN (%)',    minorLabel: 'SUN (%)',     color: '#1f77b4', desc: 'ChEMBL 28 · 10,000 molecules', job: '1 job = 10,000 molecules' },
+  MatGen:    { majorLabel: 'mSUN (%)',   minorLabel: 'SUN (%)',     color: '#2ca02c', desc: 'MP-20 · 1,000 structures',     job: '1 job = 1,000 structures' },
+  StructOpt: { majorLabel: 'CPS',        minorLabel: null,          color: '#d62728', desc: 'LGPS · 75K steps × 3 seeds',  job: '1 job = 1M steps' },
+  MDSim:     { majorLabel: 'MSD',        minorLabel: null,          color: '#9467bd', desc: 'LGPS · 75K steps × 3 seeds',  job: '1 job = 1M steps' },
 };
 
 const ARCH_SYMBOLS = {
@@ -694,6 +691,7 @@ function updateBanner() {
   document.getElementById('banner-dot').style.background    = cfg.color;
   document.getElementById('banner-label').textContent       = state.activeTask;
   document.getElementById('banner-desc').textContent        = cfg.desc;
+  document.getElementById('banner-job').textContent         = cfg.job;
 }
 
 /* ──────────────────────────────────────────────────────
@@ -1078,6 +1076,7 @@ function renderRefChart() {
     },
     yaxis: { automargin: true, tickfont: { size: 12 }, showline: true, linecolor: '#94a3b8', linewidth: 1.5,
              ticks: 'outside', ticklen: 4, tickwidth: 1.5, tickcolor: '#94a3b8' },
+    showlegend: window.innerWidth >= 600,
     legend: {
       orientation: 'v', x: 1.01, y: 0,
       font: { size: 11 }, bgcolor: 'rgba(255,255,255,.88)',
@@ -1203,6 +1202,7 @@ function renderScatterChart(task) {
       tickfont:   { family: 'JetBrains Mono, monospace', size: 11 },
       automargin: true,
     },
+    showlegend: window.innerWidth >= 600,
     legend: {
       orientation: 'v', x: 1.01, y: 0,
       font: { size: 11 }, bgcolor: 'rgba(255,255,255,.88)',
