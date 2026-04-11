@@ -482,7 +482,8 @@
 <footer>
   <p>
     Carbon4Science · Data updated April 2026 ·
-    <a href="https://github.com/shuan4638/Carbon4Science" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/shuan4638/Carbon4Science" target="_blank" rel="noopener">GitHub</a> ·
+    <span style="color:var(--text-light);cursor:default;" title="Coming soon on arXiv">Paper (coming soon)</span>
   </p>
   <p style="margin-top:6px;">© 2026 Shuan Chen. Released under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.</p>
 </footer>
@@ -1083,6 +1084,9 @@ function renderRefChart() {
       bordercolor: '#e2e8f0', borderwidth: 1,
       title: { text: 'Category', font: { size: 11 } },
     },
+    margin: window.innerWidth >= 600
+      ? { t: 18, b: 50, l: 8, r: 160 }
+      : { t: 18, b: 50, l: 8, r: 16 },
     annotations: sorted.map(d => ({
       x:        Math.log10(d._barVal),
       y:        d.label,
@@ -1224,7 +1228,9 @@ function renderScatterChart(task) {
         showarrow: false,
         font:      { size: 10, family: 'Inter, sans-serif', color: darkenHex(cfg.color, 25) },
       })),
-    margin:        { t: 18, b: 50, l: 60, r: 180 },
+    margin:        window.innerWidth >= 600
+      ? { t: 18, b: 50, l: 60, r: 180 }
+      : { t: 18, b: 50, l: 60, r: 16 },
     plot_bgcolor:  '#ffffff', paper_bgcolor: '#ffffff',
     hovermode:     'closest',
     hoverlabel:    { font: { family: 'Inter, sans-serif', size: 12 }, align: 'left' },
