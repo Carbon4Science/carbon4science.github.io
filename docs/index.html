@@ -210,7 +210,7 @@
     }
     .chart-title { font-size: 14px; font-weight: 600; }
     .chart-hint { font-size: 12px; color: var(--text-muted); margin-left: auto; }
-    #scatter-chart { width: 100%; height: 480px; }
+    #ref-chart { width: 100%; height: 520px; }
 
     .arch-legend {
       display: flex; flex-wrap: wrap; gap: 12px;
@@ -428,14 +428,13 @@
     <div class="controls-right" id="row-count-label"></div>
   </div>
 
-  <!-- Scatter chart -->
+  <!-- CO₂ Reference Points chart -->
   <div class="chart-card">
     <div class="chart-header">
-      <span class="chart-title">Accuracy vs. Carbon Cost</span>
-      <span class="chart-hint">X-axis: log scale · Pareto frontier shown as dashed line per task · Hover for details</span>
+      <span class="chart-title">CO₂ Emission Reference Points</span>
+      <span class="chart-hint">Log scale · Hover for details</span>
     </div>
-    <div id="scatter-chart"></div>
-    <div class="arch-legend" id="arch-legend"></div>
+    <div id="ref-chart"></div>
   </div>
 
   <!-- Leaderboard table -->
@@ -682,7 +681,7 @@ function getColumns() {
       { key: 'modelType',              label: 'Arch',           sort: 'modelType',     cls: '' },
       { key: 'modelSize',              label: 'Size',           sort: null,            cls: '' },
       { key: 'major_metric',           label: 'Primary Metric', sort: 'major_metric',  cls: 'num' },
-      { key: 'CO2_per_exp',            label: 'CO₂/exp (g)',    sort: 'CO2_per_exp',   cls: 'co2-cell' },
+      { key: 'CO2_per_job',            label: 'CO₂/job (g)',    sort: 'CO2_per_job',   cls: 'co2-cell' },
       { key: 'inference_time_per_exp', label: 'Time/exp',       sort: 'inference_time_per_exp', cls: 'num' },
       { key: 'pareto',                 label: 'Pareto',         sort: null,            cls: '' },
     ];
@@ -700,7 +699,7 @@ function getColumns() {
     cols.push({ key: 'minor_metric', label: cfg.minorLabel,  sort: 'minor_metric',  cls: 'num' });
   }
   cols.push(
-    { key: 'CO2_per_exp',            label: 'CO₂/exp (g)',    sort: 'CO2_per_exp',   cls: 'co2-cell' },
+    { key: 'CO2_per_job',            label: 'CO₂/job (g)',    sort: 'CO2_per_job',   cls: 'co2-cell' },
     { key: 'inference_time_per_exp', label: 'Time/exp',       sort: 'inference_time_per_exp', cls: 'num' },
     { key: 'pareto',                 label: 'Pareto',         sort: null,            cls: '' },
   );
@@ -756,7 +755,7 @@ function renderTable(rows) {
     return;
   }
 
-  const maxCO2 = Math.max(...rows.map(r => r.CO2_per_exp));
+  const maxCO2 = Math.max(...rows.map(r => r.CO2_per_job));
 
   rows.forEach((row, idx) => {
     const isPareto = GLOBAL_PARETO.has(row);
@@ -843,7 +842,7 @@ function renderTable(rows) {
             : '—';
           break;
 
-        case 'CO2_per_exp': {
+        case 'CO2_per_job': {
           td.className = 'co2-cell';
           const wrap = document.createElement('div');
           wrap.className = 'co2-bar-wrap';
@@ -851,11 +850,11 @@ function renderTable(rows) {
           track.className = 'co2-bar-track';
           const fill = document.createElement('div');
           fill.className = 'co2-bar-fill';
-          fill.style.width = (maxCO2 > 0 ? (row.CO2_per_exp / maxCO2 * 100) : 0) + '%';
+          fill.style.width = (maxCO2 > 0 ? (row.CO2_per_job / maxCO2 * 100) : 0) + '%';
           track.appendChild(fill);
           const val = document.createElement('span');
           val.className = 'co2-val';
-          val.textContent = fmtShort(row.CO2_per_exp);
+          val.textContent = fmtShort(row.CO2_per_job);
           wrap.appendChild(track);
           wrap.appendChild(val);
           td.appendChild(wrap);
@@ -913,109 +912,99 @@ function buildStepLine(front) {
 }
 
 /* ──────────────────────────────────────────────────────
-   RENDER CHART
+   CO₂ REFERENCE POINTS DATA
 ────────────────────────────────────────────────────── */
-function renderChart(filteredRows) {
-  const visibleTasks = state.activeTask === 'All'
-    ? Object.keys(TASK_CONFIG)
-    : [state.activeTask];
+const REF_DATA = [
+  { category: 'LLM inference',           label: 'Image generation',        desc: 'Stable Diffusion',              value: 1.38,    unit: 'image' },
+  { category: 'LLM inference',           label: 'Text generation',          desc: 'Claude-3.7 Sonnet',             value: 2.12,    unit: '10k in & 1.5k out' },
+  { category: 'Everyday activities',     label: 'Smartphone charge',        desc: 'iPhone 16 Pro Max',             value: 9.7,     unit: 'full charge' },
+  { category: 'Chemical simulation',     label: 'Classical MD',             desc: 'force field',                   value: 10,      unit: '1M steps' },
+  { category: 'AI Synthesis prediction', label: 'Reaction outcome pred.',   desc: 'LlaSMol',                       value: 17.7,    unit: '500 inputs' },
+  { category: 'Everyday activities',     label: 'Driving a car',            desc: 'EU average',                    value: 170,     unit: 'km' },
+  { category: 'AI Chemical generation',  label: 'Molecule generation',      desc: 'DeFoG',                         value: 355.2,   unit: '10K molecules' },
+  { category: 'AI Synthesis prediction', label: 'Synthesis Planning',       desc: 'RetroBridge',                   value: 403,     unit: '500 molecules' },
+  { category: 'AI Chemical generation',  label: 'Material generation',      desc: 'MatterGen',                     value: 248,     unit: '1K structures' },
+  { category: 'AI MD simulation',        label: 'MLIP simulation',          desc: 'eSEN',                          value: 3486,    unit: '1M steps' },
+  { category: 'Chemical synthesis',      label: 'Battery synthesis',        desc: 'Vanadium flow battery',         value: 37000,   unit: 'MWh' },
+  { category: 'Chemical synthesis',      label: 'Material synthesis',       desc: 'UiO-66-NH₂ (aqueous-based)',    value: 43000,   unit: 'kg' },
+  { category: 'Chemical simulation',     label: 'Ab initio MD',             desc: 'PBE (50 atoms)',                value: 140960,  unit: '1M steps' },
+  { category: 'Chemical synthesis',      label: 'Organic synthesis',        desc: 'Letermovir (Merck)',             value: 382000,  unit: 'kg' },
+].sort((a, b) => a.value - b.value);
 
-  const traces = [];
+const REF_CAT_COLORS = {
+  'LLM inference':           '#9467bd',
+  'AI Synthesis prediction': '#17becf',
+  'AI Chemical generation':  '#2ca02c',
+  'AI MD simulation':        '#d62728',
+  'Everyday activities':     '#ff7f0e',
+  'Chemical simulation':     '#8c564b',
+  'Chemical synthesis':      '#e377c2',
+};
 
-  visibleTasks.forEach(task => {
-    const taskRows = filteredRows.filter(r => r.task === task);
-    if (!taskRows.length) return;
-    const cfg = TASK_CONFIG[task];
+/* ──────────────────────────────────────────────────────
+   RENDER CHART (CO₂ Reference Points)
+────────────────────────────────────────────────────── */
+function renderChart() {
+  const sorted = REF_DATA;
 
-    // Group by architecture for distinct marker shapes
-    const byArch = {};
-    taskRows.forEach(r => { (byArch[r.modelType] = byArch[r.modelType] || []).push(r); });
+  const labels    = sorted.map(d => d.label);
+  const values    = sorted.map(d => d.value);
+  const colors    = sorted.map(d => REF_CAT_COLORS[d.category] || '#64748b');
+  const customs   = sorted.map(d => ({
+    desc: d.desc,
+    unit: d.unit,
+    cat:  d.category,
+    valFmt: d.value >= 1000
+      ? `${(d.value / 1000).toFixed(1)} kg CO₂ eq`
+      : `${d.value} g CO₂ eq`,
+  }));
 
-    Object.entries(byArch).forEach(([arch, archRows]) => {
+  const traces = [{
+    type: 'bar',
+    orientation: 'h',
+    x: values,
+    y: labels,
+    marker: { color: colors },
+    customdata: customs,
+    hovertemplate:
+      '<b>%{y}</b><br>' +
+      '%{customdata.desc}<br>' +
+      '<b>%{customdata.valFmt}</b> / %{customdata.unit}<br>' +
+      '<i>%{customdata.cat}</i>' +
+      '<extra></extra>',
+  }];
+
+  // Build category legend traces (invisible, for legend only)
+  const seenCats = new Set();
+  sorted.forEach(d => {
+    if (!seenCats.has(d.category)) {
+      seenCats.add(d.category);
       traces.push({
-        type: 'scatter',
-        mode: 'markers',
-        name: `${task} · ${arch}`,
-        legendgroup: task,
-        x: archRows.map(r => r.CO2_per_exp),
-        y: archRows.map(r => r.major_metric),
-        marker: {
-          symbol: ARCH_SYMBOLS[arch] || 'circle',
-          size:   archRows.map(r => GLOBAL_PARETO.has(r) ? 14 : 9),
-          color:  cfg.color,
-          opacity: archRows.map(r => GLOBAL_PARETO.has(r) ? 1.0 : 0.60),
-          line: {
-            color: archRows.map(r => GLOBAL_PARETO.has(r) ? darkenHex(cfg.color, 40) : cfg.color),
-            width: archRows.map(r => GLOBAL_PARETO.has(r) ? 2 : 1),
-          },
-        },
-        customdata: archRows.map(r => ({
-          model:       r.model,
-          task:        r.task,
-          arch:        r.modelType,
-          size:        r.modelSize,
-          metric:      fmtMetric(r.major_metric, r.task),
-          metricLabel: cfg.majorLabel,
-          co2:         r.CO2_per_exp,
-          time:        fmtTime(r.inference_time_per_exp),
-          pareto:      GLOBAL_PARETO.has(r),
-          baseline:    r.baseline,
-          year:        r.year,
-          venue:       r.venue,
-        })),
-        hovertemplate: [
-          '<b>%{customdata.model}</b> <i>(%{customdata.year})</i>',
-          'Task: %{customdata.task} · %{customdata.arch} · %{customdata.size}',
-          '%{customdata.metricLabel}: <b>%{customdata.metric}</b>',
-          'CO₂/exp: <b>%{x:.2f} g</b>',
-          'Time/exp: %{customdata.time}',
-          '%{customdata.venue}',
-          '<extra>%{customdata.pareto ? "⚡ Pareto-optimal" : ""}</extra>',
-        ].join('<br>'),
+        type: 'bar',
+        orientation: 'h',
+        x: [null], y: [null],
+        name: d.category,
+        marker: { color: REF_CAT_COLORS[d.category] || '#64748b' },
         showlegend: true,
-      });
-    });
-
-    // Pareto frontier step-line
-    const frontPts = taskRows
-      .filter(r => GLOBAL_PARETO.has(r))
-      .map(r => ({ x: r.CO2_per_exp, y: r.major_metric }));
-    if (frontPts.length >= 2) {
-      const { lx, ly } = buildStepLine(paretoFrontier(frontPts));
-      traces.push({
-        type: 'scatter',
-        mode: 'lines',
-        name: `${task} frontier`,
-        legendgroup: task,
-        x: lx, y: ly,
-        line: { color: cfg.color, dash: 'dash', width: 1.5 },
         hoverinfo: 'skip',
-        showlegend: false,
       });
     }
   });
 
-  const yLabel = state.activeTask !== 'All'
-    ? TASK_CONFIG[state.activeTask].majorLabel
-    : 'Primary Metric';
-
   const layout = {
     xaxis: {
-      title:     { text: 'CO₂ per experiment (g)', font: { size: 12 } },
-      type:      'log',
-      showgrid:  true,
-      gridcolor: '#f1f5f9',
-      zeroline:  false,
-      tickfont:  { family: 'JetBrains Mono, monospace', size: 11 },
+      title:      { text: 'CO₂ Emission (g)', font: { size: 12 } },
+      type:       'log',
+      range:      [Math.log10(0.5), Math.log10(8e8)],
+      showgrid:   true,
+      gridcolor:  '#f1f5f9',
+      zeroline:   false,
+      tickfont:   { family: 'JetBrains Mono, monospace', size: 11 },
       automargin: true,
     },
     yaxis: {
-      title:     { text: yLabel, font: { size: 12 } },
-      showgrid:  true,
-      gridcolor: '#f1f5f9',
-      zeroline:  false,
-      tickfont:  { family: 'JetBrains Mono, monospace', size: 11 },
       automargin: true,
+      tickfont:   { size: 12 },
     },
     legend: {
       orientation: 'v',
@@ -1024,24 +1013,25 @@ function renderChart(filteredRows) {
       bgcolor: 'rgba(255,255,255,.88)',
       bordercolor: '#e2e8f0',
       borderwidth: 1,
-      tracegroupgap: 4,
+      title: { text: 'Category', font: { size: 11 } },
     },
-    margin:        { t: 18, b: 50, l: 60, r: 200 },
+    margin:        { t: 12, b: 50, l: 10, r: 220 },
     plot_bgcolor:  '#ffffff',
     paper_bgcolor: '#ffffff',
     hovermode:     'closest',
     hoverlabel:    { font: { family: 'Inter, sans-serif', size: 12 }, align: 'left' },
     font:          { family: 'Inter, system-ui, sans-serif' },
+    barmode:       'overlay',
   };
 
   const config = {
     displayModeBar: true,
     modeBarButtonsToRemove: ['select2d', 'lasso2d', 'autoScale2d'],
     responsive: true,
-    toImageButtonOptions: { format: 'png', filename: 'carbon4science', scale: 2 },
+    toImageButtonOptions: { format: 'png', filename: 'co2_reference_points', scale: 2 },
   };
 
-  Plotly.react('scatter-chart', traces, layout, config);
+  Plotly.react('ref-chart', traces, layout, config);
 }
 
 /* ──────────────────────────────────────────────────────
@@ -1075,7 +1065,7 @@ function buildArchLegend() {
 function updateStats(rows) {
   const paretoCount = rows.filter(r => GLOBAL_PARETO.has(r)).length;
   const tasks       = new Set(rows.map(r => r.task));
-  const co2s        = rows.map(r => r.CO2_per_exp);
+  const co2s        = rows.map(r => r.CO2_per_job);
   const co2Min      = co2s.length ? Math.min(...co2s) : 0;
   const co2Max      = co2s.length ? Math.max(...co2s) : 0;
 
@@ -1102,7 +1092,7 @@ function render() {
 
   updateStats(filtered);
   renderTable(sorted);
-  renderChart(filtered);
+  renderChart();
 }
 
 /* ──────────────────────────────────────────────────────
@@ -1122,7 +1112,6 @@ document.getElementById('arch-filter').addEventListener('change', e => {
    INITIALISE
 ────────────────────────────────────────────────────── */
 buildTabs();
-buildArchLegend();
 render();
 </script>
 </body>

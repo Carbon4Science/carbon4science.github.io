@@ -72,7 +72,7 @@ All tasks benchmarked on the same hardware with full carbon tracking.
 | 2022 | Chem. Sci. | RSMILES | LM | 44.6M | 89.6% | 93.0% | 1,083 | 108.25 | 44,142 | 4,401 |
 | 2022 | ML:ST | Chemformer | LM | 44.7M | 62.8% | 64.0% | 2,570 | 256.65 | 85,055 | 8,482 |
 | 2024 | COLM | LlaSMol | LLM | ~7.2B | 5.0% | 5.0% | 1,385 | 138.35 | 39,119 | 3,905 |
-| 2024 | ICLR | RetroBridge | Diffusion | 4.6M | 44.9% | 52.8% | 4,040 | 403.45 | 157,820 | 15,740 |
+| 2024 | ICLR | RetroBridge | Flow Matching | 4.6M | 44.9% | 52.8% | 4,040 | 403.45 | 157,820 | 15,740 |
 | 2025 | Nat. Commun. | **RSGPT** | LLM | ~1.6B | **96.6%** | **97.8%** | 2,512 | 250.80 | 79,090 | 7,887 |
 
 ---
