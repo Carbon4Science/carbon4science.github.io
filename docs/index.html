@@ -1274,8 +1274,7 @@ function updateStats(rows) {
   document.getElementById('stat-co2range').textContent = co2s.length
     ? `${fmtShort(co2Min)}–${fmtShort(co2Max)}`
     : '—';
-  document.getElementById('hdr-model-count').textContent = `${ALL_DATA.length} Models`;
-  document.getElementById('row-count-label').textContent =
+document.getElementById('row-count-label').textContent =
     `Showing ${rows.length} of ${ALL_DATA.length} entries`;
 }
 
