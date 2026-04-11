@@ -1078,12 +1078,14 @@ function renderRefChart() {
 
   const layout = {
     xaxis: {
-      title:      { text: 'CO₂ Emission (g)', font: { size: 12 } },
-      type:       'log',
-      range:      [Math.log10(0.5), Math.log10(8e8)],
-      showgrid:   true, gridcolor: '#f1f5f9', zeroline: false,
-      tickfont:   { family: 'JetBrains Mono, monospace', size: 11 },
-      automargin: true,
+      title:          { text: 'CO₂ Emission (g)', font: { size: 12 } },
+      type:           'log',
+      range:          [Math.log10(0.5), Math.log10(8e8)],
+      dtick:          1,
+      exponentformat: 'SI',
+      showgrid:       true, gridcolor: '#f1f5f9', zeroline: false,
+      tickfont:       { family: 'JetBrains Mono, monospace', size: 11 },
+      automargin:     true,
     },
     yaxis: { automargin: true, tickfont: { size: 12 } },
     legend: {
@@ -1193,11 +1195,13 @@ function renderScatterChart(task) {
 
   const layout = {
     xaxis: {
-      title:      { text: 'CO₂/job (g)', font: { size: 12 } },
-      type:       'log',
-      showgrid:   true, gridcolor: '#f1f5f9', zeroline: false,
-      tickfont:   { family: 'JetBrains Mono, monospace', size: 11 },
-      automargin: true,
+      title:          { text: 'CO₂/job (g)', font: { size: 12 } },
+      type:           'log',
+      dtick:          1,
+      exponentformat: 'SI',
+      showgrid:       true, gridcolor: '#f1f5f9', zeroline: false,
+      tickfont:       { family: 'JetBrains Mono, monospace', size: 11 },
+      automargin:     true,
     },
     yaxis: {
       title:      { text: cfg.majorLabel, font: { size: 12 } },
