@@ -101,50 +101,20 @@ def get_arch_legend_handles():
 
 # ── Data Loading ───────────────────────────────────────────────────────────
 def load_data():
-    """Load all_data.csv and update MolGen with latest pretrained results."""
+    """Load all_data.csv."""
     df = pd.read_csv('analysis/all_data.csv')
-
-    # Latest pretrained MolGen data (from origin/MolGen branch)
-    molgen_pretrained = [
-        # (model, year, arch, size, VUN%, CO2/call, time_s, CO2_total, is_baseline)
-        ('REINVENT',    2017, 'LM',            4.4e6,  87.90,  0.18/1e4,   14.4,   0.18,  True),
-        ('JT-VAE',      2018, 'VAE',           7.1e6,  91.39,  10.58/1e4,  662.0,  10.58, False),
-        ('HierVAE',     2020, 'VAE',           8.0e6,  92.10,  11.97/1e4,  756.5,  11.97, False),
-        ('MolGPT',      2021, 'LM',            6.4e6,  77.15,  1.07/1e4,   36.6,   1.07,  False),
-        ('DiGress',     2023, 'Diffusion',    16.2e6,  82.45,  175.35/1e4, 5201.3, 175.35, False),
-        ('REINVENT4',   2024, 'LM',            5.8e6,  94.16,  0.07/1e4,   8.2,    0.07,  False),
-        ('SmileyLlama', 2024, 'LLM',           8.0e9,  94.26,  21.79/1e4,  638.0,  21.79, False),
-        ('DeFoG',       2024, 'Flow Matching', 16.3e6,  82.27,  355.24/1e4, 9874.1, 355.24, False),
-    ]
-
-    df = df[df['task'] != 'MolGen']
-    rows = []
-    for (model, year, arch, sz, perf, co2call, time, co2tot, base) in molgen_pretrained:
-        rows.append({
-            'task': 'MolGen', 'year': year, 'model': model,
-            'model type': arch, 'model size': f'{sz:.3g}',
-            'performance': perf, 'CO2_per_call': co2call,
-            'inference_time_s': time, 'CO2_total': co2tot,
-            'baseline?': base, '_size_num': sz,
-        })
-
     df['_size_num'] = df['model size'].apply(parse_size)
-    df = pd.concat([df, pd.DataFrame(rows)], ignore_index=True)
-    df['_size_num'] = df.apply(
-        lambda r: r['_size_num'] if pd.notna(r.get('_size_num')) else parse_size(r['model size']),
-        axis=1
-    )
 
     baselines = (df[df['baseline?'] == True]
-                 .set_index('task')[['performance']]
-                 .rename(columns={'performance': 'base_perf'}))
+                 .set_index('task')[['major_metric']]
+                 .rename(columns={'major_metric': 'base_perf'}))
     df = df.join(baselines, on='task')
 
     return df
 
 
 # ── Figure 1: Year Trends ─────────────────────────────────────────────────
-def plot_fig1(df, co2_col='CO2_total', co2_label='log₁₀(CO₂/job)'):
+def plot_fig1(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
     """6 rows (tasks) × 3 cols (model size, CO2, performance)."""
     fig, axes = plt.subplots(6, 3, figsize=(20, 32))
 
@@ -160,8 +130,8 @@ def plot_fig1(df, co2_col='CO2_total', co2_label='log₁₀(CO₂/job)'):
         c = TASK_COLORS[task]
         col_specs = [
             ('year', '_size_num',    'log₁₀(Model Size)',       True),
-            ('year', co2_col,        co2_label,                  True),
-            ('year', 'performance',  TASK_PERF_LABEL[task],     False),
+            ('year', co2_col,          co2_label,                  True),
+            ('year', 'major_metric',   TASK_PERF_LABEL[task],     False),
         ]
         for j, (xcol, ycol, ylabel, use_log10) in enumerate(col_specs):
             ax = axes[i, j]
@@ -224,7 +194,7 @@ def plot_fig1(df, co2_col='CO2_total', co2_label='log₁₀(CO₂/job)'):
 
 
 # ── Figure 2: Pareto Frontiers ─────────────────────────────────────────────
-def plot_fig2(df, co2_col='CO2_total', co2_label='log₁₀(CO₂/job)'):
+def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
     """2×3 subplots, Δ Performance (%) vs log10(CO2 ratio), with Pareto front."""
     fig, axes = plt.subplots(2, 3, figsize=(20, 14))
     axes = axes.flatten()
@@ -233,11 +203,11 @@ def plot_fig2(df, co2_col='CO2_total', co2_label='log₁₀(CO₂/job)'):
         grp = df[df['task'] == task].copy()
         base_row = grp[grp['baseline?'] == True].iloc[0]
         base_co2 = base_row[co2_col]
-        base_perf = base_row['performance']
+        base_perf = base_row['major_metric']
 
         grp['co2_ratio'] = grp[co2_col] / base_co2
         grp['log_co2_ratio'] = np.log10(grp['co2_ratio'])
-        grp['delta_perf_pct'] = (grp['performance'] - base_perf) / abs(base_perf) * 100
+        grp['delta_perf_pct'] = (grp['major_metric'] - base_perf) / abs(base_perf) * 100
 
         # Pareto front (upper-left dominant)
         grp_sorted = grp.sort_values('log_co2_ratio')
@@ -325,15 +295,15 @@ def plot_fig2(df, co2_col='CO2_total', co2_label='log₁₀(CO₂/job)'):
 
 
 # ── Figure 3: CO2 Decomposition ───────────────────────────────────────────
-def plot_fig3(df, co2_col='CO2_total', co2_label='log₁₀(CO₂/job)'):
+def plot_fig3(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
     """6 rows (tasks) × 3 cols (size vs CO2, time vs CO2, size vs time). No fit lines.
     Uses log10-transformed values on linear axes for clean tick labels."""
     fig, axes = plt.subplots(6, 3, figsize=(20, 32))
 
     panels = [
-        ('_size_num',        co2_col,             'log₁₀(Model Size)',    co2_label),
-        ('inference_time_s', co2_col,            'log₁₀(Inference Time)', co2_label),
-        ('_size_num',        'inference_time_s',  'log₁₀(Model Size)',    'log₁₀(Inference Time)'),
+        ('_size_num',                co2_col,                   'log₁₀(Model Size)',    co2_label),
+        ('inference_time_per_exp',   co2_col,                   'log₁₀(Inference Time)', co2_label),
+        ('_size_num',                'inference_time_per_exp',  'log₁₀(Model Size)',    'log₁₀(Inference Time)'),
     ]
 
     # Compute shared x-limits per column across all tasks
@@ -489,14 +459,14 @@ def plot_fig5(df):
     fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=(20, 9))
 
     for panel_ax, xcol, xlabel in [
-        (ax_left,  'inference_time_s', 'log₁₀(Inference Time)'),
-        (ax_right, '_size_num',        'log₁₀(Model Size)'),
+        (ax_left,  'inference_time_per_exp', 'log₁₀(Inference Time)'),
+        (ax_right, '_size_num',              'log₁₀(Model Size)'),
     ]:
         all_logx, all_logy = [], []
         for task, grp in df.groupby('task'):
             c = TASK_COLORS[task]
             for _, row in grp.iterrows():
-                xv, yv = row[xcol], row['CO2_total']
+                xv, yv = row[xcol], row['CO2_per_job']
                 if pd.isna(xv) or pd.isna(yv) or xv <= 0 or yv <= 0:
                     continue
                 lx, ly = np.log10(xv), np.log10(yv)
@@ -519,7 +489,7 @@ def plot_fig5(df):
                           bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
 
         panel_ax.set_xlabel(xlabel, fontsize=20)
-        panel_ax.set_ylabel('log₁₀(g CO₂ eq / job)', fontsize=20)
+        panel_ax.set_ylabel('log₁₀(CO₂/job)', fontsize=20)
         panel_ax.tick_params(labelsize=16)
         panel_ax.spines['top'].set_visible(False)
         panel_ax.spines['right'].set_visible(False)
@@ -542,7 +512,7 @@ def plot_fig5(df):
 ALT_METRICS = {
     'MatGen':  {'CDVAE': 3.2, 'DiffCSP': 4.3, 'CrystaLLM': 3.5, 'FlowMM': 4.3,
                 'ChargeDIFF': 4.4, 'MatterGen': 5.2, 'ADiT': 5.5, 'CrystalFlow': 3.0},
-    'Retro':   {'neuralsym': 72.8, 'MEGAN': 87.0, 'LocalRetro': 91.5, 'RSMILES': 89.6,
+    'Retro':   {'neuralsym': 72.8, 'MEGAN': 87.0, 'LocalRetro': 90.4, 'RSMILES': 89.6,
                 'Chemformer': 62.8, 'LlaSMol': 5.0, 'RetroBridge': 44.9, 'RSGPT': 96.6},
     'Forward': {'neuralsym': 49.5, 'MEGAN': 80.1, 'Graph2SMILES': 88.5, 'Chemformer': 89.0,
                 'LocalTransform': 89.4, 'MolecularTransformer': 86.8, 'RSMILES': 89.4, 'LlaSMol': 3.8},
@@ -560,7 +530,7 @@ ALT_LABELS = {
 }
 
 
-def plot_fig6(df, co2_col='CO2_total', co2_label='log₁₀(CO₂/job)'):
+def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
     """Pareto plots using alternative metrics for 4 tasks."""
     fig, axes = plt.subplots(1, 4, figsize=(28, 7))
 
@@ -673,16 +643,16 @@ if __name__ == '__main__':
     parser.add_argument('--fig', nargs='*', type=int, default=[1, 2, 3, 4, 5, 6],
                         help='Which figures to generate (default: all)')
     parser.add_argument('--dpi', type=int, default=300)
-    parser.add_argument('--co2', choices=['per_call', 'per_job'], default='per_job',
-                        help='CO2 metric: per_call or per_job (default: per_job)')
+    parser.add_argument('--co2', choices=['per_exp', 'per_job'], default='per_job',
+                        help='CO2 metric: per_exp or per_job (default: per_job)')
     args = parser.parse_args()
 
     # Set CO2 column and label based on argument
-    if args.co2 == 'per_call':
-        co2_col = 'CO2_per_call'
-        co2_label = 'log₁₀(CO₂/call)'
+    if args.co2 == 'per_exp':
+        co2_col = 'CO2_per_exp'
+        co2_label = 'log₁₀(CO₂/exp)'
     else:
-        co2_col = 'CO2_total'
+        co2_col = 'CO2_per_job'
         co2_label = 'log₁₀(CO₂/job)'
 
     plt.rcParams.update({'font.family': 'sans-serif', 'font.size': 20})
