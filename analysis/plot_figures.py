@@ -193,6 +193,89 @@ def plot_fig1(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
     print(f"Fig 1 saved → {out}")
 
 
+def plot_fig1_horizontal(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
+    """3 rows (model size, CO2, performance) × 6 cols (tasks)."""
+    fig, axes = plt.subplots(3, 6, figsize=(42, 18))
+
+    # Consistent x-axis: use global min/max year across ALL tasks
+    all_years = df['year'].dropna().unique()
+    year_min, year_max = int(all_years.min()), int(all_years.max())
+    year_ticks = list(range(year_min, year_max + 1, 2))
+    x_pad = 0.5
+    xlim = (year_min - x_pad, year_max + x_pad)
+
+    row_specs = [
+        ('_size_num',    'log₁₀(Model Size)',       True),
+        (co2_col,        co2_label,                  True),
+        ('major_metric', None,                       False),  # label set per task
+    ]
+    row_titles = ['Model Size', 'CO₂ Emission', 'Performance']
+
+    for j, task in enumerate(TASK_ORDER):
+        grp = df[df['task'] == task]
+        c = TASK_COLORS[task]
+        for i, (ycol, ylabel_default, use_log10) in enumerate(row_specs):
+            ax = axes[i, j]
+            ylabel = TASK_PERF_LABEL[task] if i == 2 else ylabel_default
+            texts = []
+            for _, row in grp.iterrows():
+                yval = row[ycol]
+                if pd.isna(yval) or yval <= 0:
+                    continue
+                if use_log10:
+                    yval = np.log10(yval)
+                m = ARCH_MARKERS.get(row['model type'], 'o')
+                is_base = row.get('baseline?', False)
+                ec = 'black' if is_base else 'white'
+                lw = 2.0 if is_base else 0.6
+                ax.scatter(row['year'], yval, color=c, marker=m, s=marker_size(m),
+                           edgecolors=ec, linewidths=lw, zorder=3)
+                tx, ty = row['year'], yval
+                if task == 'Forward' and i == 2 and row['model'] == 'RSMILES':
+                    ty += 3.0
+                elif task == 'Forward' and i == 2 and row['model'] == 'LocalTransform':
+                    ty -= 3.0
+                elif task == 'MolGen' and i == 2 and row['model'] == 'SmileyLlama':
+                    ty += 3.0
+                elif task == 'MolGen' and i == 2 and row['model'] == 'REINVENT4':
+                    ty -= 3.0
+                texts.append(ax.text(tx, ty, row['model'],
+                                     fontsize=14, zorder=5))
+            ax.set_xlim(xlim)
+            ax.set_xticks(year_ticks)
+            ax.tick_params(labelsize=16)
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.grid(True, alpha=0.2, which='both')
+            # Column title (task name) on top row
+            if i == 0:
+                ax.set_title(task, fontsize=22, fontweight='bold', color=c, pad=20)
+            # Row label on leftmost column
+            if j == 0:
+                ax.set_ylabel(ylabel, fontsize=20)
+                ax.text(-0.3, 0.5, row_titles[i], transform=ax.transAxes, fontsize=22,
+                        fontweight='bold', va='center', ha='center', rotation=90)
+            else:
+                ax.set_ylabel(ylabel, fontsize=20)
+            # x-axis label only on bottom row
+            if i < 2:
+                ax.tick_params(axis='x', labelbottom=False)
+            else:
+                ax.set_xlabel('Year', fontsize=20)
+            adjust_text(texts, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
+                        force_points=(2.0, 2.0), iterations=200,
+                        arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
+
+    fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=16,
+               loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.01),
+               framealpha=0.9, title_fontsize=18)
+    fig.subplots_adjust(left=0.10, right=0.97, top=0.95, bottom=0.08, hspace=0.35, wspace=0.4)
+    out = os.path.join(OUT_DIR, '1_year_trends_combined_horizontal.png')
+    fig.savefig(out, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Fig 1 horizontal saved → {out}")
+
+
 # ── Figure 2: Pareto Frontiers ─────────────────────────────────────────────
 def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
     """2×3 subplots, Δ Performance (%) vs log10(CO2 ratio), with Pareto front."""
@@ -407,6 +490,97 @@ def plot_fig3(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/exp)'):
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
     print(f"Fig 3 saved → {out}")
+
+
+def plot_fig3_horizontal(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/exp)'):
+    """3 rows (panels) × 6 cols (tasks). Transposed version of fig3."""
+    fig, axes = plt.subplots(3, 6, figsize=(42, 18))
+
+    panels = [
+        ('_size_num',                co2_col,                   'log₁₀(Model Size)',         co2_label),
+        ('inference_time_per_exp',   co2_col,                   'log₁₀(Inference Time/exp)', co2_label),
+        ('_size_num',                'inference_time_per_exp',  'log₁₀(Model Size)',         'log₁₀(Inference Time/exp)'),
+    ]
+    row_titles = ['Model Size vs CO₂', 'Inference Time vs CO₂', 'Model Size vs Inference Time']
+
+    # Compute shared x-limits per row (panel) across all tasks
+    row_xlims = []
+    for i, (xcol, ycol, xlabel, ylabel) in enumerate(panels):
+        all_logx = []
+        for task in TASK_ORDER:
+            grp = df[df['task'] == task]
+            for _, row in grp.iterrows():
+                xv = row[xcol]
+                if pd.notna(xv) and xv > 0:
+                    all_logx.append(np.log10(xv))
+        pad = (max(all_logx) - min(all_logx)) * 0.1
+        row_xlims.append((min(all_logx) - pad, max(all_logx) + pad))
+
+    for j, task in enumerate(TASK_ORDER):
+        grp = df[df['task'] == task]
+        c = TASK_COLORS[task]
+        for i, (xcol, ycol, xlabel, ylabel) in enumerate(panels):
+            ax = axes[i, j]
+            texts3 = []
+            log_xs, log_ys = [], []
+            for _, row in grp.iterrows():
+                xv, yv = row[xcol], row[ycol]
+                if pd.isna(xv) or pd.isna(yv) or xv <= 0 or yv <= 0:
+                    continue
+                log_xv = np.log10(xv)
+                log_yv = np.log10(yv)
+                log_xs.append(log_xv)
+                log_ys.append(log_yv)
+                m = ARCH_MARKERS.get(row['model type'], 'o')
+                is_base = row.get('baseline?', False)
+                sz = marker_size(m)
+                ec = 'black' if is_base else 'white'
+                lw = 2.0 if is_base else 0.6
+                ax.scatter(log_xv, log_yv, color=c, marker=m, s=sz,
+                           edgecolors=ec, linewidths=lw, zorder=3)
+                texts3.append(ax.text(log_xv, log_yv, row['model'], fontsize=14, zorder=5))
+            # Regression + R² for inference time vs CO₂ (row 1)
+            if i == 1 and len(log_xs) > 1:
+                log_xs_arr = np.array(log_xs)
+                log_ys_arr = np.array(log_ys)
+                coef = np.polyfit(log_xs_arr, log_ys_arr, 1)
+                r2 = 1 - np.sum((log_ys_arr - np.polyval(coef, log_xs_arr))**2) / \
+                         np.sum((log_ys_arr - log_ys_arr.mean())**2)
+                xfit = np.linspace(log_xs_arr.min(), log_xs_arr.max(), 50)
+                ax.plot(xfit, np.polyval(coef, xfit), 'k--', lw=1.2, alpha=0.5, zorder=2)
+                ax.text(0.05, 0.95, f'R²={r2:.2f}', transform=ax.transAxes,
+                        fontsize=16, va='top',
+                        bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
+            # Shared x-limits per row
+            ax.set_xlim(row_xlims[i])
+            ax.tick_params(labelsize=16)
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.grid(True, alpha=0.2, which='both')
+            # Column title (task name) on top row
+            if i == 0:
+                ax.set_title(task, fontsize=22, fontweight='bold', color=c, pad=20)
+            # Row label on leftmost column
+            if j == 0:
+                ax.set_ylabel(ylabel, fontsize=20)
+                ax.text(-0.3, 0.5, row_titles[i], transform=ax.transAxes, fontsize=22,
+                        fontweight='bold', va='center', ha='center', rotation=90)
+            else:
+                ax.set_ylabel(ylabel, fontsize=20)
+            # Each row has a different x variable — always show x-axis
+            ax.set_xlabel(xlabel, fontsize=20)
+            adjust_text(texts3, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
+                        force_points=(2.0, 2.0), iterations=200,
+                        arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
+
+    fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=16,
+               loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.01),
+               framealpha=0.9, title_fontsize=18)
+    fig.subplots_adjust(left=0.10, right=0.97, top=0.95, bottom=0.05, hspace=0.45, wspace=0.4)
+    out = os.path.join(OUT_DIR, '3_co2_decomposition_combined_horizontal.png')
+    fig.savefig(out, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Fig 3 horizontal saved → {out}")
 
 
 # ── Figure 4: CO2 Reference Points ────────────────────────────────────────
@@ -712,9 +886,9 @@ def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate paper figures')
     parser.add_argument('--fig', nargs='*', type=int, default=[1, 2, 3, 4, 5, 6],
-                        help='Which figures to generate (default: all)')
+                        help='Which figures to generate (default: all). 7=fig1 horizontal, 8=fig3 horizontal')
     parser.add_argument('--dpi', type=int, default=300)
-    parser.add_argument('--co2', choices=['per_exp', 'per_job'], default='per_job',
+    parser.add_argument('--co2', choices=['per_exp', 'per_job'], default='per_exp',
                         help='CO2 metric: per_exp or per_job (default: per_job)')
     args = parser.parse_args()
 
@@ -729,7 +903,7 @@ if __name__ == '__main__':
     plt.rcParams.update({'font.family': 'sans-serif', 'font.size': 20})
 
     df = None
-    if any(f in args.fig for f in [1, 2, 3, 4, 5, 6]):
+    if any(f in args.fig for f in [1, 2, 3, 4, 5, 6, 7, 8]):
         df = load_data()
         print(f"Loaded {len(df)} data points across {df['task'].nunique()} tasks")
         print(f"Using CO2 metric: {args.co2} ({co2_col})")
@@ -746,5 +920,9 @@ if __name__ == '__main__':
         plot_fig5(df)
     if 6 in args.fig:
         plot_fig6(df, co2_col, co2_label)
+    if 7 in args.fig:
+        plot_fig1_horizontal(df, co2_col, co2_label)
+    if 8 in args.fig:
+        plot_fig3_horizontal(df)
 
     print("Done!")
