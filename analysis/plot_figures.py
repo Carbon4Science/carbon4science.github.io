@@ -96,7 +96,7 @@ def marker_size(m, base=150):
 
 def get_arch_legend_handles():
     return [mlines.Line2D([], [], color='gray', marker=m, linestyle='None',
-            markersize=12 if m == '*' else 8, label=a) for a, m in ARCH_MARKERS.items()]
+            markersize=14 if m == '*' else 10, label=a) for a, m in ARCH_MARKERS.items()]
 
 
 # ── Data Loading ───────────────────────────────────────────────────────────
@@ -183,9 +183,9 @@ def plot_fig1(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
                         force_points=(2.0, 2.0), iterations=200,
                         arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
 
-    fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=16,
+    fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=20,
                loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.01),
-               framealpha=0.9, title_fontsize=18)
+               framealpha=0.9, title_fontsize=20)
     fig.subplots_adjust(left=0.12, right=0.97, top=0.96, bottom=0.06, hspace=0.35, wspace=0.4)
     out = os.path.join(OUT_DIR, '1_year_trends_combined.png')
     fig.savefig(out, dpi=300, bbox_inches='tight')
@@ -266,9 +266,9 @@ def plot_fig1_horizontal(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/j
                         force_points=(2.0, 2.0), iterations=200,
                         arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
 
-    fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=16,
-               loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.01),
-               framealpha=0.9, title_fontsize=18)
+    fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=20,
+               loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.03),
+               framealpha=0.9, title_fontsize=20)
     fig.subplots_adjust(left=0.10, right=0.97, top=0.95, bottom=0.08, hspace=0.35, wspace=0.4)
     out = os.path.join(OUT_DIR, '1_year_trends_combined_horizontal.png')
     fig.savefig(out, dpi=300, bbox_inches='tight')
@@ -390,9 +390,9 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
     pareto_line = mlines.Line2D([], [], color='black', linestyle='--',
                                 linewidth=1.5, label='Pareto Front')
     fig.legend(handles=arch_handles + [pareto_line] + quad_handles,
-               loc='lower center', ncol=6, fontsize=16, framealpha=0.9,
-               bbox_to_anchor=(0.5, -0.02), title_fontsize=18)
-    fig.subplots_adjust(left=0.08, right=0.97, top=0.95, bottom=0.1, hspace=0.35, wspace=0.3)
+               loc='lower center', ncol=6, fontsize=20, framealpha=0.9,
+               bbox_to_anchor=(0.5, -0.02), title_fontsize=20)
+    fig.subplots_adjust(left=0.08, right=0.97, top=0.95, bottom=0.14, hspace=0.35, wspace=0.3)
     out = os.path.join(OUT_DIR, '2_pareto_delta_pct.png')
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
@@ -482,9 +482,9 @@ def plot_fig3(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/exp)'):
                         force_points=(2.0, 2.0), iterations=200,
                         arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
 
-    fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=16,
+    fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=20,
                loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.01),
-               framealpha=0.9, title_fontsize=18)
+               framealpha=0.9, title_fontsize=20)
     fig.subplots_adjust(left=0.12, right=0.97, top=0.96, bottom=0.06, hspace=0.35, wspace=0.4)
     out = os.path.join(OUT_DIR, '3_co2_decomposition_combined.png')
     fig.savefig(out, dpi=300, bbox_inches='tight')
@@ -573,10 +573,10 @@ def plot_fig3_horizontal(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/e
                         force_points=(2.0, 2.0), iterations=200,
                         arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
 
-    fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=16,
-               loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.01),
-               framealpha=0.9, title_fontsize=18)
-    fig.subplots_adjust(left=0.10, right=0.97, top=0.95, bottom=0.05, hspace=0.45, wspace=0.4)
+    fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=20,
+               loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.05),
+               framealpha=0.9, title_fontsize=20)
+    fig.subplots_adjust(left=0.10, right=0.97, top=0.95, bottom=0.06, hspace=0.45, wspace=0.4)
     out = os.path.join(OUT_DIR, '3_co2_decomposition_combined_horizontal.png')
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
@@ -636,7 +636,7 @@ def plot_fig4(df):
         ('AI Chemical generation',   'Material generation',      'MatGen',     'MatterGen',                   248,     '1K structures'),
         ('AI Chemical generation',   'Molecule generation',      'MolGen',     'DeFoG',                       355.2,  '10K molecules'),
         ('AI Synthesis prediction',  'Synthesis Planning',       'Retro',      'RetroBridge',                 403,     '500 molecules'),
-        ('AI MD simulation',         'MLIP simulation',          'StructOpt',  'eSEN',                        3486,    '1M steps'),
+        ('AI MD simulation',         'MLIP MD',                  'StructOpt',  'eSEN',                        3486,    '1M steps'),
         ('Chemical synthesis',       'Battery synthesis',        None,         'Vanadium flow battery',       37000,   'MWh'),
         ('Chemical synthesis',       'Material synthesis',       None,         'UiO-66-NH₂ (aqueous-based)',  43000,   'kg'),
         ('Chemical simulation',      'Ab initio MD',             None,         'PBE (50 atoms)',              140960,  '1M steps'),
@@ -685,8 +685,8 @@ def plot_fig4(df):
 
     leg = [mpatches.Patch(facecolor=REF_CATEGORY_COLORS[cat], label=cat)
            for cat in REF_LEGEND_ORDER]
-    ax.legend(handles=leg, loc='lower right', fontsize=9,
-              framealpha=0.9, title='Category', title_fontsize=10)
+    ax.legend(handles=leg, loc='lower right', fontsize=10,
+              framealpha=0.9, title='Category', title_fontsize=11)
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
 
@@ -743,7 +743,7 @@ def plot_fig5(df):
     task_handles = [mpatches.Patch(color=c, label=t) for t, c in TASK_COLORS.items()]
     arch_handles = get_arch_legend_handles()
     fig.legend(handles=task_handles + arch_handles,
-               loc='lower center', ncol=7, fontsize=14, framealpha=0.9,
+               loc='lower center', ncol=7, fontsize=20, framealpha=0.9,
                bbox_to_anchor=(0.5, -0.05))
     fig.subplots_adjust(bottom=0.15, wspace=0.3)
     out = os.path.join(OUT_DIR, '5_co2_decomposition_cross_task.png')
@@ -873,9 +873,9 @@ def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
     pareto_line = mlines.Line2D([], [], color='black', linestyle='--',
                                 linewidth=1.5, label='Pareto Front')
     fig.legend(handles=arch_handles + [pareto_line] + quad_handles,
-               loc='lower center', ncol=6, fontsize=14, framealpha=0.9,
-               bbox_to_anchor=(0.5, -0.08))
-    fig.subplots_adjust(bottom=0.15, wspace=0.35)
+               loc='lower center', ncol=6, fontsize=20, framealpha=0.9,
+               bbox_to_anchor=(0.5, -0.14))
+    fig.subplots_adjust(bottom=0.18, wspace=0.35)
     out = os.path.join(OUT_DIR, '6_pareto_alt_metrics.png')
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
