@@ -1,0 +1,50 @@
+{
+  "task": "Retro",
+  "model": "RSMILES_20x",
+  "num_samples": 5007,
+  "top_k": 50,
+  "model_params": null,
+  "metrics": [
+    "top_1",
+    "top_5",
+    "top_10",
+    "top_50"
+  ],
+  "accuracy": {
+    "top_1": 0.5526263231475934,
+    "top_5": 0.8482125024965049,
+    "top_10": 0.8955462352706212,
+    "top_50": 0.9302975833832634
+  },
+  "correct": {
+    "top_1": 2767,
+    "top_5": 4247,
+    "top_10": 4484,
+    "top_50": 4658
+  },
+  "carbon": {
+    "start_time": "2026-02-12T21:15:29.282550",
+    "end_time": "2026-02-13T09:30:21.704394",
+    "duration_seconds": 44092.421843767166,
+    "energy_wh": 2709.5809,
+    "emissions_g_co2": 1083.8324,
+    "gpu_energy_wh": 1520.9742,
+    "cpu_energy_wh": 1175.7979,
+    "ram_energy_wh": 12.8088,
+    "peak_gpu_memory_mb": 924.1,
+    "peak_cpu_memory_mb": 2855.7,
+    "project_name": "RSMILES_20x_Retro_benchmark",
+    "model_name": "RSMILES_20x",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 8,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-redhat-9.6-Blue_Onyx"
+    }
+  }
+}

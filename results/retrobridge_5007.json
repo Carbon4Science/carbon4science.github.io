@@ -1,0 +1,50 @@
+{
+  "task": "Retro",
+  "model": "RetroBridge",
+  "num_samples": 5007,
+  "top_k": 50,
+  "model_params": 4622998,
+  "metrics": [
+    "top_1",
+    "top_5",
+    "top_10",
+    "top_50"
+  ],
+  "accuracy": {
+    "top_1": 0.2212901937287797,
+    "top_5": 0.3936488915518274,
+    "top_10": 0.4489714399840224,
+    "top_50": 0.5282604353904534
+  },
+  "correct": {
+    "top_1": 1108,
+    "top_5": 1971,
+    "top_10": 2248,
+    "top_50": 2645
+  },
+  "carbon": {
+    "start_time": "2026-02-13T16:46:43.978400",
+    "end_time": "2026-02-15T12:35:09.791330",
+    "duration_seconds": 157705.81293058395,
+    "energy_wh": 9383.13419316048,
+    "emissions_g_co2": 4040.067940146528,
+    "gpu_energy_wh": 0.0,
+    "cpu_energy_wh": 0.0,
+    "ram_energy_wh": 0.0,
+    "peak_gpu_memory_mb": 600.8,
+    "peak_cpu_memory_mb": 1865.6,
+    "project_name": "RetroBridge_Retro_benchmark",
+    "model_name": "RetroBridge",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

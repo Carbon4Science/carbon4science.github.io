@@ -1,0 +1,19 @@
+name: neuralsym
+channels:
+  - pytorch
+  - rdkit
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - pytorch=1.6.0
+  - cudatoolkit=10.1
+  - torchvision
+  - torchtext
+  - rdkit
+  - tqdm
+  - scipy
+  - pandas
+  - joblib
+  - pip:
+    - rdchiral

@@ -1,0 +1,13 @@
+name: retrobridge
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - rdkit=2023.09.5
+  - pip:
+    - torch
+    - numpy
+    - pandas
+    - tqdm
+    - wandb

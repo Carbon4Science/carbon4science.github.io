@@ -1,0 +1,13 @@
+name: gpt
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pytorch
+  - rdkit
+  - pip:
+    - transformers
+    - peft
+    - accelerate

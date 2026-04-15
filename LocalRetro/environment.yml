@@ -1,0 +1,14 @@
+name: rdenv
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - pytorch
+  - cudatoolkit=10.2
+  - rdkit
+  - numpy>=1.16.4
+  - pip:
+    - dgl
+    - dgllife

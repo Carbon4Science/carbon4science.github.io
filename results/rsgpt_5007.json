@@ -1,0 +1,50 @@
+{
+  "task": "Retro",
+  "model": "RSGPT",
+  "num_samples": 5007,
+  "top_k": 50,
+  "model_params": null,
+  "metrics": [
+    "top_1",
+    "top_5",
+    "top_10",
+    "top_50"
+  ],
+  "accuracy": {
+    "top_1": 0.7597363690832835,
+    "top_5": 0.945276612742161,
+    "top_10": 0.9662472538446175,
+    "top_50": 0.9780307569402836
+  },
+  "correct": {
+    "top_1": 3804,
+    "top_5": 4733,
+    "top_10": 4838,
+    "top_50": 4897
+  },
+  "carbon": {
+    "start_time": "2026-02-13T16:46:45.694525",
+    "end_time": "2026-02-14T14:43:49.908212",
+    "duration_seconds": 79024.2136862278,
+    "energy_wh": 6279.3179,
+    "emissions_g_co2": 2511.7272,
+    "gpu_energy_wh": 4068.4299,
+    "cpu_energy_wh": 2107.3124,
+    "ram_energy_wh": 103.5756,
+    "peak_gpu_memory_mb": 6949.9,
+    "peak_cpu_memory_mb": 12884.5,
+    "project_name": "RSGPT_Retro_benchmark",
+    "model_name": "RSGPT",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

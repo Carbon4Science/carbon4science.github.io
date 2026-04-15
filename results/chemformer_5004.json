@@ -1,0 +1,50 @@
+{
+  "task": "Retro",
+  "model": "Chemformer",
+  "num_samples": 5004,
+  "top_k": 50,
+  "model_params": null,
+  "metrics": [
+    "top_1",
+    "top_5",
+    "top_10",
+    "top_50"
+  ],
+  "accuracy": {
+    "top_1": 0.5363709032773781,
+    "top_5": 0.6203037569944044,
+    "top_10": 0.627498001598721,
+    "top_50": 0.6402877697841727
+  },
+  "correct": {
+    "top_1": 2684,
+    "top_5": 3104,
+    "top_10": 3140,
+    "top_50": 3204
+  },
+  "carbon": {
+    "start_time": "2026-02-12T17:51:31.787274",
+    "end_time": "2026-02-13T17:28:01.847633",
+    "duration_seconds": 84990.06035876274,
+    "energy_wh": 6424.7428,
+    "emissions_g_co2": 2569.8971,
+    "gpu_energy_wh": 4058.659,
+    "cpu_energy_wh": 2313.6183,
+    "ram_energy_wh": 52.4654,
+    "peak_gpu_memory_mb": 209.3,
+    "peak_cpu_memory_mb": 6068.4,
+    "project_name": "Chemformer_Retro_benchmark",
+    "model_name": "Chemformer",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 8,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}
