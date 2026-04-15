@@ -1,0 +1,35 @@
+# Forward Model Configuration
+
+neuralsym:
+  env: neuralsym
+  gpu_memory_mb: 2000
+
+MolecularTransformer:
+  env: mol_transformer
+  gpu_memory_mb: 4000
+
+MEGAN:
+  env: megan
+  gpu_memory_mb: 4000
+
+Graph2SMILES:
+  env: mol_transformer
+  gpu_memory_mb: 4000
+
+
+Chemformer:
+  env: chemformer
+  gpu_memory_mb: 6000
+
+RSMILES_20x:
+  env: rsmiles
+  augmentation_factor: 20
+  gpu_memory_mb: 4000
+
+LlaSMol:
+  env: llasmol
+  gpu_memory_mb: 18000
+
+WLDN:
+  env: wldn
+  gpu_memory_mb: 4000

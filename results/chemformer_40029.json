@@ -1,0 +1,32 @@
+{
+  "task": "Forward",
+  "model": "Chemformer",
+  "num_samples": 40000,
+  "top_k": 5,
+  "model_params": 44700000,
+  "metrics": [
+    "top_1",
+    "top_2",
+    "top_3",
+    "top_5"
+  ],
+  "accuracy": {
+    "top_1": 0.84915,
+    "top_2": 0.90405,
+    "top_3": 0.918625,
+    "top_5": 0.92965
+  },
+  "correct": {
+    "top_1": 33966,
+    "top_2": 36162,
+    "top_3": 36745,
+    "top_5": 37186
+  },
+  "carbon": {
+    "duration_seconds": 45288.2,
+    "energy_wh": 1449.9466,
+    "emissions_g_co2": 579.9786,
+    "peak_gpu_memory_mb": 185.4,
+    "peak_cpu_memory_mb": 5536.4
+  }
+}

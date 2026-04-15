@@ -1,0 +1,11 @@
+name: wldn
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - rdkit=2020.09
+  - pip
+  - pip:
+    - tensorflow==1.15.0
+    - numpy>=1.19,<1.20

@@ -1,0 +1,50 @@
+{
+  "task": "Forward",
+  "model": "Graph2SMILES",
+  "num_samples": 40000,
+  "top_k": 5,
+  "model_params": 17984882,
+  "metrics": [
+    "top_1",
+    "top_2",
+    "top_3",
+    "top_5"
+  ],
+  "accuracy": {
+    "top_1": 0.884575,
+    "top_2": 0.896275,
+    "top_3": 0.897675,
+    "top_5": 0.898525
+  },
+  "correct": {
+    "top_1": 35383,
+    "top_2": 35851,
+    "top_3": 35907,
+    "top_5": 35941
+  },
+  "carbon": {
+    "start_time": "2026-04-08T16:31:51.872126",
+    "end_time": "2026-04-08T18:44:11.579785",
+    "duration_seconds": 7939.7076587677,
+    "energy_wh": 628.1703088232263,
+    "emissions_g_co2": 287.7528832360523,
+    "gpu_energy_wh": 0.0,
+    "cpu_energy_wh": 0.0,
+    "ram_energy_wh": 0.0,
+    "peak_gpu_memory_mb": 137.7,
+    "peak_cpu_memory_mb": 2802.1,
+    "project_name": "Graph2SMILES_Forward_benchmark",
+    "model_name": "Graph2SMILES",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0359344482422,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-redhat-9.6-Blue_Onyx"
+    }
+  }
+}

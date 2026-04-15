@@ -1,0 +1,13 @@
+name: mol_transformer
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - pytorch=1.13.1
+  - rdkit
+  - networkx
+  - pip:
+    - OpenNMT-py==1.2.0
+    - selfies
