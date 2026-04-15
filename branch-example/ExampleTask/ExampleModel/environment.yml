@@ -1,0 +1,15 @@
+name: example_env
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - python=3.9
+  - pytorch
+  - cudatoolkit=11.8
+  - numpy
+  - pandas
+  - rdkit
+  - pip:
+    - dgl
+    - dgllife

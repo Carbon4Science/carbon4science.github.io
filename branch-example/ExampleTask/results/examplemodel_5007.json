@@ -1,0 +1,41 @@
+{
+  "task": "ExampleTask",
+  "model": "ExampleModel",
+  "num_samples": 5007,
+  "top_k": 50,
+  "model_params": 10000000,
+  "metrics": ["top_1", "top_5"],
+  "accuracy": {
+    "top_1": 0.850,
+    "top_5": 0.950
+  },
+  "correct": {
+    "top_1": 4256,
+    "top_5": 4757
+  },
+  "carbon": {
+    "start_time": "2026-03-24T02:01:54.743802",
+    "end_time": "2026-03-24T02:21:54.743802",
+    "duration_seconds": 1200,
+    "energy_wh": 50.0,
+    "emissions_g_co2": 20.0,
+    "gpu_energy_wh": 30.0,
+    "cpu_energy_wh": 19.5,
+    "ram_energy_wh": 0.5,
+    "peak_gpu_memory_mb": 2048.0,
+    "peak_cpu_memory_mb": 4096.0,
+    "project_name": "ExampleModel_ExampleTask_benchmark",
+    "model_name": "ExampleModel",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 32.0,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.0,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

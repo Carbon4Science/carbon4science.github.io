@@ -1,0 +1,8 @@
+# Model Configuration
+# Add one entry per model. Update paths based on your setup.
+
+ExampleModel:
+  env: example_env
+  checkpoint: ExampleModel/checkpoint/model.pt
+  checkpoint_url: https://example.com/model.pt
+  gpu_memory_mb: 4000
