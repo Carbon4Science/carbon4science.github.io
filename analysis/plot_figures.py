@@ -599,9 +599,17 @@ def _compute_pareto(grp):
     return pareto
 
 
-def plot_fig4(df):
+def plot_fig4(df, highlight_ai=False):
     """Horizontal bar chart of CO2 reference points, ordered by magnitude.
-    For AI task entries, the bar and description show the worst Pareto-optimal model."""
+    For AI task entries, the bar and description show the worst Pareto-optimal model.
+
+    Parameters
+    ----------
+    highlight_ai : bool
+        When True, use a 2-tone palette: bold accent for AI models,
+        neutral gray for non-AI references.  Default False keeps the
+        original 7-colour category scheme.
+    """
 
     # Compute worst Pareto model per task
     # StructOpt and MDSim share models — merge them
@@ -639,7 +647,7 @@ def plot_fig4(df):
         ('AI MD simulation',         'MLIP MD',                  'StructOpt',  'eSEN',                        3486,    '1M steps'),
         ('Chemical synthesis',       'Battery synthesis',        None,         'Vanadium flow battery',       37000,   'MWh'),
         ('Chemical synthesis',       'Material synthesis',       None,         'UiO-66-NH₂ (aqueous-based)',  43000,   'kg'),
-        ('Chemical simulation',      'Ab initio MD',             None,         'PBE (50 atoms)',              140960,  '1M steps'),
+        ('Chemical simulation',      'Ab initio MD',             None,         'PBE',              140960,  '1M steps'),
         ('Chemical synthesis',       'Organic synthesis',        None,         'Letermovir (Merck)',           382000,  'kg'),
     ]
 
@@ -659,10 +667,35 @@ def plot_fig4(df):
     descs       = [d[2] for d in ref_data]
     values      = [d[3] for d in ref_data]
     units       = [d[4] for d in ref_data]
-    colors      = [REF_CATEGORY_COLORS[c] for c in categories]
+    AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction', 'AI MD simulation'}
+    CHEM_CATEGORIES = {'Chemical simulation', 'Chemical synthesis'}
+
+    if highlight_ai:
+        ai_color   = '#1E88E5'   # bold blue for AI models
+        chem_color = '#FFAB91'   # muted coral for conventional chemistry
+        base_color = '#CFD8DC'   # light gray for everyday / LLM baselines
+
+        def _pick(cat):
+            if cat in AI_CATEGORIES:
+                return ai_color, '#1565C0', 1.5, 0.72, '///'
+            if cat in CHEM_CATEGORIES:
+                return chem_color, '#E0E0E0', 0.5, 0.58, ''
+            return base_color, '#E0E0E0', 0.5, 0.55, ''
+
+        colors, edgecolors, linewidths, heights, hatches = zip(
+            *[_pick(c) for c in categories])
+    else:
+        colors = [REF_CATEGORY_COLORS[c] for c in categories]
+        edgecolors = ['white'] * len(categories)
+        linewidths = [0.5] * len(categories)
+        heights = [0.65] * len(categories)
+        hatches = [''] * len(categories)
 
     fig, ax = plt.subplots(figsize=(12, 8))
-    ax.barh(range(len(ref_data)), values, color=colors, edgecolor='white', height=0.65)
+    for i, (val, c, ec, lw, h, hp) in enumerate(
+            zip(values, colors, edgecolors, linewidths, heights, hatches)):
+        ax.barh(i, val, color=c, edgecolor=ec, linewidth=lw, height=h,
+                hatch=hp)
 
     for i, (val, unit) in enumerate(zip(values, units)):
         label = (f'{val / 1000:.1f} kg CO₂ eq/{unit}' if val >= 1000
@@ -683,8 +716,17 @@ def plot_fig4(df):
     ax.tick_params(labelsize=12)
     ax.set_xlim(0.5, 5e8)
 
-    leg = [mpatches.Patch(facecolor=REF_CATEGORY_COLORS[cat], label=cat)
-           for cat in REF_LEGEND_ORDER]
+    if highlight_ai:
+        leg = [
+            mpatches.Patch(facecolor=ai_color, edgecolor='#1565C0',
+                           linewidth=1.5, hatch='///',
+                           label='AI models (this work)'),
+            mpatches.Patch(facecolor=chem_color, label='Conventional chemistry'),
+            mpatches.Patch(facecolor=base_color, label='Everyday activities / LLM'),
+        ]
+    else:
+        leg = [mpatches.Patch(facecolor=REF_CATEGORY_COLORS[cat], label=cat)
+               for cat in REF_LEGEND_ORDER]
     ax.legend(handles=leg, loc='lower right', fontsize=10,
               framealpha=0.9, title='Category', title_fontsize=11)
     ax.spines['top'].set_visible(False)
@@ -890,6 +932,8 @@ if __name__ == '__main__':
     parser.add_argument('--dpi', type=int, default=300)
     parser.add_argument('--co2', choices=['per_exp', 'per_job'], default='per_exp',
                         help='CO2 metric: per_exp or per_job (default: per_job)')
+    parser.add_argument('--highlight-ai', action='store_true',
+                        help='Fig 4: 2-tone palette highlighting AI models vs gray references')
     args = parser.parse_args()
 
     # Set CO2 column and label based on argument
@@ -915,7 +959,7 @@ if __name__ == '__main__':
     if 3 in args.fig:
         plot_fig3(df)
     if 4 in args.fig:
-        plot_fig4(df)
+        plot_fig4(df, highlight_ai=args.highlight_ai)
     if 5 in args.fig:
         plot_fig5(df)
     if 6 in args.fig:

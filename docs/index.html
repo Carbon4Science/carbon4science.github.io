@@ -951,19 +951,20 @@ const REF_DATA = [
   { category: 'AI MD simulation',        label: 'MLIP MD',                  desc: 'LGPS · 1M steps',               value: 3486,    unit: '1M steps',           taskKey: 'StructOpt' },
   { category: 'Chemical synthesis',      label: 'Battery synthesis',        desc: 'Vanadium flow battery',         value: 37000,   unit: 'MWh',                taskKey: null },
   { category: 'Chemical synthesis',      label: 'Material synthesis',       desc: 'UiO-66-NH₂ (aqueous-based)',    value: 43000,   unit: 'kg',                 taskKey: null },
-  { category: 'Chemical simulation',     label: 'Ab initio MD',             desc: 'PBE (50 atoms)',                value: 140960,  unit: '1M steps',           taskKey: null },
+  { category: 'Chemical simulation',     label: 'Ab initio MD',             desc: 'PBE',                value: 140960,  unit: '1M steps',           taskKey: null },
   { category: 'Chemical synthesis',      label: 'Organic synthesis',        desc: 'Letermovir (Merck)',             value: 382000,  unit: 'kg',                 taskKey: null },
 ].sort((a, b) => a.value - b.value);
 
 const REF_CAT_COLORS = {
-  'LLM inference':           '#9467bd',
-  'AI Synthesis prediction': '#17becf',
-  'AI Chemical generation':  '#2ca02c',
-  'AI MD simulation':        '#d62728',
-  'Everyday activities':     '#ff7f0e',
-  'Chemical simulation':     '#8c564b',
-  'Chemical synthesis':      '#e377c2',
+  'LLM inference':           '#CFD8DC',
+  'AI Synthesis prediction': '#1E88E5',
+  'AI Chemical generation':  '#1E88E5',
+  'AI MD simulation':        '#1E88E5',
+  'Everyday activities':     '#CFD8DC',
+  'Chemical simulation':     '#FFAB91',
+  'Chemical synthesis':      '#FFAB91',
 };
+const AI_CATEGORIES = new Set(['AI Synthesis prediction', 'AI Chemical generation', 'AI MD simulation']);
 
 /* ──────────────────────────────────────────────────────
    RENDER CHART — switches based on active tab
@@ -1031,7 +1032,18 @@ function renderRefChart() {
     orientation: 'h',
     x: sorted.map(d => d._barVal),
     y: sorted.map(d => d.label),
-    marker: { color: sorted.map(d => REF_CAT_COLORS[d.category] || '#64748b') },
+    marker: {
+      color: sorted.map(d => REF_CAT_COLORS[d.category] || '#64748b'),
+      line:  {
+        color: sorted.map(d => AI_CATEGORIES.has(d.category) ? '#1565C0' : '#E0E0E0'),
+        width: sorted.map(d => AI_CATEGORIES.has(d.category) ? 1.5 : 0.5),
+      },
+      pattern: {
+        shape:   sorted.map(d => AI_CATEGORIES.has(d.category) ? '/' : ''),
+        solidity: 0.5,
+        fgcolor: sorted.map(d => AI_CATEGORIES.has(d.category) ? '#1565C0' : ''),
+      },
+    },
     error_x: {
       type:       'data',
       symmetric:  false,
@@ -1051,20 +1063,31 @@ function renderRefChart() {
     showlegend: false,
   }];
 
-  // Category legend traces (invisible bars, for legend only)
-  const seenCats = new Set();
-  sorted.forEach(d => {
-    if (!seenCats.has(d.category)) {
-      seenCats.add(d.category);
-      traces.push({
-        type: 'bar', orientation: 'h',
-        x: [null], y: [null],
-        name: d.category,
-        marker: { color: REF_CAT_COLORS[d.category] || '#64748b' },
-        showlegend: true,
-        hoverinfo: 'skip',
-      });
-    }
+  // 3-tone legend traces
+  traces.push({
+    type: 'bar', orientation: 'h',
+    x: [null], y: [null],
+    name: 'AI models (this work)',
+    marker: {
+      color: '#1E88E5',
+      line: { color: '#1565C0', width: 1.5 },
+      pattern: { shape: '/', solidity: 0.5, fgcolor: '#1565C0' },
+    },
+    showlegend: true, hoverinfo: 'skip',
+  });
+  traces.push({
+    type: 'bar', orientation: 'h',
+    x: [null], y: [null],
+    name: 'Conventional chemistry',
+    marker: { color: '#FFAB91' },
+    showlegend: true, hoverinfo: 'skip',
+  });
+  traces.push({
+    type: 'bar', orientation: 'h',
+    x: [null], y: [null],
+    name: 'Everyday activities / LLM',
+    marker: { color: '#CFD8DC' },
+    showlegend: true, hoverinfo: 'skip',
   });
 
   const layout = {
