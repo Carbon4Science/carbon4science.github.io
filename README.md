@@ -40,7 +40,7 @@ A benchmarking framework that jointly evaluates **predictive accuracy** and **ca
 | ---------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------- |
 | **Everyday**                 | Smartphone charge (iPhone 16 Pro Max)     | ~9.7 g CO₂ eq/charge                                                                   |
 |                              | Driving a car (EU average)                | ~170 g CO₂ eq/km                                                                       |
-|                              | Commercial Aviation (Boeing 737-800, 500nm) | ~3.16 kg CO₂ eq/km                                                                       |
+|                              | Commercial Aviation (Boeing 737)          | ~3.16 kg CO₂ eq/km                                                                       |
 | **LLM inference**            | Text generation (Claude 3.7 Sonnet)       | ~2.12 g CO₂ eq/call                                                                    |
 |                              | Image generation (Stable Diffusion)       | ~1.38 g CO₂ eq/image                                                                   |
 | **Chemical simulation**      | Classical MD (force field)                | 10 g CO₂ eq/1M steps                                                                   |

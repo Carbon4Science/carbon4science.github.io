@@ -69,7 +69,7 @@ ref_data_raw = [
     ('AI Chemical generation',   'Material generation',      'MatGen',     'MatterGen',                   248,     '1K structures'),
     ('AI Chemical generation',   'Molecule generation',      'MolGen',     'DeFoG',                       355.2,  '10K molecules'),
     ('AI Synthesis prediction',  'Synthesis Planning',       'Retro',      'RetroBridge',                 403,     '500 molecules'),
-    ('Everyday activities',      'Commercial aviation',      None,         'Boeing 737-800 (500nm)',       3160,     'km'),
+    ('Everyday activities',      'Commercial aviation',      None,         'Boeing 737',                  3160,     'km'),
     ('AI MD simulation',         'MLIP MD',                  'StructOpt',  'eSEN',                        3486,    '1M steps'),
     ('Chemical synthesis',       'Battery synthesis',        None,         'Vanadium flow battery',       37000,   'MWh'),
     ('Chemical synthesis',       'Material synthesis',       None,         'UiO-66-NH₂ (aqueous-based)',  43000,   'kg'),
