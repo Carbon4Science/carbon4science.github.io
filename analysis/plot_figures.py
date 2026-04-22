@@ -57,6 +57,26 @@ ARCH_MARKERS = {
     'Flow Matching': 'X',
 }
 
+# (category, main_label, task_key, fallback_desc, fallback_co2, unit)
+# task_key=None for non-AI entries
+ref_data_raw = [
+    ('LLM inference',            'Image generation',         None,         'Stable Diffusion',            1.38,    'image'),
+    ('LLM inference',            'Text generation',          None,         'Claude-3.7 Sonnet',           2.12,    '10k in & 1.5k out'),
+    ('Everyday activities',      'Smartphone charge',        None,         'iPhone 16 Pro Max',            9.7,    'full charge'),
+    ('Chemical simulation',      'Classical MD',             None,         'force field',                  10,     '1M steps'),
+    ('AI Synthesis prediction',  'Reaction outcome pred.',   'Forward',    'LlaSMol',                     17.7,    '500 inputs'),
+    ('Everyday activities',      'Driving a car',            None,         'EU average',                  170,     'km'),
+    ('AI Chemical generation',   'Material generation',      'MatGen',     'MatterGen',                   248,     '1K structures'),
+    ('AI Chemical generation',   'Molecule generation',      'MolGen',     'DeFoG',                       355.2,  '10K molecules'),
+    ('AI Synthesis prediction',  'Synthesis Planning',       'Retro',      'RetroBridge',                 403,     '500 molecules'),
+    ('Everyday activities',      'Commercial aviation',      None,         'Boeing 737-800 (500nm)',       3160,     'km'),
+    ('AI MD simulation',         'MLIP MD',                  'StructOpt',  'eSEN',                        3486,    '1M steps'),
+    ('Chemical synthesis',       'Battery synthesis',        None,         'Vanadium flow battery',       37000,   'MWh'),
+    ('Chemical synthesis',       'Material synthesis',       None,         'UiO-66-NH₂ (aqueous-based)',  43000,   'kg'),
+    ('Chemical simulation',      'Ab initio MD',             None,         'PBE',              140960,  '1M steps'),
+    ('Chemical synthesis',       'Organic synthesis',        None,         'Letermovir (Merck)',           382000,  'kg'),
+]
+    
 # Reference point categories (Figure 5)
 # AI categories reuse task colors from Figs 1-3; non-AI get distinct colors
 REF_CATEGORY_COLORS = {
@@ -68,6 +88,7 @@ REF_CATEGORY_COLORS = {
     'AI Synthesis prediction':   '#ff7f0e',   # orange (= Forward)
     'AI MD simulation':          '#9467bd',   # purple (= MDSim)
 }
+
 # Ordered legend for Figure 5
 REF_LEGEND_ORDER = [
     'Everyday activities', 'LLM inference', 'Chemical simulation',
@@ -582,7 +603,6 @@ def plot_fig3_horizontal(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/e
     plt.close(fig)
     print(f"Fig 3 horizontal saved → {out}")
 
-
 # ── Figure 4: CO2 Reference Points ────────────────────────────────────────
 def _compute_pareto(grp):
     """Return set of model names that are Pareto-optimal (higher metric, lower CO2)."""
@@ -598,8 +618,8 @@ def _compute_pareto(grp):
             pareto.add(r['model'])
     return pareto
 
-
-def plot_fig4(df, highlight_ai=False):
+# ── Figure 4: CO2 Reference Points ────────────────────────────────────────
+def plot_fig4(df, highlight_ai=True):
     """Horizontal bar chart of CO2 reference points, ordered by magnitude.
     For AI task entries, the bar and description show the worst Pareto-optimal model.
 
@@ -634,22 +654,6 @@ def plot_fig4(df, highlight_ai=False):
 
     # (category, main_label, task_key, fallback_desc, fallback_co2, unit)
     # task_key=None for non-AI entries
-    ref_data_raw = [
-        ('LLM inference',            'Image generation',         None,         'Stable Diffusion',            1.38,    'image'),
-        ('LLM inference',            'Text generation',          None,         'Claude-3.7 Sonnet',           2.12,    '10k in & 1.5k out'),
-        ('Everyday activities',      'Smartphone charge',        None,         'iPhone 16 Pro Max',            9.7,    'full charge'),
-        ('Chemical simulation',      'Classical MD',             None,         'force field',                  10,     '1M steps'),
-        ('AI Synthesis prediction',  'Reaction outcome pred.',   'Forward',    'LlaSMol',                     17.7,    '500 inputs'),
-        ('Everyday activities',      'Driving a car',            None,         'EU average',                  170,     'km'),
-        ('AI Chemical generation',   'Material generation',      'MatGen',     'MatterGen',                   248,     '1K structures'),
-        ('AI Chemical generation',   'Molecule generation',      'MolGen',     'DeFoG',                       355.2,  '10K molecules'),
-        ('AI Synthesis prediction',  'Synthesis Planning',       'Retro',      'RetroBridge',                 403,     '500 molecules'),
-        ('AI MD simulation',         'MLIP MD',                  'StructOpt',  'eSEN',                        3486,    '1M steps'),
-        ('Chemical synthesis',       'Battery synthesis',        None,         'Vanadium flow battery',       37000,   'MWh'),
-        ('Chemical synthesis',       'Material synthesis',       None,         'UiO-66-NH₂ (aqueous-based)',  43000,   'kg'),
-        ('Chemical simulation',      'Ab initio MD',             None,         'PBE',              140960,  '1M steps'),
-        ('Chemical synthesis',       'Organic synthesis',        None,         'Letermovir (Merck)',           382000,  'kg'),
-    ]
 
     # Resolve AI entries to worst Pareto model
     ref_data = []
@@ -738,6 +742,159 @@ def plot_fig4(df, highlight_ai=False):
     plt.close(fig)
     print(f"Fig 4 saved → {out}")
 
+def plot_fig4b(df):
+    """Figure 4b: CO2 reference points with two bars per AI task —
+    original worst-Pareto bar (lighter) and second-best Pareto model (bold).
+
+    Second-best models (hardcoded):
+        Forward → LocalTransform, Retro → LocalRetro, MolGen → REINVENT4,
+        MatGen → DiffCSP, StructOpt → ORB
+    """
+    # ── Compute worst Pareto model per task (same as fig4) ──
+    task_map = {
+        'Forward':   'Forward',
+        'Retro':     'Retro',
+        'MolGen':    'MolGen',
+        'MatGen':    'MatGen',
+        'StructOpt': 'StructOpt',
+    }
+    worst_pareto = {}
+    for task, key in task_map.items():
+        grp = df[df['task'] == task].copy()
+        if task == 'StructOpt':
+            grp = df[df['task'].isin(['StructOpt', 'MDSim'])].drop_duplicates('model')
+        if grp.empty:
+            continue
+        pareto_models = _compute_pareto(grp)
+        pareto_grp = grp[grp['model'].isin(pareto_models)]
+        worst = pareto_grp.loc[pareto_grp['CO2_per_job'].idxmax()]
+        worst_pareto[key] = (worst['model'], worst['CO2_per_job'])
+
+    # ── Second-best models (user-specified) ──
+    second_best_names = {
+        'Forward':   'LocalTransform',
+        'Retro':     'LocalRetro',
+        'MolGen':    'REINVENT4',
+        'MatGen':    'DiffCSP',
+        'StructOpt': 'ORB',
+    }
+    second_best = {}
+    for task, model_name in second_best_names.items():
+        row = df[df['model'] == model_name]
+        if not row.empty:
+            co2 = row.iloc[0]['CO2_per_job']
+            second_best[task] = (model_name, co2)
+
+    # Resolve worst-Pareto entries
+    ref_data = []
+    for (cat, label, task_key, fallback_desc, fallback_co2, unit) in ref_data_raw:
+        if task_key and task_key in worst_pareto:
+            model_name, co2 = worst_pareto[task_key]
+            ref_data.append((cat, label, task_key, model_name, co2, unit))
+        else:
+            ref_data.append((cat, label, None, fallback_desc, fallback_co2, unit))
+
+    ref_data.sort(key=lambda x: x[4])
+
+    categories  = [d[0] for d in ref_data]
+    main_labels = [d[1] for d in ref_data]
+    task_keys   = [d[2] for d in ref_data]
+    descs       = [d[3] for d in ref_data]
+    values      = [d[4] for d in ref_data]
+    units       = [d[5] for d in ref_data]
+
+    AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction', 'AI MD simulation'}
+
+    # ── Colour palette ──
+    ai_color       = '#1E88E5'
+    ai_color_light = '#D6EAFF'   # very light version for original bar
+    chem_color     = '#FFAB91'
+    base_color     = '#CFD8DC'
+
+    def _pick_light(cat):
+        """Lighter colours for the original (worst-Pareto) bars."""
+        if cat in AI_CATEGORIES:
+            return ai_color_light, '#D6EAFF', 0.5, ''
+        if cat in {'Chemical simulation', 'Chemical synthesis'}:
+            return chem_color, '#E0E0E0', 0.5, ''
+        return base_color, '#E0E0E0', 0.5, ''
+
+    def _pick_bold(cat):
+        """Bold colours for the second-best bars."""
+        return ai_color, '#1565C0', 1.5, '///'
+
+    # ── Draw ──
+    bar_height = 0.72
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    # Pass 1: draw original bars (lighter)
+    for i, (val, cat) in enumerate(zip(values, categories)):
+        fc, ec, lw, hp = _pick_light(cat)
+        h = bar_height if cat in AI_CATEGORIES else 0.58 if cat in {'Chemical simulation', 'Chemical synthesis'} else 0.55
+        ax.barh(i, val, color=fc, edgecolor=ec, linewidth=lw, height=h, hatch=hp)
+
+    # Pass 2: overlay second-best bars (bold) on AI rows
+    for i, (cat, tk) in enumerate(zip(categories, task_keys)):
+        if tk and tk in second_best:
+            sb_name, sb_co2 = second_best[tk]
+            fc, ec, lw, hp = _pick_bold(cat)
+            ax.barh(i, sb_co2, color=fc, edgecolor=ec, linewidth=lw,
+                    height=bar_height, hatch=hp)
+
+    # ── CO2 value labels (only second-best for AI rows) ──
+    for i, (val, unit, tk) in enumerate(zip(values, units, task_keys)):
+        if tk and tk in second_best:
+            sb_co2 = second_best[tk][1]
+            label = (f'{sb_co2 / 1000:.1f} kg CO₂ eq/{unit}' if sb_co2 >= 1000
+                     else f'{sb_co2:.1f} g CO₂ eq/{unit}')
+            outer = max(val, sb_co2)
+            ax.text(outer * 1.4, i, label,
+                    va='center', fontsize=8.5, fontweight='bold', color='#1565C0')
+        else:
+            label = (f'{val / 1000:.1f} kg CO₂ eq/{unit}' if val >= 1000
+                     else f'{val:.1f} g CO₂ eq/{unit}')
+            ax.text(val * 1.4, i, label, va='center', fontsize=8.5)
+
+    # ── Y-axis labels (only second-best model name for AI rows) ──
+    ax.set_yticks(range(len(ref_data)))
+    ax.set_yticklabels([''] * len(ref_data))
+    for i, (main, desc, tk) in enumerate(zip(main_labels, descs, task_keys)):
+        ax.text(-0.03, i, main, transform=ax.get_yaxis_transform(),
+                ha='right', va='center', fontsize=10.5, fontweight='bold', color='black')
+        if tk and tk in second_best:
+            sb_name = second_best[tk][0]
+            ax.text(-0.035, i - 0.28, sb_name, transform=ax.get_yaxis_transform(),
+                    ha='right', va='center', fontsize=8.5, fontweight='bold',
+                    fontstyle='italic', color='#1565C0')
+        else:
+            ax.text(-0.035, i - 0.28, desc, transform=ax.get_yaxis_transform(),
+                    ha='right', va='center', fontsize=8.5, fontstyle='italic', color='#777777')
+
+    ax.set_xscale('log')
+    ax.set_xlabel('CO₂ Emission', fontsize=14)
+    ax.tick_params(labelsize=12)
+    ax.set_xlim(0.5, 5e8)
+
+    # ── Legend ──
+    leg = [
+        mpatches.Patch(facecolor=ai_color, edgecolor='#1565C0',
+                       linewidth=1.5, hatch='///',
+                       label='AI models (2nd-best Pareto)'),
+        mpatches.Patch(facecolor=ai_color_light, edgecolor='#D6EAFF',
+                       label='AI models (worst Pareto)'),
+        mpatches.Patch(facecolor=chem_color, label='Conventional chemistry'),
+        mpatches.Patch(facecolor=base_color, label='Everyday activities / LLM'),
+    ]
+    ax.legend(handles=leg, loc='lower right', fontsize=10,
+              framealpha=0.9, title='Category', title_fontsize=11)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+
+    plt.subplots_adjust(left=0.32)
+    out = os.path.join(OUT_DIR, '4b_co2_reference_second_pareto.png')
+    fig.savefig(out, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Fig 4b saved → {out}")
 
 # ── Figure 5: Cross-task CO2 decomposition (2 panels) ─────────────────────
 def plot_fig5(df):
@@ -932,8 +1089,6 @@ if __name__ == '__main__':
     parser.add_argument('--dpi', type=int, default=300)
     parser.add_argument('--co2', choices=['per_exp', 'per_job'], default='per_exp',
                         help='CO2 metric: per_exp or per_job (default: per_job)')
-    parser.add_argument('--highlight-ai', action='store_true',
-                        help='Fig 4: 2-tone palette highlighting AI models vs gray references')
     args = parser.parse_args()
 
     # Set CO2 column and label based on argument
@@ -959,7 +1114,7 @@ if __name__ == '__main__':
     if 3 in args.fig:
         plot_fig3(df)
     if 4 in args.fig:
-        plot_fig4(df, highlight_ai=args.highlight_ai)
+        plot_fig4(df)
     if 5 in args.fig:
         plot_fig5(df)
     if 6 in args.fig:
@@ -968,5 +1123,7 @@ if __name__ == '__main__':
         plot_fig1_horizontal(df, co2_col, co2_label)
     if 8 in args.fig:
         plot_fig3_horizontal(df)
+    if 9 in args.fig:
+        plot_fig4b(df)
 
     print("Done!")

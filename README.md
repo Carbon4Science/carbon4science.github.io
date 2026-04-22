@@ -40,6 +40,7 @@ A benchmarking framework that jointly evaluates **predictive accuracy** and **ca
 | ---------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------- |
 | **Everyday**                 | Smartphone charge (iPhone 16 Pro Max)     | ~9.7 g CO₂ eq/charge                                                                   |
 |                              | Driving a car (EU average)                | ~170 g CO₂ eq/km                                                                       |
+|                              | Commercial Aviation (Boeing 737-800, 500nm) | ~3.16 kg CO₂ eq/km                                                                       |
 | **LLM inference**            | Text generation (Claude 3.7 Sonnet)       | ~2.12 g CO₂ eq/call                                                                    |
 |                              | Image generation (Stable Diffusion)       | ~1.38 g CO₂ eq/image                                                                   |
 | **Chemical simulation**      | Classical MD (force field)                | 10 g CO₂ eq/1M steps                                                                   |
@@ -47,12 +48,6 @@ A benchmarking framework that jointly evaluates **predictive accuracy** and **ca
 | **Chemical synthesis**       | Organic synthesis (Letermovir)            | [369 kg CO₂ eq/kg](https://pubs.acs.org/doi/full/10.1021/jacs.5c14470)                 |
 |                              | Material synthesis (UiO-66-NH₂)           | [43 kg CO₂ eq/kg](https://www.sciencedirect.com/science/article/pii/S2213343721001366) |
 |                              | Battery synthesis (vanadium flow battery) | [37 kg CO₂ eq/MWh](https://onlinelibrary.wiley.com/doi/full/10.1111/jiec.13328)        |
-| **ML Chemical generation**   | Material generation (ChargeDIFF)          | 134 g CO₂ eq/job                                                                       |
-|                              | Molecule generation (DeFoG)               | 355 g CO₂ eq/job                                                                       |
-| **ML Synthesis prediction**  | Synthesis planning (RSGPT)                | 2,512 g CO₂ eq/job                                                                     |
-|                              | Reaction outcome prediction (RSMILES)     | 615 g CO₂ eq/job                                                                       |
-| **ML Interatomic Potential** | Structure optimization (eSEN)             | 87 g CO₂ eq/job                                                                        |
-|                              | MD simulation (eSEN)                      | 87 g CO₂ eq/job                                                                        |
 
 
 ---
