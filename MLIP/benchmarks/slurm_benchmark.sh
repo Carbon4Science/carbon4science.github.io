@@ -9,7 +9,8 @@
 #SBATCH --time=72:00:00         # Max 72hrs. CPU-only jobs Max 48hrs
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=8G
-#SBATCH --gres=gpu:5000ada:1
+#SBATCH --gres=shard:5000ada:100
+#SBATCH --qos=qos_5000
 
 # Usage:
 #   # Single model (pretrained, default)

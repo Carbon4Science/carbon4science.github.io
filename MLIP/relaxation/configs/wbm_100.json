@@ -1,0 +1,14 @@
+{
+  "subset": {
+    "name": "wbm_unique_protos_100_seed42",
+    "xyz": "MLIP/relaxation/data/wbm_subset_100.extxyz",
+    "ids_json": "MLIP/relaxation/data/wbm_subset_100_ids.json"
+  },
+  "protocol": {
+    "name": "unified",
+    "optimizer": "FIRE",
+    "cell_filter": "FrechetCellFilter",
+    "fmax": 0.05,
+    "max_steps": 500
+  }
+}

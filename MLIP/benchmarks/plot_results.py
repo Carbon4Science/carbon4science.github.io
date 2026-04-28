@@ -75,6 +75,41 @@ METRIC_NORM_STEPS = {
 DEFAULT_METRICS = ["CPS", "rdf_score.average", "msd_score"]
 
 
+def load_relax_costs(bucket: str = "unified"):
+    """Load cost data from MLIP/relaxation/results/<bucket>/<Model>/relax_results.json.
+
+    Returns a dict {model_name -> {"emissions_g_co2": ..., "energy_wh": ...,
+    "duration_seconds": ..., "num_structures": ...}} so cost can be plotted
+    against actually measured relaxation cost rather than MD cost-per-step.
+    """
+    out = {}
+    relax_dir = TASK_DIR / "relaxation" / "results" / bucket
+    if not relax_dir.is_dir():
+        return out
+    for model_dir in sorted(relax_dir.iterdir()):
+        if not model_dir.is_dir():
+            continue
+        fpath = model_dir / "relax_results.json"
+        if not fpath.exists():
+            continue
+        try:
+            data = json.loads(fpath.read_text())
+        except json.JSONDecodeError:
+            continue
+        carbon = data.get("carbon", {}) or {}
+        agg = data.get("aggregate", {}) or {}
+        n = agg.get("num_structures") or data.get("subset", {}).get("n") or 1
+        out[data.get("model", model_dir.name)] = {
+            "emissions_g_co2": float(carbon.get("emissions_g_co2", 0.0)),
+            "energy_wh": float(carbon.get("energy_wh", 0.0)),
+            "duration_seconds": float(
+                carbon.get("duration_seconds", agg.get("total_loop_seconds", 0.0))
+            ),
+            "num_structures": int(n),
+        }
+    return out
+
+
 def _sorted_by_year(model_names):
     #try:
     return sorted(model_names, key=lambda n: (int(MODEL_STYLES.get(n, {}).get("year", 9999).split(".")[0]), int(MODEL_STYLES.get(n, {}).get("year", 9999).split(".")[1])))
@@ -131,6 +166,43 @@ def _normalize_cost(cost, data, metric):
     return cost / total_steps * norm_steps
 
 
+def _get_cost(data, xaxis_key, metric, *, cost_source="md", relax_costs=None,
+              relax_norm=None, model_name=None):
+    """Return the x-axis cost value for a (model, metric) pair.
+
+    cost_source="md" (default): existing behaviour — use MD cost from data["carbon"]
+        and apply METRIC_NORM_STEPS normalization for fast metrics like CPS.
+    cost_source="relax": use measured relaxation cost from relax_costs lookup.
+        Only meaningful for metrics that conceptually pair with relaxation
+        (e.g. CPS). For MD-based metrics (RDF, MSD) we still fall back to MD cost.
+    """
+    if cost_source == "relax" and metric == "CPS" and relax_costs is not None:
+        rc = relax_costs.get(model_name)
+        if rc is None:
+            return None
+        raw = rc.get(xaxis_key, 0.0)
+        if raw == 0:
+            return None
+        n = rc.get("num_structures", 1) or 1
+        if relax_norm is not None and n > 0:
+            return raw / n * relax_norm
+        return raw
+
+    raw = data.get("carbon", {}).get(xaxis_key, 0)
+    if raw == 0:
+        return None
+    return _normalize_cost(raw, data, metric)
+
+
+def _xaxis_label_with_source(xaxis_key, metric, *, cost_source="md", relax_norm=None):
+    if cost_source == "relax" and metric == "CPS":
+        base = XAXIS_CONFIG[xaxis_key]["label"]
+        if relax_norm is None or relax_norm == 1:
+            return f"{base} per relaxation"
+        return f"{base} per {relax_norm} relaxations"
+    return _xaxis_label(xaxis_key, metric)
+
+
 def _xaxis_label(xaxis_key, metric):
     """Build x-axis label with per-metric normalization."""
     base = XAXIS_CONFIG[xaxis_key]["label"]
@@ -150,7 +222,8 @@ def _get_metric_std(data, metric):
 
 
 def plot_panels(results, metrics=None, xaxis_key="emissions_g_co2",
-                output=None, errorbars=False, variant="pretrained"):
+                output=None, errorbars=False, variant="pretrained",
+                cost_source="md", relax_costs=None, relax_norm=None):
     """Per-metric panel plot: one subplot per accuracy metric."""
     metrics = metrics or DEFAULT_METRICS
     n_metrics = len(metrics)
@@ -161,11 +234,12 @@ def plot_panels(results, metrics=None, xaxis_key="emissions_g_co2",
         for model_name in _sorted_by_year(results.keys()):
             data = results[model_name]
             acc = _get_metric(data, metric)
-            raw_cost = data.get("carbon", {}).get(xaxis_key, 0)
-            if acc is None or raw_cost == 0:
+            cost = _get_cost(data, xaxis_key, metric,
+                             cost_source=cost_source, relax_costs=relax_costs,
+                             relax_norm=relax_norm, model_name=model_name)
+            if acc is None or cost is None:
                 continue
 
-            cost = _normalize_cost(raw_cost, data, metric)
             style = MODEL_STYLES.get(model_name, {"color": "gray", "marker": "x"})
 
             if errorbars:
@@ -184,14 +258,16 @@ def plot_panels(results, metrics=None, xaxis_key="emissions_g_co2",
             #            fontsize=8, color=style["color"], fontweight="bold")
 
         ax.set_xscale("log")
-        ax.set_xlabel(_xaxis_label(xaxis_key, metric))
+        ax.set_xlabel(_xaxis_label_with_source(xaxis_key, metric,
+                                              cost_source=cost_source, relax_norm=relax_norm))
         ax.set_ylabel("Score")
         ax.set_ylim(0, 1.05)
         ax.set_title(METRIC_DISPLAY.get(metric, metric))
         ax.grid(True, alpha=0.3, which="both")
         ax.legend()
 
-    fig.suptitle(f"MLIP ({variant}): Accuracy vs {XAXIS_CONFIG[xaxis_key]['title_word']}",
+    suffix = f" [cost: {cost_source}]" if cost_source != "md" else ""
+    fig.suptitle(f"MLIP ({variant}): Accuracy vs {XAXIS_CONFIG[xaxis_key]['title_word']}{suffix}",
                  fontsize=15, fontweight="bold", y=1.02)
     fig.tight_layout()
 
@@ -205,7 +281,8 @@ def plot_panels(results, metrics=None, xaxis_key="emissions_g_co2",
 
 
 def plot_combined(results, metrics, xaxis_key="emissions_g_co2",
-                  output=None, errorbars=False, variant="pretrained"):
+                  output=None, errorbars=False, variant="pretrained",
+                  cost_source="md", relax_costs=None, relax_norm=None):
     """Single combined plot with all metrics per model."""
     marker_cycle = ["o", "s", "D", "*", "v", "^", "P", "h"]
     metric_markers = {m: marker_cycle[i % len(marker_cycle)] for i, m in enumerate(metrics)}
@@ -214,42 +291,50 @@ def plot_combined(results, metrics, xaxis_key="emissions_g_co2",
 
     for model_name in _sorted_by_year(results.keys()):
         data = results[model_name]
-        cost = data.get("carbon", {}).get(xaxis_key, 0)
-        if cost == 0:
-            continue
-
         style = MODEL_STYLES.get(model_name, {"color": "gray"})
         accs = []
+        last_cost = None
         for k in metrics:
             acc = _get_metric(data, k)
-            if acc is None:
+            cost_k = _get_cost(data, xaxis_key, k,
+                               cost_source=cost_source, relax_costs=relax_costs,
+                               relax_norm=relax_norm, model_name=model_name)
+            if acc is None or cost_k is None:
                 continue
             accs.append(acc)
+            last_cost = cost_k
 
             if errorbars:
                 std = _get_metric_std(data, k)
                 if std is not None:
-                    ax.errorbar(cost, acc, yerr=std, fmt="none",
+                    ax.errorbar(cost_k, acc, yerr=std, fmt="none",
                                 ecolor=style["color"], capsize=3, alpha=0.6, zorder=4)
 
-            ax.scatter(cost, acc, s=100, zorder=5,
+            ax.scatter(cost_k, acc, s=100, zorder=5,
                        color=style["color"], marker=metric_markers[k],
                        edgecolors="white", linewidths=0.5)
 
-        if len(accs) >= 2:
-            ax.vlines(cost, min(accs), max(accs), colors=style["color"],
+        if len(accs) >= 2 and last_cost is not None:
+            ax.vlines(last_cost, min(accs), max(accs), colors=style["color"],
                       linewidths=1.5, alpha=0.4, zorder=3)
 
-        if accs:
-            ax.annotate(_model_annotation(model_name), (cost, max(accs)),
+        if accs and last_cost is not None:
+            ax.annotate(_model_annotation(model_name), (last_cost, max(accs)),
                         textcoords="offset points", xytext=(8, 4),
                         fontsize=8, color=style["color"], fontweight="bold")
 
     ax.set_xscale("log")
-    ax.set_xlabel(XAXIS_CONFIG[xaxis_key]["label"])
+    if cost_source == "relax":
+        norm_str = "" if (relax_norm is None or relax_norm == 1) else f" per {relax_norm} relaxations"
+        if not norm_str:
+            norm_str = " per relaxation"
+        ax.set_xlabel(XAXIS_CONFIG[xaxis_key]["label"] + norm_str)
+    else:
+        ax.set_xlabel(XAXIS_CONFIG[xaxis_key]["label"])
     ax.set_ylabel("Score")
     ax.set_ylim(0, 1.05)
-    ax.set_title(f"MLIP ({variant}): Accuracy vs {XAXIS_CONFIG[xaxis_key]['title_word']}",
+    suffix = f" [cost: {cost_source}]" if cost_source != "md" else ""
+    ax.set_title(f"MLIP ({variant}): Accuracy vs {XAXIS_CONFIG[xaxis_key]['title_word']}{suffix}",
                  fontsize=14, fontweight="bold")
     ax.grid(True, alpha=0.3, which="both")
 
@@ -288,8 +373,26 @@ def main():
                         help="Show std error bars across seeds")
     parser.add_argument("--models", nargs="+", default=None,
                         help="Only plot these models")
+    parser.add_argument("--cost_source", default="md", choices=["md", "relax"],
+                        help="Cost source for the CPS metric only. "
+                             "'md' (default) reuses MD cost/step scaled to 1000 steps. "
+                             "'relax' uses measured cost from MLIP/relaxation/results/.")
+    parser.add_argument("--relax_bucket", default="unified", choices=["unified", "specific"],
+                        help="Which relaxation result set to read when --cost_source=relax")
+    parser.add_argument("--relax_norm", type=int, default=None,
+                        help="Normalize relax cost to this many relaxations "
+                             "(default: per single relaxation)")
 
     args = parser.parse_args()
+
+    relax_costs = None
+    if args.cost_source == "relax":
+        relax_costs = load_relax_costs(bucket=args.relax_bucket)
+        if not relax_costs:
+            print(f"WARNING: No relax results found under MLIP/relaxation/results/{args.relax_bucket}/")
+        else:
+            print(f"Loaded relax costs ({args.relax_bucket}) for: "
+                  f"{', '.join(sorted(relax_costs.keys()))}")
 
     results = load_results(variant=args.variant)
     if args.models:
@@ -328,10 +431,14 @@ def main():
 
         if args.combined:
             plot_combined(results, metrics=args.metric, xaxis_key=xkey, output=output,
-                          errorbars=args.errorbars, variant=args.variant)
+                          errorbars=args.errorbars, variant=args.variant,
+                          cost_source=args.cost_source, relax_costs=relax_costs,
+                          relax_norm=args.relax_norm)
         else:
             plot_panels(results, metrics=args.metric, xaxis_key=xkey,
-                        output=output, errorbars=args.errorbars, variant=args.variant)
+                        output=output, errorbars=args.errorbars, variant=args.variant,
+                        cost_source=args.cost_source, relax_costs=relax_costs,
+                        relax_norm=args.relax_norm)
 
 
 if __name__ == "__main__":
