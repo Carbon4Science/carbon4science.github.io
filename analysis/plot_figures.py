@@ -69,8 +69,9 @@ ref_data_raw = [
     ('AI Chemical generation',   'Material generation',      'MatGen',     'MatterGen',                   248,     '1K structures'),
     ('AI Chemical generation',   'Molecule generation',      'MolGen',     'DeFoG',                       355.2,  '10K molecules'),
     ('AI Synthesis prediction',  'Synthesis Planning',       'Retro',      'RetroBridge',                 403,     '500 molecules'),
-    ('Everyday activities',      'Commercial aviation',      None,         'Boeing 737',                  3160,     'km'),
-    ('AI MD simulation',         'MLIP MD',                  'StructOpt',  'eSEN',                        3486,    '1M steps'),
+    ('AI MD simulation',         'MLIP MD',                  'MDSim',      'eSEN',                        3486,    '1M steps'),
+    ('AI Structure Opt',         'MLIP relaxation',          'StructOpt',  'eSEN',                         139,    '1K structures'),
+    ('Everyday activities',      'Commercial aviation',      None,         'Boeing 737',                  15800,   'km'),
     ('Chemical synthesis',       'Battery synthesis',        None,         'Vanadium flow battery',       37000,   'MWh'),
     ('Chemical synthesis',       'Material synthesis',       None,         'UiO-66-NH₂ (aqueous-based)',  43000,   'kg'),
     ('Chemical simulation',      'Ab initio MD',             None,         'PBE',              140960,  '1M steps'),
@@ -86,6 +87,7 @@ REF_CATEGORY_COLORS = {
     'Chemical synthesis':        '#E53935',   # red
     'AI Chemical generation':    '#2ca02c',   # green (= MatGen)
     'AI Synthesis prediction':   '#ff7f0e',   # orange (= Forward)
+    'AI Structure Opt':          '#d62728',   # red-orange (= StructOpt)
     'AI MD simulation':          '#9467bd',   # purple (= MDSim)
 }
 
@@ -93,7 +95,7 @@ REF_CATEGORY_COLORS = {
 REF_LEGEND_ORDER = [
     'Everyday activities', 'LLM inference', 'Chemical simulation',
     'Chemical synthesis', 'AI Chemical generation', 'AI Synthesis prediction',
-    'AI MD simulation',
+    'AI Structure Opt', 'AI MD simulation',
 ]
 
 
@@ -631,20 +633,18 @@ def plot_fig4(df, highlight_ai=True):
         original 7-colour category scheme.
     """
 
-    # Compute worst Pareto model per task
-    # StructOpt and MDSim share models — merge them
+    # Compute worst Pareto model per task (StructOpt and MDSim each plot independently)
     task_map = {
         'Forward':   'Forward',
         'Retro':     'Retro',
         'MolGen':    'MolGen',
         'MatGen':    'MatGen',
         'StructOpt': 'StructOpt',
+        'MDSim':     'MDSim',
     }
     worst_pareto = {}  # task -> (model_name, co2_per_job)
     for task, key in task_map.items():
         grp = df[df['task'] == task].copy()
-        if task == 'StructOpt':
-            grp = df[df['task'].isin(['StructOpt', 'MDSim'])].drop_duplicates('model')
         if grp.empty:
             continue
         pareto_models = _compute_pareto(grp)
@@ -671,7 +671,8 @@ def plot_fig4(df, highlight_ai=True):
     descs       = [d[2] for d in ref_data]
     values      = [d[3] for d in ref_data]
     units       = [d[4] for d in ref_data]
-    AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction', 'AI MD simulation'}
+    AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction',
+                     'AI Structure Opt', 'AI MD simulation'}
     CHEM_CATEGORIES = {'Chemical simulation', 'Chemical synthesis'}
 
     if highlight_ai:
@@ -748,7 +749,7 @@ def plot_fig4b(df):
 
     Second-best models (hardcoded):
         Forward → LocalTransform, Retro → LocalRetro, MolGen → REINVENT4,
-        MatGen → DiffCSP, StructOpt → ORB
+        MatGen → DiffCSP, StructOpt → NequIP, MDSim → NequIP
     """
     # ── Compute worst Pareto model per task (same as fig4) ──
     task_map = {
@@ -757,12 +758,11 @@ def plot_fig4b(df):
         'MolGen':    'MolGen',
         'MatGen':    'MatGen',
         'StructOpt': 'StructOpt',
+        'MDSim':     'MDSim',
     }
     worst_pareto = {}
     for task, key in task_map.items():
         grp = df[df['task'] == task].copy()
-        if task == 'StructOpt':
-            grp = df[df['task'].isin(['StructOpt', 'MDSim'])].drop_duplicates('model')
         if grp.empty:
             continue
         pareto_models = _compute_pareto(grp)
@@ -776,11 +776,12 @@ def plot_fig4b(df):
         'Retro':     'LocalRetro',
         'MolGen':    'REINVENT4',
         'MatGen':    'DiffCSP',
-        'StructOpt': 'ORB',
+        'StructOpt': 'NequIP',
+        'MDSim':     'SevenNet',
     }
     second_best = {}
     for task, model_name in second_best_names.items():
-        row = df[df['model'] == model_name]
+        row = df[(df['task'] == task) & (df['model'] == model_name)]
         if not row.empty:
             co2 = row.iloc[0]['CO2_per_job']
             second_best[task] = (model_name, co2)
@@ -803,7 +804,8 @@ def plot_fig4b(df):
     values      = [d[4] for d in ref_data]
     units       = [d[5] for d in ref_data]
 
-    AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction', 'AI MD simulation'}
+    AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction',
+                     'AI Structure Opt', 'AI MD simulation'}
 
     # ── Colour palette ──
     ai_color       = '#1E88E5'
@@ -895,6 +897,180 @@ def plot_fig4b(df):
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
     print(f"Fig 4b saved → {out}")
+
+
+# ── Figure 4 combined: (a) worst Pareto on top, (b) 2nd-best Pareto on bottom ─
+def plot_fig4_combined(df):
+    """Two-panel stacked Fig 4: (a) worst-Pareto bars, (b) worst + 2nd-best overlay.
+    Shares the y-axis (same reference categories in same order)."""
+
+    # ── Compute worst Pareto per task (same as fig4 / fig4b) ──
+    task_map = {
+        'Forward': 'Forward', 'Retro': 'Retro', 'MolGen': 'MolGen',
+        'MatGen': 'MatGen', 'StructOpt': 'StructOpt', 'MDSim': 'MDSim',
+    }
+    worst_pareto = {}
+    for task, key in task_map.items():
+        grp = df[df['task'] == task].copy()
+        if grp.empty:
+            continue
+        pareto_models = _compute_pareto(grp)
+        pareto_grp = grp[grp['model'].isin(pareto_models)]
+        worst = pareto_grp.loc[pareto_grp['CO2_per_job'].idxmax()]
+        worst_pareto[key] = (worst['model'], worst['CO2_per_job'])
+
+    # ── Second-best models (mirror fig4b) ──
+    second_best_names = {
+        'Forward': 'LocalTransform', 'Retro': 'LocalRetro',
+        'MolGen': 'REINVENT4', 'MatGen': 'DiffCSP',
+        'StructOpt': 'NequIP', 'MDSim': 'SevenNet',
+    }
+    second_best = {}
+    for task, model_name in second_best_names.items():
+        row = df[(df['task'] == task) & (df['model'] == model_name)]
+        if not row.empty:
+            second_best[task] = (model_name, row.iloc[0]['CO2_per_job'])
+
+    # ── Resolve ref_data (carrying task_key for fig4b overlay) ──
+    ref_data = []
+    for (cat, label, task_key, fallback_desc, fallback_co2, unit) in ref_data_raw:
+        if task_key and task_key in worst_pareto:
+            model_name, co2 = worst_pareto[task_key]
+            ref_data.append((cat, label, task_key, model_name, co2, unit))
+        else:
+            ref_data.append((cat, label, None, fallback_desc, fallback_co2, unit))
+    ref_data.sort(key=lambda x: x[4])
+
+    categories  = [d[0] for d in ref_data]
+    main_labels = [d[1] for d in ref_data]
+    task_keys   = [d[2] for d in ref_data]
+    descs       = [d[3] for d in ref_data]
+    values      = [d[4] for d in ref_data]
+    units       = [d[5] for d in ref_data]
+
+    AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction',
+                     'AI Structure Opt', 'AI MD simulation'}
+    CHEM_CATEGORIES = {'Chemical simulation', 'Chemical synthesis'}
+
+    # ── Palette ──
+    ai_color       = '#1E88E5'
+    ai_color_light = '#D6EAFF'
+    chem_color     = '#FFAB91'
+    base_color     = '#CFD8DC'
+
+    def _pick_top(cat):  # fig4 highlight_ai=True style
+        if cat in AI_CATEGORIES:
+            return ai_color, '#1565C0', 1.5, 0.72, '///'
+        if cat in CHEM_CATEGORIES:
+            return chem_color, '#E0E0E0', 0.5, 0.58, ''
+        return base_color, '#E0E0E0', 0.5, 0.55, ''
+
+    def _pick_light(cat):  # fig4b light pass
+        if cat in AI_CATEGORIES:
+            return ai_color_light, '#D6EAFF', 0.5, ''
+        if cat in CHEM_CATEGORIES:
+            return chem_color, '#E0E0E0', 0.5, ''
+        return base_color, '#E0E0E0', 0.5, ''
+
+    fig, (ax_a, ax_b) = plt.subplots(2, 1, figsize=(12, 16), sharey=True)
+
+    # ── Panel (a): worst-Pareto bars (fig4 style) ──
+    for i, (val, cat) in enumerate(zip(values, categories)):
+        fc, ec, lw, h, hp = _pick_top(cat)
+        ax_a.barh(i, val, color=fc, edgecolor=ec, linewidth=lw, height=h, hatch=hp)
+    for i, (val, unit) in enumerate(zip(values, units)):
+        label = (f'{val / 1000:.1f} kg CO₂ eq/{unit}' if val >= 1000
+                 else f'{val:.1f} g CO₂ eq/{unit}')
+        ax_a.text(val * 1.4, i, label, va='center', fontsize=8.5)
+
+    # ── Panel (b): light worst-Pareto + bold 2nd-best overlay (fig4b style) ──
+    bar_height = 0.72
+    for i, (val, cat) in enumerate(zip(values, categories)):
+        fc, ec, lw, hp = _pick_light(cat)
+        h = bar_height if cat in AI_CATEGORIES else 0.58 if cat in CHEM_CATEGORIES else 0.55
+        ax_b.barh(i, val, color=fc, edgecolor=ec, linewidth=lw, height=h, hatch=hp)
+    for i, (cat, tk) in enumerate(zip(categories, task_keys)):
+        if tk and tk in second_best:
+            sb_co2 = second_best[tk][1]
+            ax_b.barh(i, sb_co2, color=ai_color, edgecolor='#1565C0',
+                      linewidth=1.5, height=bar_height, hatch='///')
+    for i, (val, unit, tk) in enumerate(zip(values, units, task_keys)):
+        if tk and tk in second_best:
+            sb_co2 = second_best[tk][1]
+            label = (f'{sb_co2 / 1000:.1f} kg CO₂ eq/{unit}' if sb_co2 >= 1000
+                     else f'{sb_co2:.1f} g CO₂ eq/{unit}')
+            outer = max(val, sb_co2)
+            ax_b.text(outer * 1.4, i, label,
+                      va='center', fontsize=8.5, fontweight='bold', color='#1565C0')
+        else:
+            label = (f'{val / 1000:.1f} kg CO₂ eq/{unit}' if val >= 1000
+                     else f'{val:.1f} g CO₂ eq/{unit}')
+            ax_b.text(val * 1.4, i, label, va='center', fontsize=8.5)
+
+    # ── Shared y-axis labels (only on left side, drawn once via ax_a) ──
+    for ax in (ax_a, ax_b):
+        ax.set_yticks(range(len(ref_data)))
+        ax.set_yticklabels([''] * len(ref_data))
+        ax.set_xscale('log')
+        ax.set_xlim(0.5, 5e8)
+        ax.tick_params(labelsize=12)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+
+    # Panel (a) y-labels: main label + worst-Pareto model name (italic gray)
+    for i, (main, desc) in enumerate(zip(main_labels, descs)):
+        ax_a.text(-0.03, i, main, transform=ax_a.get_yaxis_transform(),
+                  ha='right', va='center', fontsize=10.5, fontweight='bold', color='black')
+        ax_a.text(-0.035, i - 0.28, desc, transform=ax_a.get_yaxis_transform(),
+                  ha='right', va='center', fontsize=8.5, fontstyle='italic', color='#777777')
+    # Panel (b) y-labels: main label + 2nd-best model (blue) where applicable
+    for i, (main, desc, tk) in enumerate(zip(main_labels, descs, task_keys)):
+        ax_b.text(-0.03, i, main, transform=ax_b.get_yaxis_transform(),
+                  ha='right', va='center', fontsize=10.5, fontweight='bold', color='black')
+        if tk and tk in second_best:
+            sb_name = second_best[tk][0]
+            ax_b.text(-0.035, i - 0.28, sb_name, transform=ax_b.get_yaxis_transform(),
+                      ha='right', va='center', fontsize=8.5, fontweight='bold',
+                      fontstyle='italic', color='#1565C0')
+        else:
+            ax_b.text(-0.035, i - 0.28, desc, transform=ax_b.get_yaxis_transform(),
+                      ha='right', va='center', fontsize=8.5, fontstyle='italic', color='#777777')
+
+    ax_b.set_xlabel('CO₂ Emission', fontsize=14)
+
+    # ── Panel labels (a) / (b) at top-left ──
+    ax_a.text(-0.30, 1.02, 'a', transform=ax_a.transAxes,
+              fontsize=18, fontweight='bold', va='bottom', ha='left')
+    ax_b.text(-0.30, 1.02, 'b', transform=ax_b.transAxes,
+              fontsize=18, fontweight='bold', va='bottom', ha='left')
+
+    # ── Legends ──
+    leg_a = [
+        mpatches.Patch(facecolor=ai_color, edgecolor='#1565C0',
+                       linewidth=1.5, hatch='///', label='AI models (this work)'),
+        mpatches.Patch(facecolor=chem_color, label='Conventional chemistry'),
+        mpatches.Patch(facecolor=base_color, label='Everyday activities / LLM'),
+    ]
+    ax_a.legend(handles=leg_a, loc='lower right', fontsize=10,
+                framealpha=0.9, title='Category', title_fontsize=11)
+
+    leg_b = [
+        mpatches.Patch(facecolor=ai_color, edgecolor='#1565C0',
+                       linewidth=1.5, hatch='///', label='AI models (2nd-best Pareto)'),
+        mpatches.Patch(facecolor=ai_color_light, edgecolor='#D6EAFF',
+                       label='AI models (worst Pareto)'),
+        mpatches.Patch(facecolor=chem_color, label='Conventional chemistry'),
+        mpatches.Patch(facecolor=base_color, label='Everyday activities / LLM'),
+    ]
+    ax_b.legend(handles=leg_b, loc='lower right', fontsize=10,
+                framealpha=0.9, title='Category', title_fontsize=11)
+
+    plt.subplots_adjust(left=0.32, hspace=0.18)
+    out = os.path.join(OUT_DIR, '4ab_co2_reference_combined.png')
+    fig.savefig(out, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Fig 4ab saved → {out}")
+
 
 # ── Figure 5: Cross-task CO2 decomposition (2 panels) ─────────────────────
 def plot_fig5(df):
@@ -1102,7 +1278,7 @@ if __name__ == '__main__':
     plt.rcParams.update({'font.family': 'sans-serif', 'font.size': 20})
 
     df = None
-    if any(f in args.fig for f in [1, 2, 3, 4, 5, 6, 7, 8]):
+    if any(f in args.fig for f in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]):
         df = load_data()
         print(f"Loaded {len(df)} data points across {df['task'].nunique()} tasks")
         print(f"Using CO2 metric: {args.co2} ({co2_col})")
@@ -1125,5 +1301,7 @@ if __name__ == '__main__':
         plot_fig3_horizontal(df)
     if 9 in args.fig:
         plot_fig4b(df)
+    if 10 in args.fig:
+        plot_fig4_combined(df)
 
     print("Done!")

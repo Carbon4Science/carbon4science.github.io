@@ -40,7 +40,7 @@ A benchmarking framework that jointly evaluates **predictive accuracy** and **ca
 | ---------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------- |
 | **Everyday**                 | Smartphone charge (iPhone 16 Pro Max)     | ~9.7 g CO₂ eq/charge                                                                   |
 |                              | Driving a car (EU average)                | ~170 g CO₂ eq/km                                                                       |
-|                              | Commercial Aviation (Boeing 737)          | ~3.16 kg CO₂ eq/km                                                                       |
+|                              | Commercial Aviation (Boeing 737)          | ~15.8 kg CO₂ eq/km                                                                       |
 | **LLM inference**            | Text generation (Claude 3.7 Sonnet)       | ~2.12 g CO₂ eq/call                                                                    |
 |                              | Image generation (Stable Diffusion)       | ~1.38 g CO₂ eq/image                                                                   |
 | **Chemical simulation**      | Classical MD (force field)                | 10 g CO₂ eq/1M steps                                                                   |
@@ -144,19 +144,19 @@ All tasks benchmarked on the same hardware with full carbon tracking.
 
 ### 5. Structure Optimization
 
-**System:** LGPS · **N =** 75K steps × 3 seeds · **Metric:** CPS · **CO₂/job:** per 1M steps
+**System:** WBM · **N =** 100 structures · **Metric:** CPS · **CO₂/job:** per 1,000 structures
 
 
 | Year | Venue                   | Model    | Architecture | Params | CPS       | CO₂/exp (g) | CO₂/job (g) | Time/exp (s) | Time/job (s) |
 | ---- | ----------------------- | -------- | ------------ | ------ | --------- | ----------- | ----------- | ------------ | ------------ |
-| 2023 | Nat. Mach. Intell.      | CHGNet   | GNN          | 413K   | 0.343     | 9.47        | 379         | 602          | 8,033        |
-| 2023 | arXiv                   | MACE     | GNN          | 4.69M  | 0.637     | 23.29       | 932         | 1,068        | 14,241       |
-| 2024 | J. Chem. Theory Comput. | SevenNet | GNN          | 1.17M  | 0.714     | 16.21       | 648         | 790          | 10,529       |
-| 2024 | arXiv                   | ORB      | GNN          | 25.2M  | 0.470     | **3.87**    | **155**     | **210**      | **2,795**    |
-| 2025 | arXiv                   | NequIP   | GNN          | 9.6M   | 0.733     | 11.34       | 454         | 316          | 4,219        |
-| 2025 | arXiv                   | DPA3     | GNN          | 4.81M  | 0.718     | 38.45       | 1,538       | 2,087        | 27,829       |
-| 2025 | arXiv                   | Nequix   | GNN          | 708K   | 0.729     | 17.13       | 685         | 736          | 9,809        |
-| 2025 | arXiv                   | **eSEN** | GNN          | 30.1M  | **0.797** | 87.14       | 3,486       | 2,780        | 37,071       |
+| 2023 | Nat. Mach. Intell.      | CHGNet   | GNN          | 413K   | 0.343     | 1.50        | 15.0        | 88           | 884          |
+| 2023 | arXiv                   | MACE     | GNN          | 4.69M  | 0.637     | 3.57        | 35.7        | 208          | 2,083        |
+| 2024 | J. Chem. Theory Comput. | SevenNet | GNN          | 1.17M  | 0.714     | 2.87        | 28.7        | 160          | 1,600        |
+| 2024 | arXiv                   | ORB      | GNN          | 25.2M  | 0.470     | **0.58**    | **5.8**     | **37**       | **374**      |
+| 2025 | arXiv                   | NequIP   | GNN          | 9.6M   | 0.733     | 1.07        | 10.7        | 52           | 519          |
+| 2025 | arXiv                   | DPA3     | GNN          | 4.81M  | 0.718     | 6.71        | 67.1        | 380          | 3,798        |
+| 2025 | arXiv                   | Nequix   | GNN          | 708K   | 0.729     | 2.21        | 22.1        | 126          | 1,258        |
+| 2025 | arXiv                   | **eSEN** | GNN          | 30.1M  | **0.797** | 13.86       | 138.6       | 763          | 7,629        |
 
 
 ---
@@ -185,7 +185,7 @@ All tasks benchmarked on the same hardware with full carbon tracking.
 - **Simpler models dominate the efficiency frontier:** In every task, at least one GNN or small LM achieves near-SOTA accuracy at 10–100× lower CO₂ than the best-performing model
 - **Architecture drives cost more than parameter count:** Diffusion models cost 10–100× more per sample than LM or GNN models due to iterative sampling, regardless of size
 - **LLMs underperform on narrow scientific tasks:** LlaSMol (7B) scores 3.8% top-1 on Forward prediction vs. 89.4% for RSMILES (45M) — at 2× the carbon cost
-- **MLIP tasks are carbon-intensive by nature:** A single 75K-step MD run costs 4–87 g CO₂, orders of magnitude more than per-molecule chemistry tasks
+- **MLIP tasks are carbon-intensive by nature:** A single 75K-step MD run costs 4–87 g CO₂; relaxing 100 WBM structures costs 0.6–14 g — both orders of magnitude more than per-molecule chemistry tasks
 - **50–75% of models per task are Pareto-dominated:** A cheaper and more accurate alternative always exists — the extra carbon was wasted
 
 ---

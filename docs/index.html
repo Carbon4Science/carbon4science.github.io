@@ -500,7 +500,7 @@ const TASK_CONFIG = {
   Forward:   { majorLabel: 'Top-3 (%)',  minorLabel: 'Top-1 (%)',  color: '#ff7f0e', desc: 'USPTO-MIT · 40,000 reactions', job: '1 job = 500 inputs' },
   MolGen:    { majorLabel: 'VUN (%)',    minorLabel: 'SUN (%)',     color: '#1f77b4', desc: 'ChEMBL 28 · 10,000 molecules', job: '1 job = 10,000 molecules' },
   MatGen:    { majorLabel: 'mSUN (%)',   minorLabel: 'SUN (%)',     color: '#2ca02c', desc: 'MP-20 · 1,000 structures',     job: '1 job = 1,000 structures' },
-  StructOpt: { majorLabel: 'CPS',        minorLabel: null,          color: '#d62728', desc: 'LGPS · 75K steps × 3 seeds',  job: '1 job = 1M steps' },
+  StructOpt: { majorLabel: 'CPS',        minorLabel: null,          color: '#d62728', desc: 'WBM · 100 structures',         job: '1 job = 1,000 structures' },
   MDSim:     { majorLabel: 'MSD',        minorLabel: null,          color: '#9467bd', desc: 'LGPS · 75K steps × 3 seeds',  job: '1 job = 1M steps' },
 };
 
@@ -948,8 +948,9 @@ const REF_DATA = [
   { category: 'AI Chemical generation',  label: 'Material generation',      desc: 'MP-20 · 1K structures',         value: 270.40,  unit: '1K structures',      taskKey: 'MatGen' },
   { category: 'AI Chemical generation',  label: 'Molecule generation',      desc: 'ChEMBL 28 · 10K molecules',     value: 355.24,  unit: '10K molecules',      taskKey: 'MolGen' },
   { category: 'AI Synthesis prediction', label: 'Synthesis Planning',       desc: 'USPTO-50K · 500 molecules',     value: 403.45,  unit: '500 molecules',      taskKey: 'Retro' },
-  { category: 'Everyday activities',     label: 'Commercial aviation',      desc: 'Boeing 737',                    value: 3160,    unit: 'km',                 taskKey: null },
-  { category: 'AI MD simulation',        label: 'MLIP MD',                  desc: 'LGPS · 1M steps',               value: 3486,    unit: '1M steps',           taskKey: 'StructOpt' },
+  { category: 'AI Structure Opt',        label: 'MLIP relaxation',          desc: 'WBM · 1K structures',           value: 138.6,   unit: '1K structures',      taskKey: 'StructOpt' },
+  { category: 'AI MD simulation',        label: 'MLIP MD',                  desc: 'LGPS · 1M steps',               value: 3486,    unit: '1M steps',           taskKey: 'MDSim' },
+  { category: 'Everyday activities',     label: 'Commercial aviation',      desc: 'Boeing 737',                    value: 15800,   unit: 'km',                 taskKey: null },
   { category: 'Chemical synthesis',      label: 'Battery synthesis',        desc: 'Vanadium flow battery',         value: 37000,   unit: 'MWh',                taskKey: null },
   { category: 'Chemical synthesis',      label: 'Material synthesis',       desc: 'UiO-66-NH₂ (aqueous-based)',    value: 43000,   unit: 'kg',                 taskKey: null },
   { category: 'Chemical simulation',     label: 'Ab initio MD',             desc: 'PBE',                value: 140960,  unit: '1M steps',           taskKey: null },
@@ -960,12 +961,13 @@ const REF_CAT_COLORS = {
   'LLM inference':           '#CFD8DC',
   'AI Synthesis prediction': '#1E88E5',
   'AI Chemical generation':  '#1E88E5',
+  'AI Structure Opt':        '#1E88E5',
   'AI MD simulation':        '#1E88E5',
   'Everyday activities':     '#CFD8DC',
   'Chemical simulation':     '#FFAB91',
   'Chemical synthesis':      '#FFAB91',
 };
-const AI_CATEGORIES = new Set(['AI Synthesis prediction', 'AI Chemical generation', 'AI MD simulation']);
+const AI_CATEGORIES = new Set(['AI Synthesis prediction', 'AI Chemical generation', 'AI Structure Opt', 'AI MD simulation']);
 
 /* ──────────────────────────────────────────────────────
    RENDER CHART — switches based on active tab
@@ -993,15 +995,6 @@ function renderRefChart() {
     const worstPareto = paretoRows.reduce((a, b) => a.CO2_per_job > b.CO2_per_job ? a : b);
     taskRanges[t] = { min: Math.min(...allVals), max: worstPareto.CO2_per_job, worstModel: worstPareto.model };
   });
-  // MDSim shares models with StructOpt — merge their ranges
-  if (taskRanges['MDSim'] && taskRanges['StructOpt']) {
-    const merged = {
-      min: Math.min(taskRanges['MDSim'].min, taskRanges['StructOpt'].min),
-      max: Math.max(taskRanges['MDSim'].max, taskRanges['StructOpt'].max),
-    };
-    taskRanges['MDSim'] = taskRanges['StructOpt'] = merged;
-  }
-
   // For AI entries, bar = worst Pareto CO₂; error bar extends left to cheapest model
   const sorted = REF_DATA.map(d => {
     if (d.taskKey && taskRanges[d.taskKey]) {
