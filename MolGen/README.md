@@ -6,99 +6,66 @@ Molecular generation: Generate novel molecules from distribution.
 
 ## Metrics
 
-| Metric | Description |
-|--------|-------------|
-| `V·U·N` | Validity × Uniqueness × Novelty (higher is better) |
-| `S.U.N` | SA_norm × Uniqueness × Novelty (higher is better) |
-| `FCD` | Fréchet ChemNet Distance between generated and train distributions (lower is better) |
+| Metric | Definition |
+|--------|------------|
+| `VUN` | valid, unique, and novel molecules / generated molecules |
+| `vSUN` | valid, unique, novel, and SA score `< 4` molecules / generated molecules |
 
-- `validity`: Fraction of valid SMILES strings
-- `uniqueness`: Fraction of unique molecules among valid ones
-- `uniqueness_total`: Fraction of unique molecules among **all** generated (total denominator)
-- `novelty`: Fraction of novel molecules among unique valid ones
-- `novelty_total`: Fraction of novel molecules among **all** generated (total denominator)
-- `vuns`: V × U_total × N_total × SA_norm (composite score, total denominator)
-- `sa_score_norm`: Normalized SA Score, (10 − SAScore) / 9, averaged over valid molecules (0=hard, 1=easy)
-- `sa_score_filter`: Fraction of valid molecules with SA Score < 4 (synthesizable)
+- `validity`: valid SMILES / generated SMILES
+- `uniqueness`: unique valid molecules / valid molecules
+- `novelty`: unique valid molecules not in the reference set / unique valid molecules. It's computed against the model-specific novelty reference set. For released checkpoints, these references are not always official train splits, so they are called reference sets rather than uniformly calling them train sets.
+- `sascore`: unique valid molecules with SA score `< 4` / unique valid molecules
 
-## Training Dataset
-
-All models are trained on [ChEMBL 28](https://ftp.ebi.ac.uk/pub/databases/chembl/ChEMBLdb/releases/chembl_28/) (1.19M molecules, filtered).
-
-- Location: `data/chembl28/{train,val,test}.txt`
-- Split: 80/10/10, seed=42
-- Filters: allowed atoms {C, N, O, S, F, Cl, Br}, MW ≤ 500, heavy atoms 3–50
 
 ## Models
 
-| Model | Year | Venue | Params | Environment |
-|-------|------|-------|--------|-------------|
-| REINVENT | 2017 | J. Cheminf. | 4.4M | `carbon-reinvent` |
-| JT-VAE | 2018 | ICML | 7.1M | `carbon-jtvae` |
-| HierVAE | 2020 | ICML | 8.0M | `carbon-jtvae` |
-| MolGPT | 2021 | J. Chem. Inf. Model. | 6.4M | `carbon-reinvent` |
-| DiGress | 2023 | ICML | 16.2M | `carbon-digress` |
-| REINVENT4 | 2024 | J. Cheminf. | 5.8M | `carbon-reinvent` |
-| SmileyLlama | 2024 | arXiv | 8.0B | `carbon-smileyLlama` |
-| DeFoG | 2024 | NeurIPS | 16.3M | `carbon-defog` |
+| Model | Family | Year | Publish |
+|-------|-----:|--------|-------------|
+| REINVENT | LM | 2017 | [J. Cheminform.](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-017-0235-x) |
+| JT-VAE | VAE | 2018 | [ICML](https://proceedings.mlr.press/v80/jin18a) |
+| HierVAE | VAE | 2020 | [ICML](https://proceedings.mlr.press/v119/jin20a.html) |
+| MolGPT | LM | 2021 | [J. Chem. Inf. Model.](https://pubs.acs.org/doi/abs/10.1021/acs.jcim.1c00600) |
+| DiGress | Diffusion | 2023 | [ICLR](https://iclr.cc/virtual/2023/poster/11556) |
+| REINVENT4 | LM | 2024 | [J. Cheminform.](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-024-00812-5) |
+| SmileyLlama | LLM | 2024 | [arXiv](https://huggingface.co/papers/2409.02231) |
+| DeFoG | FM | 2025 | [ICML](https://proceedings.mlr.press/v267/qin25d.html) |
+
+LM: language model, LLM: large language model, FM: flow matching, VAE: variational autoencoder
 
 ## Results
 
-### Pre-trained Benchmark (10,000 molecules)
+| Model | Param. | Validity | Uniqueness | Novelty | SA<4 | VUN(%) | VUNS(%) | g CO2 eq/exp | Energy (Wh) |
+|-------|-------:|---------:|-----------:|--------:|-----:|----:|-----:|-------------:|------------:|
+| REINVENT | 4.2M | 94.4% | 100.0% | 93.2% | 91.9% | 87.9% | 80.9% | 0.2 | 0.4 |
+| JT-VAE | 5.3M | 100.0% | 99.9% | 91.5% | 98.0% | 91.4% | 89.4% | 10.6 | 24.6 |
+| HierVAE | 8.0M | 98.5% | 99.4% | 94.0% | 96.7% | 92.1% | 88.9% | 12.0 | 27.8 |
+| MolGPT | 9.5M | 99.4% | 99.9% | 77.7% | 99.5% | 77.2% | 76.7% | 1.1 | 2.5 |
+| DiGress | 16.2M | 87.6% | 100.0% | 94.2% | 98.6% | 82.5% | 81.2% | 175.4 | 407.3 |
+| REINVENT4 | 5.8M | 98.1% | 100.0% | 96.0% | 91.0% | 94.2% | 85.4% | 0.1 | 0.2 |
+| SmileyLlama | 8.0B | 94.6% | 100.0% | 99.5% | 90.6% | 94.1% | 85.2% | 21.8 | 54.5 |
+| DeFoG | 16.3M | 91.5% | 100.0% | 89.9% | 99.4% | 82.3% | 81.7% | 355.2 | 888.1 |
 
-Models evaluated using their original pre-trained checkpoints and training datasets.
+## Novelty References
 
-#### Valid Denominator (U = unique/valid, N = novel/unique)
+The count used for novelty is the canonical valid unique reference set size.
 
-| Model | Validity | Uniqueness | Novelty | SA_norm | V·U·N (%) | S.U.N (%) | VUNS (%) | CO₂ (g) | Energy (Wh) |
-|-------|----------|------------|---------|---------|-----------|-----------|----------|---------|-------------|
-| REINVENT | 0.9438 | 0.9997 | 0.9316 | 0.7988 | 87.90 | 74.40 | 70.22 | 0.18 | 0.41 |
-| JT-VAE | 1.0000 | 0.9991 | 0.9147 | 0.8283 | 91.39 | 75.70 | 75.70 | 10.58 | 24.58 |
-| HierVAE | 0.9853 | 0.9944 | 0.9400 | 0.8343 | 92.10 | 77.98 | **76.84** | 11.97 | 27.81 |
-| MolGPT | 0.9937 | 0.9991 | 0.7771 | 0.8372 | 77.15 | 65.00 | 64.59 | 1.07 | 2.49 |
-| DiGress | 0.8759 | 0.9995 | 0.9417 | 0.8362 | 82.45 | **78.71** | 68.94 | 175.35 | 407.26 |
-| **REINVENT4** | **0.9806** | **0.9999** | **0.9603** | 0.7878 | **94.16** | 75.65 | 74.18 | **0.07** | **0.17** |
-| SmileyLlama | 0.9456 | 1.0000 | 0.9968 | 0.7800 | 94.26 | 77.75 | 73.52 | 21.79 | 54.47 |
-| DeFoG | 0.9155 | 0.9996 | 0.8990 | **0.8446** | 82.27 | 75.90 | 69.49 | 355.24 | 888.09 |
+| Model | Reference source | count |
+|-------|------------------|------:|
+| REINVENT | filtered ChEMBL22 | 1,086,248 |
+| JT-VAE  | MOSES | 1,584,663 |
+| HierVAE | filtered ChEMBL | 1,799,433 |
+| MolGPT | MOSES | 1,584,663 |
+| DiGress | MOSES | 1,584,663 |
+| REINVENT4 | ChEMBL25 | 1,606,456 |
+| SmileyLlama | ChEMBL33 | 2,372,509 |
+| DeFoG |MOSES | 1,584,663 |
 
-| V·U·N vs Carbon | V·U·N vs Energy | V·U·N vs Speed |
-|:----------------:|:---------------:|:--------------:|
-| ![VUN Carbon](../benchmarks/figures/MolGen/pretrained/pareto_vun_vs_carbon.png) | ![VUN Energy](../benchmarks/figures/MolGen/pretrained/pareto_vun_vs_energy.png) | ![VUN Speed](../benchmarks/figures/MolGen/pretrained/pareto_vun_vs_speed.png) |
+## Figures
 
-| S.U.N vs Carbon | S.U.N vs Energy | S.U.N vs Speed |
-|:----------------:|:---------------:|:--------------:|
-| ![SUN Carbon](../benchmarks/figures/MolGen/pretrained/pareto_sun_vs_carbon.png) | ![SUN Energy](../benchmarks/figures/MolGen/pretrained/pareto_sun_vs_energy.png) | ![SUN Speed](../benchmarks/figures/MolGen/pretrained/pareto_sun_vs_speed.png) |
+| Year vs Model Size | Year vs CO2/exp | Year vs VUN | Year vs VUNS |
+|:------------------:|:---------------:|:-----------:|:------------:|
+| ![Year vs Model Size](../benchmarks/figures/MolGen/released/year_vs_log_model_size.png) | ![Year vs CO2](../benchmarks/figures/MolGen/released/year_vs_log_co2_per_exp.png) | ![Year vs VUN](../benchmarks/figures/MolGen/released/year_vs_vun.png) | ![Year vs VUNS](../benchmarks/figures/MolGen/released/year_vs_vuns.png) |
 
-| VUNS vs Carbon | VUNS vs Energy | VUNS vs Speed |
-|:--------------:|:--------------:|:-------------:|
-| ![VUNS Carbon](../benchmarks/figures/MolGen/pretrained/pareto_vuns_vs_carbon.png) | ![VUNS Energy](../benchmarks/figures/MolGen/pretrained/pareto_vuns_vs_energy.png) | ![VUNS Speed](../benchmarks/figures/MolGen/pretrained/pareto_vuns_vs_speed.png) |
-
-#### Total Denominator (U = unique/total, N = novel/total)
-
-Uniqueness and Novelty computed over **all generated molecules** (not just valid ones). Models with low validity are penalized more heavily.
-
-| Model | Validity | U (total) | N (total) | SA_norm | V·U·N (%) | VUNS (%) | CO₂ (g) | Energy (Wh) |
-|-------|----------|-----------|-----------|---------|-----------|----------|---------|-------------|
-| REINVENT | 0.9438 | 0.9435 | 0.9435 | 0.7988 | 84.02 | 67.11 | 0.18 | 0.41 |
-| JT-VAE | 1.0000 | 0.9991 | 0.9139 | 0.8283 | 91.31 | 75.63 | 10.58 | 24.58 |
-| HierVAE | 0.9853 | 0.9798 | 0.9210 | 0.8343 | 88.91 | 74.18 | 11.97 | 27.81 |
-| **MolGPT** | 0.9937 | 0.9928 | 0.9928 | 0.8372 | **97.94** | **82.00** | 1.07 | 2.49 |
-| DiGress | 0.8759 | 0.8755 | 0.8755 | 0.8362 | 67.14 | 56.14 | 175.35 | 407.26 |
-| **REINVENT4** | **0.9806** | **0.9805** | **0.9805** | 0.7878 | 94.27 | 74.27 | **0.07** | **0.17** |
-| SmileyLlama | 0.9456 | 0.9456 | 0.9456 | 0.7800 | 84.55 | 65.95 | 21.79 | 54.47 |
-| DeFoG | 0.9155 | 0.9151 | 0.9151 | **0.8446** | 76.66 | 64.75 | 355.24 | 888.09 |
-
-| V·U·N vs Carbon | V·U·N vs Energy | V·U·N vs Speed |
-|:----------------:|:---------------:|:--------------:|
-| ![VUN Carbon](../benchmarks/figures/MolGen/pretrained/total/pareto_vun_vs_carbon.png) | ![VUN Energy](../benchmarks/figures/MolGen/pretrained/total/pareto_vun_vs_energy.png) | ![VUN Speed](../benchmarks/figures/MolGen/pretrained/total/pareto_vun_vs_speed.png) |
-
-| VUNS vs Carbon | VUNS vs Energy | VUNS vs Speed |
-|:--------------:|:--------------:|:-------------:|
-| ![VUNS Carbon](../benchmarks/figures/MolGen/pretrained/total/pareto_vuns_vs_carbon.png) | ![VUNS Energy](../benchmarks/figures/MolGen/pretrained/total/pareto_vuns_vs_energy.png) | ![VUNS Speed](../benchmarks/figures/MolGen/pretrained/total/pareto_vuns_vs_speed.png) |
-
-#### Carbon Efficiency Over Time
-
-| ΔCO₂ vs Year (full scale) |
-|:--------------------------:|
-| ![Delta CO2 Full](../benchmarks/figures/MolGen/pretrained/delta_co2_vs_year_full.png) |
-
+| Relative VUN vs CO2 ratio | Relative VUNS vs CO2 ratio |
+|:--------------------------:|:---------------------------:|
+| ![Relative VUN](../benchmarks/figures/MolGen/released/relative_vun_vs_log_co2_ratio.png) | ![Relative VUNS](../benchmarks/figures/MolGen/released/relative_vuns_vs_log_co2_ratio.png) |

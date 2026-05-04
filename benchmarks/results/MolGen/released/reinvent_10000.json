@@ -3,21 +3,7 @@
   "model": "REINVENT",
   "num_samples": 10000,
   "num_generated": 10000,
-  "model_params": null,
-  "metrics": [
-    "validity",
-    "uniqueness",
-    "novelty",
-    "diversity"
-  ],
-  "accuracy": {
-    "validity": 0.9438,
-    "uniqueness": 0.9996821360457724,
-    "novelty": 0.931637519872814,
-    "diversity": 0.8851510327548892,
-    "sa_score_norm": 0.7988115266038042,
-    "sa_score_filter": 0.919262555626192
-  },
+  "model_params": 4170034,
   "carbon": {
     "start_time": "2026-04-08T22:37:05.162503",
     "end_time": "2026-04-08T22:37:19.580351",
@@ -42,5 +28,13 @@
       "cuda_version": "Driver 580.82.09",
       "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
     }
+  },
+  "accuracy": {
+    "validity": 0.9438,
+    "uniqueness": 0.9997,
+    "novelty": 0.9316,
+    "sascore": 0.9192,
+    "vun": 0.879,
+    "vuns": 0.8088
   }
 }

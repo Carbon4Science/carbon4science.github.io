@@ -4,20 +4,6 @@
   "num_samples": 10000,
   "num_generated": 10000,
   "model_params": 9505280,
-  "metrics": [
-    "validity",
-    "uniqueness",
-    "novelty",
-    "diversity"
-  ],
-  "accuracy": {
-    "validity": 0.9937,
-    "uniqueness": 0.9990942940525309,
-    "novelty": 0.7770950846091862,
-    "diversity": 0.8602631939501467,
-    "sa_score_norm": 0.8372221793045601,
-    "sa_score_filter": 0.9946663983093489
-  },
   "carbon": {
     "start_time": "2026-04-09T02:03:37.957555",
     "end_time": "2026-04-09T02:04:14.535043",
@@ -42,5 +28,13 @@
       "cuda_version": "Driver 580.82.09",
       "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
     }
+  },
+  "accuracy": {
+    "validity": 0.9937,
+    "uniqueness": 0.9991,
+    "novelty": 0.7771,
+    "sascore": 0.9947,
+    "vun": 0.7715,
+    "vuns": 0.7665
   }
 }
