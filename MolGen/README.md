@@ -9,7 +9,7 @@ Molecular generation: Generate novel molecules from distribution.
 | Metric | Definition |
 |--------|------------|
 | `VUN` | valid, unique, and novel molecules / generated molecules |
-| `vSUN` | valid, unique, novel, and SA score `< 4` molecules / generated molecules |
+| `VUNS` | valid, unique, novel, and SA score `< 4` molecules / generated molecules |
 
 - `validity`: valid SMILES / generated SMILES
 - `uniqueness`: unique valid molecules / valid molecules
