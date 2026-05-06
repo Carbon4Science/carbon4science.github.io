@@ -1139,8 +1139,8 @@ ALT_METRICS = {
 }
 # MolGen VUNS is already in the pretrained data loaded in load_data()
 MOLGEN_VUNS = {
-    'REINVENT': 67.11, 'JT-VAE': 75.63, 'HierVAE': 74.18, 'MolGPT': 82.00,
-    'DiGress': 56.14, 'REINVENT4': 74.27, 'SmileyLlama': 65.95, 'DeFoG': 64.75
+    'REINVENT': 80.88, 'JT-VAE': 89.41, 'HierVAE': 88.89, 'MolGPT': 76.65,
+    'DiGress': 81.18, 'REINVENT4': 85.44, 'SmileyLlama': 85.16, 'DeFoG': 81.73
 }
 
 ALT_TASK_ORDER = ['MatGen', 'MolGen', 'Retro', 'Forward']

@@ -109,16 +109,16 @@ All tasks benchmarked on the same hardware with full carbon tracking.
 **Dataset:** ChEMBL 28 · **N =** 10,000 molecules · **Metric:** VUN% · **CO₂/job:** per 10K molecules (= full exp)
 
 
-| Year | Venue                | Model         | Architecture  | Params | VUN (%)   | SUN (%)   | CO₂/exp (g) | CO₂/job (g) | Time/exp (s) | Time/job (s) |
+| Year | Venue                | Model         | Architecture  | Params | VUN (%)   | VUNS (%)  | CO₂/exp (g) | CO₂/job (g) | Time/exp (s) | Time/job (s) |
 | ---- | -------------------- | ------------- | ------------- | ------ | --------- | --------- | ----------- | ----------- | ------------ | ------------ |
-| 2017 | J. Cheminf.          | REINVENT      | LM            | 4.4M   | 87.90     | 74.40     | 0.11        | 0.18        | 10           | 14           |
-| 2018 | ICML                 | JT-VAE        | VAE           | 7.1M   | 91.39     | 75.70     | 20.4        | 10.58       | 1,284        | 662          |
-| 2020 | ICML                 | HierVAE       | VAE           | 8.0M   | 92.10     | **77.98** | 14.4        | 11.97       | 788          | 756          |
-| 2021 | J. Chem. Inf. Model. | MolGPT        | LM            | 6.4M   | 77.15     | 65.00     | 1.85        | 1.07        | 60           | 37           |
-| 2023 | ICML                 | DiGress       | Diffusion     | 16.2M  | 82.45     | 78.71     | 392.0       | 175.35      | 11,931       | 5,201        |
-| 2024 | J. Cheminf.          | **REINVENT4** | LM            | 5.8M   | **94.16** | 75.65     | **0.09**    | **0.07**    | **10**       | **8**        |
-| 2024 | arXiv                | SmileyLlama   | LLM           | 8.0B   | 94.26     | 77.75     | 22.7        | 21.79       | 645          | 638          |
-| 2024 | NeurIPS              | DeFoG         | Flow Matching | 16.3M  | 82.27     | 75.90     | 355.2       | 355.24      | 9,874        | 9,874        |
+| 2017 | J. Cheminf.          | REINVENT      | LM            | 4.2M   | 87.90     | 80.88     | 0.18        | 0.18        | 14           | 14           |
+| 2018 | ICML                 | JT-VAE        | VAE           | 5.3M   | 91.39     | **89.41** | 10.58       | 10.58       | 662          | 662          |
+| 2020 | ICML                 | HierVAE       | VAE           | 8.0M   | 92.10     | 88.89     | 11.97       | 11.97       | 757          | 757          |
+| 2021 | J. Chem. Inf. Model. | MolGPT        | LM            | 9.5M   | 77.15     | 76.65     | 1.07        | 1.07        | 37           | 37           |
+| 2023 | ICML                 | DiGress       | Diffusion     | 16.2M  | 82.45     | 81.18     | 175.35      | 175.35      | 5,201        | 5,201        |
+| 2024 | J. Cheminf.          | REINVENT4     | LM            | 5.8M   | 94.16     | 85.44     | **0.07**    | **0.07**    | **8**        | **8**        |
+| 2024 | arXiv                | **SmileyLlama** | LLM         | 8.0B   | **94.30** | 85.16     | 21.79       | 21.79       | 638          | 638          |
+| 2025 | ICML                 | DeFoG         | Flow Matching | 16.3M  | 82.27     | 81.73     | 355.24      | 355.24      | 9,874        | 9,874        |
 
 
 ---
