@@ -167,8 +167,8 @@ def plot_fig1(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
                     yval = np.log10(yval)
                 m = ARCH_MARKERS.get(row['model type'], 'o')
                 is_base = row.get('baseline?', False)
-                ec = 'black' if is_base else 'white'
-                lw = 2.0 if is_base else 0.6
+                ec = 'white'
+                lw = 0.6
                 ax.scatter(row['year'], yval, color=c, marker=m, s=marker_size(m),
                            edgecolors=ec, linewidths=lw, zorder=3)
                 # Nudge overlapping labels: Forward performance column
@@ -249,8 +249,8 @@ def plot_fig1_horizontal(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/j
                     yval = np.log10(yval)
                 m = ARCH_MARKERS.get(row['model type'], 'o')
                 is_base = row.get('baseline?', False)
-                ec = 'black' if is_base else 'white'
-                lw = 2.0 if is_base else 0.6
+                ec = 'white'
+                lw = 0.6
                 ax.scatter(row['year'], yval, color=c, marker=m, s=marker_size(m),
                            edgecolors=ec, linewidths=lw, zorder=3)
                 tx, ty = row['year'], yval
@@ -371,21 +371,20 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
             m = ARCH_MARKERS.get(row['model type'], 'o')
             is_base = row.get('baseline?', False)
             sz = marker_size(m)
-            ec = 'black' if is_base else 'gray'
-            lw = 2.5 if is_base else 0.8
+            ec = 'gray'
+            lw = 0.8
             ax.scatter(row['log_co2_ratio'], row['delta_perf_pct'],
                        color=TASK_COLORS[task], marker=m, s=sz,
                        edgecolors=ec, linewidths=lw, zorder=4)
             label = f"{row['model']} ({row['year']})"
-            fw = 'bold' if is_base else 'normal'
             pos = positions.get(row['model'], None)
             if pos is not None:
                 ax.annotate(label, xy=(row['log_co2_ratio'], row['delta_perf_pct']),
-                            xytext=pos, fontsize=label_fs, fontweight=fw, zorder=5,
+                            xytext=pos, fontsize=label_fs, zorder=5,
                             arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
             else:
                 texts2.append(ax.text(row['log_co2_ratio'], row['delta_perf_pct'], label,
-                                      fontsize=label_fs, fontweight=fw, zorder=5))
+                                      fontsize=label_fs, zorder=5))
 
         # Set limits and styling BEFORE adjust_text
         ax.set_xlim(xmin, xmax)
@@ -420,6 +419,137 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
     print(f"Fig 2 saved → {out}")
+
+
+def plot_fig2_gradient(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
+    """Same layout as Fig 2, but marker color encodes release year (earlier=light, newer=dark).
+
+    Each task subplot uses a sequential colormap derived from the task's base color.
+    A single horizontal colorbar at the bottom maps year → shade.
+    """
+    from matplotlib.colors import LinearSegmentedColormap, to_rgb, Normalize
+
+    fig, axes = plt.subplots(2, 3, figsize=(20, 14))
+    axes = axes.flatten()
+
+    # Global year range for shared normalization across tasks
+    year_min = int(df['year'].min())
+    year_max = int(df['year'].max())
+    norm = Normalize(vmin=year_min, vmax=year_max)
+
+    def task_cmap(task):
+        """Light-to-dark gradient ending at the task's base color."""
+        base = to_rgb(TASK_COLORS[task])
+        light = tuple(0.85 + 0.15 * c for c in base)  # very light tint
+        dark = tuple(0.55 * c for c in base)          # darker than base
+        return LinearSegmentedColormap.from_list(f'{task}_grad', [light, base, dark])
+
+    for ax, task in zip(axes, TASK_ORDER):
+        grp = df[df['task'] == task].copy()
+        base_row = grp[grp['baseline?'] == True].iloc[0]
+        base_co2 = base_row[co2_col]
+        base_perf = base_row['major_metric']
+
+        grp['co2_ratio'] = grp[co2_col] / base_co2
+        grp['log_co2_ratio'] = np.log10(grp['co2_ratio'])
+        grp['delta_perf_pct'] = (grp['major_metric'] - base_perf) / abs(base_perf) * 100
+
+        grp_sorted = grp.sort_values('log_co2_ratio')
+        pareto_x, pareto_y = [], []
+        best_perf = -np.inf
+        for _, row in grp_sorted.iterrows():
+            if row['delta_perf_pct'] >= best_perf:
+                pareto_x.append(row['log_co2_ratio'])
+                pareto_y.append(row['delta_perf_pct'])
+                best_perf = row['delta_perf_pct']
+
+        all_x = grp['log_co2_ratio']
+        all_y = grp['delta_perf_pct']
+        xpad = (all_x.max() - all_x.min()) * 0.2 + 0.3
+        xmin, xmax = all_x.min() - xpad, all_x.max() + xpad
+        ypad = max(abs(all_y.min()), abs(all_y.max())) * 0.25
+        ymin, ymax = all_y.min() - ypad, all_y.max() + ypad
+
+        ax.fill_between([xmin, 0], [0, 0], [ymax, ymax], color='#d4edda', alpha=0.4, zorder=0)
+        ax.fill_between([0, xmax], [0, 0], [ymax, ymax], color='#fff3cd', alpha=0.4, zorder=0)
+        ax.fill_between([0, xmax], [ymin, ymin], [0, 0], color='#f8d7da', alpha=0.4, zorder=0)
+        ax.fill_between([xmin, 0], [ymin, ymin], [0, 0], color='#e2e3e5', alpha=0.4, zorder=0)
+        ax.axhline(0, color='black', linewidth=0.8, zorder=1)
+        ax.axvline(0, color='black', linewidth=0.8, zorder=1)
+
+        if len(pareto_x) > 1:
+            step_x, step_y = [pareto_x[0]], [pareto_y[0]]
+            for k in range(1, len(pareto_x)):
+                step_x.extend([pareto_x[k], pareto_x[k]])
+                step_y.extend([pareto_y[k - 1], pareto_y[k]])
+            ax.plot(step_x, step_y, color='black', linewidth=1.5, linestyle='--',
+                    alpha=0.6, zorder=2)
+
+        MANUAL_POSITIONS = {
+            'Forward': {
+                'MEGAN': (-0.2, 80),
+                'RSMILES': (1.2, 95.0),
+                'LocalTransform': (-0.1, 95.0),
+                'MolecularTransformer': (0.3, 55.0),
+                'Graph2SMILES': (0.1, 35.0),
+                'Chemformer': (1.2, 70.0),
+            },
+        }
+        positions = MANUAL_POSITIONS.get(task, {})
+        label_fs = 14
+
+        cmap = task_cmap(task)
+        texts2 = []
+        for _, row in grp.iterrows():
+            m = ARCH_MARKERS.get(row['model type'], 'o')
+            is_base = row.get('baseline?', False)
+            sz = marker_size(m)
+            ec = 'gray'
+            lw = 0.8
+            color = cmap(norm(row['year']))
+            ax.scatter(row['log_co2_ratio'], row['delta_perf_pct'],
+                       color=color, marker=m, s=sz,
+                       edgecolors=ec, linewidths=lw, zorder=4)
+            label = f"{row['model']} ({row['year']})"
+            pos = positions.get(row['model'], None)
+            if pos is not None:
+                ax.annotate(label, xy=(row['log_co2_ratio'], row['delta_perf_pct']),
+                            xytext=pos, fontsize=label_fs, zorder=5,
+                            arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
+            else:
+                texts2.append(ax.text(row['log_co2_ratio'], row['delta_perf_pct'], label,
+                                      fontsize=label_fs, zorder=5))
+
+        ax.set_xlim(xmin, xmax)
+        ax.set_ylim(ymin, ymax)
+        ax.set_xlabel('log₁₀(CO₂ eq ratio)', fontsize=20)
+        ax.set_ylabel('Δ Relative Performance (%)', fontsize=20)
+        ax.set_title(task, fontsize=24, fontweight='bold', color=TASK_COLORS[task])
+        ax.tick_params(labelsize=16)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        if texts2:
+            adjust_text(texts2, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
+                        force_points=(2.0, 2.0), iterations=200,
+                        arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
+
+    arch_handles = get_arch_legend_handles()
+    quad_handles = [
+        mpatches.Patch(color='#d4edda', alpha=0.7, label='Dominant'),
+        mpatches.Patch(color='#fff3cd', alpha=0.7, label='Tradeoff'),
+        mpatches.Patch(color='#f8d7da', alpha=0.7, label='Dominated'),
+        mpatches.Patch(color='#e2e3e5', alpha=0.7, label='Inverse'),
+    ]
+    pareto_line = mlines.Line2D([], [], color='black', linestyle='--',
+                                linewidth=1.5, label='Pareto Front')
+    fig.legend(handles=arch_handles + [pareto_line] + quad_handles,
+               loc='lower center', ncol=6, fontsize=20, framealpha=0.9,
+               bbox_to_anchor=(0.5, -0.02), title_fontsize=20)
+    fig.subplots_adjust(left=0.08, right=0.97, top=0.95, bottom=0.14, hspace=0.35, wspace=0.3)
+    out = os.path.join(OUT_DIR, '2_pareto_delta_pct_gradient.png')
+    fig.savefig(out, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Fig 2 gradient saved → {out}")
 
 
 # ── Figure 3: CO2 Decomposition ───────────────────────────────────────────
@@ -465,8 +595,8 @@ def plot_fig3(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/exp)'):
                 m = ARCH_MARKERS.get(row['model type'], 'o')
                 is_base = row.get('baseline?', False)
                 sz = marker_size(m)
-                ec = 'black' if is_base else 'white'
-                lw = 2.0 if is_base else 0.6
+                ec = 'white'
+                lw = 0.6
                 ax.scatter(log_xv, log_yv, color=c, marker=m, s=sz,
                            edgecolors=ec, linewidths=lw, zorder=3)
                 texts3.append(ax.text(log_xv, log_yv, row['model'], fontsize=14, zorder=5))
@@ -557,8 +687,8 @@ def plot_fig3_horizontal(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/e
                 m = ARCH_MARKERS.get(row['model type'], 'o')
                 is_base = row.get('baseline?', False)
                 sz = marker_size(m)
-                ec = 'black' if is_base else 'white'
-                lw = 2.0 if is_base else 0.6
+                ec = 'white'
+                lw = 0.6
                 ax.scatter(log_xv, log_yv, color=c, marker=m, s=sz,
                            edgecolors=ec, linewidths=lw, zorder=3)
                 texts3.append(ax.text(log_xv, log_yv, row['model'], fontsize=14, zorder=5))
@@ -712,7 +842,7 @@ def plot_fig4(df, highlight_ai=True):
     for i, (main, desc) in enumerate(zip(main_labels, descs)):
         ax.text(-0.03, i, main, transform=ax.get_yaxis_transform(),
                 ha='right', va='center', fontsize=10.5, fontweight='bold', color='black')
-        ax.text(-0.035, i - 0.28, f'{desc}', transform=ax.get_yaxis_transform(),
+        ax.text(-0.035, i - 0.42, f'{desc}', transform=ax.get_yaxis_transform(),
                 ha='right', va='center', fontsize=8.5, fontstyle='italic', color='#777777')
 
     ax.set_xscale('log')
@@ -865,11 +995,11 @@ def plot_fig4b(df):
                 ha='right', va='center', fontsize=10.5, fontweight='bold', color='black')
         if tk and tk in second_best:
             sb_name = second_best[tk][0]
-            ax.text(-0.035, i - 0.28, sb_name, transform=ax.get_yaxis_transform(),
+            ax.text(-0.035, i - 0.42, sb_name, transform=ax.get_yaxis_transform(),
                     ha='right', va='center', fontsize=8.5, fontweight='bold',
                     fontstyle='italic', color='#1565C0')
         else:
-            ax.text(-0.035, i - 0.28, desc, transform=ax.get_yaxis_transform(),
+            ax.text(-0.035, i - 0.42, desc, transform=ax.get_yaxis_transform(),
                     ha='right', va='center', fontsize=8.5, fontstyle='italic', color='#777777')
 
     ax.set_xscale('log')
@@ -1021,7 +1151,7 @@ def plot_fig4_combined(df):
     for i, (main, desc) in enumerate(zip(main_labels, descs)):
         ax_a.text(-0.03, i, main, transform=ax_a.get_yaxis_transform(),
                   ha='right', va='center', fontsize=10.5, fontweight='bold', color='black')
-        ax_a.text(-0.035, i - 0.28, desc, transform=ax_a.get_yaxis_transform(),
+        ax_a.text(-0.035, i - 0.42, desc, transform=ax_a.get_yaxis_transform(),
                   ha='right', va='center', fontsize=8.5, fontstyle='italic', color='#777777')
     # Panel (b) y-labels: main label + 2nd-best model (blue) where applicable
     for i, (main, desc, tk) in enumerate(zip(main_labels, descs, task_keys)):
@@ -1029,11 +1159,11 @@ def plot_fig4_combined(df):
                   ha='right', va='center', fontsize=10.5, fontweight='bold', color='black')
         if tk and tk in second_best:
             sb_name = second_best[tk][0]
-            ax_b.text(-0.035, i - 0.28, sb_name, transform=ax_b.get_yaxis_transform(),
+            ax_b.text(-0.035, i - 0.42, sb_name, transform=ax_b.get_yaxis_transform(),
                       ha='right', va='center', fontsize=8.5, fontweight='bold',
                       fontstyle='italic', color='#1565C0')
         else:
-            ax_b.text(-0.035, i - 0.28, desc, transform=ax_b.get_yaxis_transform(),
+            ax_b.text(-0.035, i - 0.42, desc, transform=ax_b.get_yaxis_transform(),
                       ha='right', va='center', fontsize=8.5, fontstyle='italic', color='#777777')
 
     ax_b.set_xlabel('CO₂ Emission', fontsize=14)
@@ -1211,20 +1341,19 @@ def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
         for _, row in grp.iterrows():
             m = ARCH_MARKERS.get(row['model type'], 'o')
             is_base = row.get('baseline?', False)
-            ec = 'black' if is_base else 'gray'
-            lw = 2.5 if is_base else 0.8
+            ec = 'gray'
+            lw = 0.8
             ax.scatter(row['log_co2_ratio'], row['delta_alt_pct'],
                        color=TASK_COLORS[task], marker=m, s=marker_size(m),
                        edgecolors=ec, linewidths=lw, zorder=4)
             label = f"{row['model']} ({row['year']})"
-            fw = 'bold' if is_base else 'normal'
             tx6, ty6 = row['log_co2_ratio'], row['delta_alt_pct']
             if task == 'Forward' and row['model'] == 'Graph2SMILES':
                 ty6 += 5.0
             elif task == 'Forward' and row['model'] == 'LocalTransform':
                 ty6 -= 5.0
             texts6.append(ax.text(tx6, ty6, label,
-                                  fontsize=14, fontweight=fw, zorder=5))
+                                  fontsize=14, zorder=5))
 
         ax.set_xlim(xmin, xmax)
         ax.set_ylim(ymin, ymax)
@@ -1261,7 +1390,7 @@ def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate paper figures')
     parser.add_argument('--fig', nargs='*', type=int, default=[1, 2, 3, 4, 5, 6],
-                        help='Which figures to generate (default: all). 7=fig1 horizontal, 8=fig3 horizontal')
+                        help='Which figures to generate (default: all). 7=fig1 horizontal, 8=fig3 horizontal, 11=fig2 year gradient')
     parser.add_argument('--dpi', type=int, default=300)
     parser.add_argument('--co2', choices=['per_exp', 'per_job'], default='per_exp',
                         help='CO2 metric: per_exp or per_job (default: per_job)')
@@ -1278,7 +1407,7 @@ if __name__ == '__main__':
     plt.rcParams.update({'font.family': 'sans-serif', 'font.size': 20})
 
     df = None
-    if any(f in args.fig for f in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]):
+    if any(f in args.fig for f in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]):
         df = load_data()
         print(f"Loaded {len(df)} data points across {df['task'].nunique()} tasks")
         print(f"Using CO2 metric: {args.co2} ({co2_col})")
@@ -1303,5 +1432,7 @@ if __name__ == '__main__':
         plot_fig4b(df)
     if 10 in args.fig:
         plot_fig4_combined(df)
+    if 11 in args.fig:
+        plot_fig2_gradient(df, co2_col, co2_label)
 
     print("Done!")
