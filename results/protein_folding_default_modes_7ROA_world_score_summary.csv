@@ -1,0 +1,7 @@
+model,n_targets,n_targets_success,n_total_predictions,mean_best_lddt_ca,std_best_lddt_ca,mean_best_tmalign_tm_score_ref,std_best_tmalign_tm_score_ref,mean_best_tmalign_rmsd,std_best_tmalign_rmsd,mean_best_ca_rmsd,std_best_ca_rmsd,mean_n_success
+openfold,1,1,1,0.7114144861585134,,0.7477,,2.49,,2.724902838213568,,1.0
+colabfold,1,1,1,0.7030716723549488,,0.74886,,2.63,,2.734156826239897,,1.0
+esmfold,1,1,1,0.6774744027303754,,0.68557,,3.26,,3.668269871441933,,1.0
+boltz2,1,1,1,0.65064467197573,,0.74249,,2.46,,3.226060549490024,,1.0
+chai1,1,1,1,0.5470231323473644,,0.49772,,3.56,,11.327047548620008,,1.0
+omegafold,1,1,1,0.5010428517254456,,0.50173,,3.94,,9.237582843529404,,1.0
