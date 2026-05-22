@@ -1,0 +1,25 @@
+models:
+  esmfold:
+    display_name: ESMFold
+    mode: single sequence
+    source_env: esmfold
+  omegafold:
+    display_name: OmegaFold
+    mode: single sequence
+    source_env: omegafold
+  boltz2:
+    display_name: Boltz-2
+    mode: single sequence MSA
+    source_env: boltz
+  chai1:
+    display_name: Chai-1
+    mode: single sequence FASTA
+    source_env: chai1
+  colabfold:
+    display_name: ColabFold
+    mode: single_sequence / no MMseqs search
+    source_env: colabfold
+  openfold:
+    display_name: OpenFold
+    mode: single_sequence dummy MSA
+    source_env: openfold
