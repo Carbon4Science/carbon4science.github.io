@@ -1,2 +1,0 @@
-model,n_targets,n_targets_success,n_total_predictions,mean_best_lddt_ca,std_best_lddt_ca,mean_best_tmalign_tm_score_ref,std_best_tmalign_tm_score_ref,mean_best_tmalign_rmsd,std_best_tmalign_rmsd,mean_best_ca_rmsd,std_best_ca_rmsd,mean_n_success
-openfold3,1,1,1,0.4756351915054986,,0.39914,,4.17,,9.56415825975804,,1.0

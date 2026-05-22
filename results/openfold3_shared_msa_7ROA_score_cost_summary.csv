@@ -1,2 +1,0 @@
-target_id,model,msa_runtime_sec,msa_carbon_emissions_g,model_inference_time_sec,model_carbon_emissions_g,total_time_with_shared_msa_sec,total_carbon_with_shared_msa_g,lddt_ca,ca_rmsd,tmalign_tm_score_ref
-7ROA_chainA,openfold3,449.025265,12.752343846168618,87.024887,2.486081462323984,536.050152,15.2384253085,0.7171975729996208,4.126763387848521,0.81034

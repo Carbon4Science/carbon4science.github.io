@@ -1,3 +1,0 @@
-model,n_targets,n_targets_success,n_total_predictions,mean_best_lddt_ca,std_best_lddt_ca,mean_best_tmalign_tm_score_ref,std_best_tmalign_tm_score_ref,mean_best_tmalign_rmsd,std_best_tmalign_rmsd,mean_best_ca_rmsd,std_best_ca_rmsd,mean_n_success
-protenix,5,5,5,0.8665522357206289,0.09288801890623906,0.855224,0.12150027954700353,2.036,0.9489889356573132,4.70836973348772,5.704899088774815,1.0
-openfold3,5,5,5,0.8514732150023233,0.09237906737180965,0.834862,0.11877812138605325,2.242,0.9947964615940289,5.200259990153375,6.062672895498312,1.0
