@@ -21,15 +21,15 @@
     "msa_metadata_csv": "results/default_modes_first5_run_metadata.csv"
   },
   "msa": {
-    "used": "unknown",
-    "source": "unknown",
-    "mode": "model_default_unknown",
-    "database": "unknown",
+    "used": false,
+    "source": "none",
+    "mode": "native_embedding_no_msa",
+    "database": "none",
     "database_path": "",
-    "generation_included_in_timing": "unknown",
-    "generation_included_in_carbon": "unknown",
-    "reused": "unknown",
-    "storage": "Per-run/default model MSA handling; see metadata_csv for per-target details.",
-    "notes": "MSA usage not confirmed from Chai-1 runner/logs; runner passes FASTA only"
+    "generation_included_in_timing": false,
+    "generation_included_in_carbon": false,
+    "reused": false,
+    "storage": "No MSA generated or provided in the local default runner.",
+    "notes": "Chai-1 default CLI uses embeddings without MSAs/templates; external MSAs are optional"
   }
 }

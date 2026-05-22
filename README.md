@@ -4,154 +4,188 @@
 
 ## Goal
 
-Compare structure-prediction accuracy against runtime, energy use, and CO2 emissions for six validated folding backends from `Protein-Folding-Benchmark`.
+Compare structure-prediction accuracy against runtime, energy use, and CO2 emissions for locally runnable folding backends from `Protein-Folding-Benchmark`. This export now reports the current default-mode first-five benchmark, explicit MSA provenance, and experimental shared-MSA runs for Protenix and OpenFold3.
 
 ## Dataset
 
-- **Dataset name:** First five CASP-derived targets from Protein-Folding-Benchmark.
+- **Dataset name:** First five CASP-derived targets from `Protein-Folding-Benchmark`.
 - **N:** 5 targets.
 - **Location:** `data/protein_folding_first5_targets.csv`.
-- **References:** Reference PDB paths are recorded in the exported target CSV.
+- **References:** Reference PDB paths are recorded in the exported target CSV and per-target score CSVs.
 
-## Models
+## Benchmark Protocol
 
-| Model | Mode | Notes |
-|---|---|---|
-| ESMFold | single sequence | sequence-only baseline |
-| OmegaFold | single sequence | sequence-only baseline |
-| Boltz-2 | single-sequence MSA input | `boltz2` backend, top_k=1 for this contribution |
-| Chai-1 | single FASTA input | `chai1` backend, top_k=1 for this contribution |
-| ColabFold | canonical default MSA mode for new default-mode runs | first-five table below is an earlier single-sequence smoke; MSA provenance is now recorded in metadata |
-| OpenFold | canonical default with ColabFold/MMseqs2-generated A3M for new default-mode runs | first-five table below is an earlier single-sequence smoke; MSA provenance is now recorded in metadata |
+The source benchmark repo is `/home/chen/projects/Protein-Folding-Benchmark`. Each backend uses the standard runner interface:
 
-## Metrics
+```bash
+bash runners/run_MODEL.sh input.fasta output_dir top_k
+```
+
+Each runner writes standardized predictions as `rank_001.pdb`, `rank_002.pdb`, and so on, plus `metadata.json`. For this Carbon4Science contribution the reported first-five runs use `top_k=1` for compact, comparable carbon accounting.
+
+Scoring reports:
 
 | Metric | Description |
 |---|---|
 | `lddt_ca` | lDDT over C-alpha atoms |
-| `tmalign_tm_score_ref` | TM-score normalized by reference length from US-align/TM-align |
+| `tmalign_tm_score_ref` | TM-score normalized by reference length from USalign/TM-align |
 | `ca_rmsd` | C-alpha RMSD after sequential alignment |
 | `inference_time_sec` | controller wall-clock runtime per target/model |
 | `carbon_emissions_g` | CodeCarbon offline emissions in grams CO2e |
 | `carbon_energy_consumed_kwh` | CodeCarbon energy consumption in kWh |
 
+## Models
+
+| Model | Mode / MSA in current export | Notes |
+|---|---|---|
+| ESMFold | no MSA; native single-sequence | sequence-language-model baseline |
+| OmegaFold | no MSA; native single-sequence | sequence-only baseline |
+| Boltz-2 | no MSA in local runner | `boltz2` backend with explicit no-MSA/default local mode |
+| Chai-1 | no MSA; native embeddings | default Chai-1 CLI uses embeddings without external MSAs/templates; metadata is no longer `unknown` |
+| ColabFold | fresh local ColabFold/MMseqs2 MSA | canonical default MSA mode |
+| OpenFold | fresh local ColabFold/MMseqs2 A3M | canonical default mode passes generated A3M to OpenFold |
+| Protenix | shared precomputed ColabFold/MMseqs2 MSA | experimental shared-MSA backend |
+| OpenFold3 | shared precomputed ColabFold/MMseqs2 MSA | experimental low-memory shared-MSA backend on RTX A5000 |
+
 ## Carbon Method
 
-- Tracker: CodeCarbon `2.2.2` offline tracker.
-- Historical first-five export: `CHE` offline accounting, preserved as originally generated.
-- Current default benchmark policy: world-average accounting. New `--track-carbon` runs omit `--carbon-country-iso-code` and record `carbon_country_iso_code=WORLD`, `carbon_intensity_mode=world_average`, and `carbon_intensity_source=configurable_default_world_average`. Use `--carbon-country-iso-code CHE` for explicit Switzerland-specific accounting.
-- Raw CodeCarbon CSVs are retained in the benchmark repo under each result directory's `carbon/` folder and summarized in exported metadata CSVs.
+- Tracker: CodeCarbon offline tracker.
+- Current default benchmark policy: world-average accounting. New `--track-carbon` runs omit `--carbon-country-iso-code` and record `carbon_country_iso_code=WORLD`, `carbon_intensity_mode=world_average`, and `carbon_intensity_source=configurable_default_world_average`.
+- Default world-average intensity in the benchmark repo: `475 g CO2e/kWh`.
+- Historical first-five single-sequence export: `CHE` offline accounting, preserved in older CSVs for provenance.
+- Raw CodeCarbon CSVs are retained in the benchmark repo under each result directory's `carbon/` folder and summarized in exported metadata CSVs here.
 
 ## Hardware
 
-- GPU: 3 x NVIDIA RTX A5000, 24 GB each.
-- Driver: 580.126.09.
-- CPU/RAM as reported by CodeCarbon: Intel(R) Xeon(R) Gold 6240R CPU @ 2.40GHz, 48 CPU threads visible, about 251 GB RAM visible.
+- CPU: Intel Xeon Gold 6240R, 1 socket, 24 cores / 48 threads.
+- RAM: 251 GiB visible.
+- GPU: 3 x NVIDIA RTX A5000, 24,564 MiB each.
+- Driver: 580.159.03.
+- CUDA reported by driver: 13.0.
+- OS/kernel: Ubuntu Linux, kernel `6.8.0-117-generic`, x86_64.
+
+## Shared MSA Accounting
+
+The shared-MSA workflow separates homology search from model inference:
+
+1. ColabFold/MMseqs2 is run once per target against `/data/chen/protein_folding_databases/colabfold`.
+2. The resulting per-target A3M files and MSA search carbon metadata are stored in `shared_msa_colabfold_first5_msa_metadata.csv`.
+3. Compatible models reuse those A3M files. Protenix converts the shared A3M into paired/unpaired MSA inputs; OpenFold3 copies it as `cfdb_hits.a3m`.
+4. Model inference rows mark `msa_generation_included_in_timing=false`, `msa_generation_included_in_carbon=false`, and `msa_reused=true`.
+5. `protenix_openfold3_shared_msa_first5_score_cost_summary.csv` joins MSA cost, model inference cost, and structure scores for total-cost reporting.
+
+In the shared-MSA table below, model-only CO2e is reported separately from total CO2e with shared MSA cost added back for end-to-end comparability.
 
 ## Results
 
-Full first-five smoke benchmark. All models ran on the same machine with `top_k=1`.
+### Default/native first-five benchmark
 
-### Accuracy
+| Model | Mode / MSA | n_success | Mean lDDT-Ca | Mean TM-score | Mean Ca RMSD (A) | Mean inference time (s) | Mean model CO2e (g) | MSA cost included? | Notes |
+|---|---|---:|---:|---:|---:|---:|---:|---|---|
+| esmfold | no; native_single_sequence | 5 | 0.748 | 0.750 | 5.888 | 57.8 | 1.04 | no | single-sequence language model |
+| omegafold | no; native_single_sequence | 5 | 0.671 | 0.700 | 7.378 | 86.6 | 1.56 | no | single-sequence model |
+| boltz2 | no; model_default_no_msa | 5 | 0.564 | 0.591 | 11.693 | 54.3 | 0.98 | no | local runner uses explicit no-MSA mode |
+| chai1 | no; native_embedding_no_msa | 5 | 0.721 | 0.718 | 6.552 | 104.5 | 1.89 | no | default Chai-1 uses embeddings without MSAs/templates |
+| colabfold | yes; default_msa | 5 | 0.842 | 0.819 | 4.718 | 618.1 | 11.15 | yes | fresh ColabFold/MMseqs search per target |
+| openfold | yes; default_msa | 5 | 0.852 | 0.848 | 3.693 | 545.1 | 9.83 | yes | fresh ColabFold/MMseqs A3M passed to OpenFold |
 
-| Model | Mean lDDT-Ca | Mean TM-score | Mean C-alpha RMSD | Success |
-|---|---:|---:|---:|---:|
-| `esmfold` | 0.748 | 0.750 | 5.89 | 5/5 |
-| `chai1` | 0.722 | 0.707 | 7.71 | 5/5 |
-| `omegafold` | 0.671 | 0.700 | 7.38 | 5/5 |
-| `boltz2` | 0.571 | 0.589 | 11.79 | 5/5 |
-| `openfold` | 0.384 | 0.347 | 19.81 | 5/5 |
-| `colabfold` | 0.359 | 0.304 | 20.38 | 5/5 |
+### Shared-MSA experimental first-five benchmark
 
-### Carbon Efficiency
+| Model | Mode / MSA | n_success | Mean lDDT-Ca | Mean TM-score | Mean Ca RMSD (A) | Mean model time (s) | Mean model CO2e (g) | Mean total time with shared MSA (s) | Mean total CO2e with shared MSA (g) | Notes |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| protenix | yes; shared_precomputed_msa | 5 | 0.867 | 0.855 | 4.708 | 82.1 | 2.45 | 545.3 | 15.75 | shared A3M converted to Protenix paired/unpaired inputs |
+| openfold3 | yes; shared_precomputed_msa | 5 | 0.851 | 0.835 | 5.200 | 103.4 | 3.42 | 566.6 | 16.71 | shared A3M copied as cfdb_hits.a3m; low-memory experimental run |
 
-| Model | Duration (s) | Energy (Wh) | CO2 (g) |
-|---|---:|---:|---:|
-| `esmfold` | 262.9 | 18.331 | 0.863 |
-| `boltz2` | 264.6 | 20.386 | 0.960 |
-| `openfold` | 269.4 | 25.807 | 1.216 |
-| `omegafold` | 434.3 | 41.380 | 1.949 |
-| `colabfold` | 492.6 | 36.553 | 1.722 |
-| `chai1` | 516.2 | 44.377 | 2.090 |
+### ColabFold single-sequence vs MSA ablation
 
-## Supplemental: Canonical Default-Mode Metadata Smoke
+| Model | Mode / MSA | n_success | Mean lDDT-Ca | Mean TM-score | Mean Ca RMSD (A) | Mean inference time (s) | Mean model CO2e (g) |
+|---|---|---:|---:|---:|---:|---:|---:|
+| colabfold_single | no; forced_single_sequence_ablation | 5 | 0.352 | 0.291 | 19.875 | 98.0 | 0.35 |
+| colabfold_msa | yes; msa_ablation | 5 | 0.840 | 0.819 | 4.753 | 613.5 | 1.84 |
 
-A 7ROA one-target smoke on 2026-05-20 validated canonical model names, MSA provenance fields, and world-average carbon metadata for `esmfold`, `omegafold`, `boltz2`, `chai1`, `colabfold`, and `openfold`. `colabfold` and `openfold` used fresh local ColabFold/MMseqs2 MSAs; `esmfold` and `omegafold` are native no-MSA models; `boltz2` uses an explicit empty MSA/single-sequence mode; Chai-1 MSA use remains marked unknown because the runner passes FASTA only. Exported supplemental files:
+### OpenFold single-sequence vs MSA ablation
 
-- `results/protein_folding_default_modes_7ROA_world_carbon_metadata.csv`
-- `results/protein_folding_default_modes_7ROA_world_score_summary.csv`
+| Model | Mode / MSA | n_success | Mean lDDT-Ca | Mean TM-score | Mean Ca RMSD (A) | Mean inference time (s) | Mean model CO2e (g) |
+|---|---|---:|---:|---:|---:|---:|---:|
+| openfold_single | no; forced_single_sequence_ablation | 5 | 0.385 | 0.340 | 19.854 | 53.1 | 0.24 |
+| openfold_msa | yes; msa_ablation | 5 | 0.819 | 0.812 | 4.148 | 545.3 | 1.66 |
 
-The first-five table below remains a historical smoke artifact and should not be interpreted as the updated default-mode leaderboard until a full first-five default-mode rerun is exported.
+## Exported Files
 
-## Supplemental: ColabFold Single-Sequence vs MSA Mode
+Current default-mode first-five exports:
 
-A follow-up benchmark on 2026-05-20 compared explicit ColabFold variants:
+- `results/default_modes_first5_model_summary.csv`
+- `results/default_modes_first5_run_metadata.csv`
+- `results/default_modes_first5_run_status.csv`
+- `results/7ROA_chainA_scores.csv`
+- `results/7QIH_chainA_scores.csv`
+- `results/8ORK_chainA_scores.csv`
+- `results/7UYX_chainA_scores.csv`
+- `results/7UTD_chainA_scores.csv`
 
-| Model | Mean lDDT-Ca | Mean TM-score | Mean C-alpha RMSD | Runtime (s) | Energy (kWh) | CO2 (g) | Success |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| `colabfold_msa` | 0.840 | 0.819 | 4.75 | 3067.4 | 0.195630 | 9.214 | 5/5 |
-| `colabfold_single` | 0.352 | 0.291 | 19.87 | 490.1 | 0.036727 | 1.730 | 5/5 |
+Shared-MSA experimental exports:
 
-`colabfold_single` uses `--msa-mode single_sequence`. `colabfold_msa` reruns local ColabFold/MMseqs2 MSA search during every benchmarked inference using `/data/chen/protein_folding_databases/colabfold`, so the reported runtime, energy, and CO2 include both MSA search and structure prediction. The supplemental exported tables are:
+- `results/shared_msa_colabfold_first5_msa_metadata.csv`
+- `results/protenix_openfold3_shared_msa_first5_model_summary.csv`
+- `results/protenix_openfold3_shared_msa_first5_run_metadata.csv`
+- `results/protenix_openfold3_shared_msa_first5_score_cost_summary.csv`
+- `results/protenix_shared_msa_first5.json`
+- `results/openfold3_shared_msa_first5.json`
 
+README-ready generated table:
+
+- `results/protein_folding_readme_benchmark_performance.md`
+
+Historical and ablation exports retained for provenance:
+
+- `results/protein_folding_six_models_first5_*`
 - `results/colabfold_single_vs_msa_first5_carbon.csv`
 - `results/colabfold_single_vs_msa_first5_model_summary.csv`
-
-## Supplemental: OpenFold Single-Sequence vs ColabFold-Generated MSA
-
-A follow-up benchmark on 2026-05-20 compared explicit OpenFold variants:
-
-| Model | Mean lDDT-Ca | Mean TM-score | Mean C-alpha RMSD | Runtime (s) | Energy (kWh) | CO2 (g) | Success |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| `openfold_msa` | 0.819 | 0.812 | 4.15 | 2726.4 | 0.175815 | 8.281 | 5/5 |
-| `openfold_single` | 0.385 | 0.340 | 19.85 | 265.4 | 0.025607 | 1.206 | 5/5 |
-
-`openfold_msa` reruns local ColabFold/MMseqs2 MSA search during every benchmarked inference using `/data/chen/protein_folding_databases/colabfold`, then feeds the generated A3M to OpenFold through its precomputed alignment path. The reported runtime, energy, and CO2 include both MSA search and OpenFold inference. The supplemental exported tables are:
-
 - `results/openfold_single_vs_msa_first5_carbon.csv`
 - `results/openfold_single_vs_msa_first5_model_summary.csv`
 
-## Limitations
-
-- This is a first-five smoke benchmark, not a full CASP15/CASP16 benchmark.
-- The first-five main table is a historical single-sequence/dummy-MSA smoke for ColabFold/OpenFold; the current default policy uses canonical model names with MSA provenance metadata and world-average carbon accounting.
-- Results should be interpreted as an initial Carbon4Science contribution artifact rather than a final scientific leaderboard.
-
 ## Reproduction
 
-The source benchmark repo is `/home/chen/projects/Protein-Folding-Benchmark`. The main command was:
+Current default-mode first-five benchmark command shape from the source repo:
 
 ```bash
 conda run -n folding-benchmark python scripts/run_benchmark_from_targets.py \
   --targets data/targets/targets_first5.csv \
-  --config tmp/backend_smoke/models_six_single_sequence.yaml \
+  --config configs/models.yaml \
   --models esmfold,omegafold,boltz2,chai1,colabfold,openfold \
   --top-k 1 \
-  --predictions-dir results/six_backend_first5_carbon_smoke/predictions \
-  --sequences-dir results/six_backend_first5_carbon_smoke/sequences \
-  --logs-dir results/six_backend_first5_carbon_smoke/logs \
-  --results-dir results/six_backend_first5_carbon_smoke \
-  --run-metadata results/six_backend_first5_carbon_smoke/run_metadata.csv \
-  --run-status results/six_backend_first5_carbon_smoke/run_status.csv \
+  --predictions-dir results/default_modes_first5_carbon_metadata/predictions \
+  --sequences-dir results/default_modes_first5_carbon_metadata/sequences \
+  --logs-dir results/default_modes_first5_carbon_metadata/logs \
+  --results-dir results/default_modes_first5_carbon_metadata \
+  --run-metadata results/default_modes_first5_carbon_metadata/run_metadata.csv \
+  --run-status results/default_modes_first5_carbon_metadata/run_status.csv \
   --max-trials 1 \
-  --gpu-cleanup-sleep-sec 10 \
-  --track-carbon \
-  --carbon-country-iso-code CHE
-```
-
-Current default-mode smoke command shape uses world-average carbon by omitting the country override and uses `tmp/backend_smoke/models_six_default_modes.yaml`:
-
-```bash
-conda run -n folding-benchmark python scripts/run_benchmark_from_targets.py \
-  --targets tmp/backend_smoke/targets_7ROA_chainA.csv \
-  --config tmp/backend_smoke/models_six_default_modes.yaml \
-  --models esmfold,omegafold,boltz2,chai1,colabfold,openfold \
-  --top-k 1 \
   --track-carbon
 ```
 
-Regenerate the compact merged CSV from exported files:
+Shared-MSA Protenix/OpenFold3 command shape:
+
+```bash
+conda run -n folding-benchmark python scripts/run_benchmark_from_targets.py \
+  --targets data/targets/targets_first5.csv \
+  --config tmp/backend_smoke/models_protenix_openfold3_shared_msa.yaml \
+  --models protenix,openfold3 \
+  --top-k 1 \
+  --shared-msa-metadata results/shared_msa_colabfold_first5/msa_metadata.csv \
+  --shared-msa-root results/shared_msa_colabfold_first5/msas \
+  --track-carbon
+```
+
+Regenerate the compact merged CSV from exported historical files:
 
 ```bash
 python scripts/summarize_results.py
 ```
+
+## Limitations
+
+- This is a five-target smoke benchmark, not a full CASP benchmark.
+- Protenix and OpenFold3 are experimental shared-MSA exports and are not canonical enabled backends in `Protein-Folding-Benchmark/configs/models.yaml`.
+- OpenFold3 uses a low-memory configuration validated on the local 24 GB RTX A5000 setup; broader validation is still needed.
+- Official AlphaFold2 is not reported as a benchmarked method here because the official parameters and AlphaFold database layout are not installed in the source repo. ColabFold is reported as ColabFold, not relabeled as AF2.
