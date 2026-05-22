@@ -17,6 +17,19 @@
   "source_files": {
     "metadata_csv": "results/protein_folding_six_models_first5_run_metadata.csv",
     "scores_csv": "results/protein_folding_six_models_first5_scores.csv",
-    "merged_csv": "results/protein_folding_six_models_first5_merged.csv"
+    "merged_csv": "results/protein_folding_six_models_first5_merged.csv",
+    "msa_metadata_csv": "results/default_modes_first5_run_metadata.csv"
+  },
+  "msa": {
+    "used": false,
+    "source": "none",
+    "mode": "native_single_sequence",
+    "database": "none",
+    "database_path": "",
+    "generation_included_in_timing": false,
+    "generation_included_in_carbon": false,
+    "reused": false,
+    "storage": "Per-run/default model MSA handling; see metadata_csv for per-target details.",
+    "notes": "Native no-MSA model"
   }
 }

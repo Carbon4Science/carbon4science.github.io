@@ -1,0 +1,2 @@
+target_id,model,msa_runtime_sec,msa_carbon_emissions_g,model_inference_time_sec,model_carbon_emissions_g,total_time_with_shared_msa_sec,total_carbon_with_shared_msa_g,lddt_ca,ca_rmsd,tmalign_tm_score_ref
+7ROA_chainA,protenix,449.025265,12.752343846168618,198.209298,5.266531942128137,647.234563,18.0188757883,0.7738907849829351,3.8287273308975567,0.85442
