@@ -4,7 +4,7 @@
 
 ## Goal
 
-Compare structure-prediction accuracy against runtime, energy use, and CO2 emissions for locally runnable folding backends from `Protein-Folding-Benchmark`. The current clean results export reports the latest unified shared-MSA first-five benchmark, where one ColabFold/MMseqs2 MSA is generated per target and reused by ColabFold, OpenFold, Protenix, and OpenFold3.
+Compare structure-prediction accuracy against runtime, energy use, and CO2 emissions for locally runnable folding backends from `Protein-Folding-Benchmark`. The current clean results export includes default/no-MSA first-five rows for ESMFold, OmegaFold, Boltz-2, and Chai-1 plus the latest unified shared-MSA first-five rows for ColabFold, OpenFold, Protenix, and OpenFold3.
 
 ## Dataset
 
@@ -69,7 +69,7 @@ Scoring reports:
 - Tracker: CodeCarbon offline tracker.
 - Current default benchmark policy: world-average accounting. New `--track-carbon` runs omit `--carbon-country-iso-code` and record `carbon_country_iso_code=WORLD`, `carbon_intensity_mode=world_average`, and `carbon_intensity_source=configurable_default_world_average`.
 - Default world-average intensity in the benchmark repo: `475 g CO2e/kWh`.
-- The Carbon4Science `results/` directory is kept clean and currently contains only the latest unified shared-MSA export.
+- The Carbon4Science `results/` directory is kept clean and currently contains only the latest clean export: default/no-MSA rows for ESMFold, OmegaFold, Boltz-2, and Chai-1 plus unified shared-MSA rows for ColabFold, OpenFold, Protenix, and OpenFold3.
 - Raw CodeCarbon CSVs are retained in the benchmark repo under each result directory's `carbon/` folder and summarized in `results/benchmark-metadata.csv`.
 
 ## Hardware
@@ -89,7 +89,7 @@ The shared-MSA workflow separates homology search from model inference:
 2. The resulting per-target A3M files and MSA search carbon metadata are stored in the source benchmark result directory.
 3. ColabFold, OpenFold, Protenix, and OpenFold3 reuse those same A3M files; no model runner reruns MMseqs in this benchmark.
 4. Model inference rows mark `msa_generation_included_in_timing=false`, `msa_generation_included_in_carbon=false`, and `msa_reused=true`.
-5. `benchmakr-score.csv` joins MSA cost, model inference cost, and structure scores for total-cost reporting.
+5. `benchmark-score.csv` records per-target scores and runtime/carbon totals. For shared-MSA models it joins MSA cost, model inference cost, and structure scores; for default/no-MSA models the total cost is the model run cost.
 
 In the shared-MSA table below, model-only CO2e is reported separately from total CO2e with shared MSA cost added back for end-to-end comparability.
 
@@ -133,10 +133,14 @@ In the shared-MSA table below, model-only CO2e is reported separately from total
 
 ## Exported Files
 
-The `results/` directory is intentionally clean and contains only the latest unified shared-MSA export:
+The `results/` directory is intentionally clean and contains only the latest export:
 
-- `results/benchmakr-score.csv` - per-target score and cost rows for the latest run.
+- `results/benchmark-score.csv` - per-target score and cost rows for all exported models.
 - `results/benchmark-metadata.csv` - per-target runtime, carbon, and MSA metadata rows.
+- `results/esmfold.json`
+- `results/omegafold.json`
+- `results/boltz2.json`
+- `results/chai1.json`
 - `results/colabfold.json`
 - `results/openfold.json`
 - `results/openfold3.json`
