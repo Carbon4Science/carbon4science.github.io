@@ -285,6 +285,19 @@ Each task lives on its own **orphan branch** with this layout at the branch root
 
 When starting a new task, copy `branch-example/ExampleTask/` as a template and adapt the MODELS dict, MODEL_ENVS, and configs for your task's models.
 
+### Rule 15: Leaderboard Data Sync (main branch)
+
+The leaderboard data on `main` is **duplicated across three files** that are maintained independently. Any add/edit of a model row (metrics, venue, year, params, etc.) MUST be applied to ALL of them, or they will drift out of sync:
+
+1. `analysis/all_data.csv` — source data for the figures (`analysis/plot_figures.py` reads this).
+2. `docs/data.js` — the data the **live website** renders. The site does NOT read the CSV; it reads this JS array. Editing only the CSV will leave the webpage stale.
+3. `README.md` — the human-readable leaderboard tables.
+
+Notes:
+- `analysis/all_data.csv` columns: `task,year,venue,model,model type,model size,major_metric,minor_metric,inference_time_per_exp,CO2_per_exp,CO2_per_job,baseline?`. `docs/data.js` uses the same fields with camelCase keys (`modelType`, `modelSize`, `baseline`).
+- The README and `docs/data.js` MolGen-style tables are sorted by `year`; re-sort the row after a year change.
+- After editing `analysis/all_data.csv`, regenerate figures (`python analysis/plot_figures.py ...`) so the PNGs match.
+
 ### Results JSON Schema
 
 Every benchmark run produces a JSON file following this structure:
