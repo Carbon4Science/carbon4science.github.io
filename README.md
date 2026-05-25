@@ -117,8 +117,8 @@ All tasks benchmarked on the same hardware with full carbon tracking.
 | 2021 | J. Chem. Inf. Model. | MolGPT        | LM            | 9.5M   | 77.15     | 76.65     | 1.07        | 1.07        | 37           | 37           |
 | 2023 | ICML                 | DiGress       | Diffusion     | 16.2M  | 82.45     | 81.18     | 175.35      | 175.35      | 5,201        | 5,201        |
 | 2024 | J. Cheminf.          | REINVENT4     | LM            | 5.8M   | 94.16     | 85.44     | **0.07**    | **0.07**    | **8**        | **8**        |
-| 2024 | arXiv                | **SmileyLlama** | LLM         | 8.0B   | **94.30** | 85.16     | 21.79       | 21.79       | 638          | 638          |
 | 2025 | ICML                 | DeFoG         | Flow Matching | 16.3M  | 82.27     | 81.73     | 355.24      | 355.24      | 9,874        | 9,874        |
+| 2026 | Nat. Comput. Sci.    | **SmileyLlama** | LLM         | 8.0B   | **94.30** | 85.16     | 21.79       | 21.79       | 638          | 638          |
 
 
 ---
