@@ -137,8 +137,11 @@ def load_data():
 
 
 # ── Figure 1: Year Trends ─────────────────────────────────────────────────
-def plot_fig1(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
-    """6 rows (tasks) × 3 cols (model size, CO2, performance)."""
+def plot_fig1(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)', noname=False):
+    """6 rows (tasks) × 3 cols (model size, CO2, performance).
+
+    If noname=True, omits per-point model labels and saves to *_noname.png.
+    """
     fig, axes = plt.subplots(6, 3, figsize=(20, 32))
 
     # Consistent x-axis: use global min/max year across ALL tasks
@@ -181,8 +184,9 @@ def plot_fig1(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
                     ty += 3.0
                 elif task == 'MolGen' and j == 2 and row['model'] == 'REINVENT4':
                     ty -= 3.0
-                texts.append(ax.text(tx, ty, row['model'],
-                                     fontsize=14, zorder=5))
+                if not noname:
+                    texts.append(ax.text(tx, ty, row['model'],
+                                         fontsize=14, zorder=5))
             # Set limits BEFORE adjust_text so it adjusts within correct bounds
             ax.set_xlim(xlim)
             ax.set_xticks(year_ticks)
@@ -202,22 +206,27 @@ def plot_fig1(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
                 ax.text(-0.3, 0.5, task, transform=ax.transAxes, fontsize=22,
                         fontweight='bold', color=c, va='center', ha='center', rotation=90)
             # adjust_text AFTER all axis setup
-            adjust_text(texts, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
-                        force_points=(2.0, 2.0), iterations=200,
-                        arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
+            if texts:
+                adjust_text(texts, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
+                            force_points=(2.0, 2.0), iterations=200,
+                            arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
 
     fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=20,
                loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.01),
                framealpha=0.9, title_fontsize=20)
     fig.subplots_adjust(left=0.12, right=0.97, top=0.96, bottom=0.06, hspace=0.35, wspace=0.4)
-    out = os.path.join(OUT_DIR, '1_year_trends_combined.png')
+    fname = '1_year_trends_combined_noname.png' if noname else '1_year_trends_combined.png'
+    out = os.path.join(OUT_DIR, fname)
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
-    print(f"Fig 1 saved → {out}")
+    print(f"Fig 1{' (noname)' if noname else ''} saved → {out}")
 
 
-def plot_fig1_horizontal(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
-    """3 rows (model size, CO2, performance) × 6 cols (tasks)."""
+def plot_fig1_horizontal(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)', noname=False):
+    """3 rows (model size, CO2, performance) × 6 cols (tasks).
+
+    If noname=True, omits per-point model labels and saves to *_noname.png.
+    """
     fig, axes = plt.subplots(3, 6, figsize=(42, 18))
 
     # Consistent x-axis: use global min/max year across ALL tasks
@@ -262,8 +271,9 @@ def plot_fig1_horizontal(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/j
                     ty += 3.0
                 elif task == 'MolGen' and i == 2 and row['model'] == 'REINVENT4':
                     ty -= 3.0
-                texts.append(ax.text(tx, ty, row['model'],
-                                     fontsize=14, zorder=5))
+                if not noname:
+                    texts.append(ax.text(tx, ty, row['model'],
+                                         fontsize=14, zorder=5))
             ax.set_xlim(xlim)
             ax.set_xticks(year_ticks)
             ax.tick_params(labelsize=16)
@@ -285,23 +295,30 @@ def plot_fig1_horizontal(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/j
                 ax.tick_params(axis='x', labelbottom=False)
             else:
                 ax.set_xlabel('Year', fontsize=20)
-            adjust_text(texts, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
-                        force_points=(2.0, 2.0), iterations=200,
-                        arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
+            if texts:
+                adjust_text(texts, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
+                            force_points=(2.0, 2.0), iterations=200,
+                            arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
 
     fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=20,
                loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.03),
                framealpha=0.9, title_fontsize=20)
     fig.subplots_adjust(left=0.10, right=0.97, top=0.95, bottom=0.08, hspace=0.35, wspace=0.4)
-    out = os.path.join(OUT_DIR, '1_year_trends_combined_horizontal.png')
+    fname = ('1_year_trends_combined_horizontal_noname.png' if noname
+             else '1_year_trends_combined_horizontal.png')
+    out = os.path.join(OUT_DIR, fname)
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
-    print(f"Fig 1 horizontal saved → {out}")
+    print(f"Fig 1 horizontal{' (noname)' if noname else ''} saved → {out}")
 
 
 # ── Figure 2: Pareto Frontiers ─────────────────────────────────────────────
-def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
-    """2×3 subplots, Δ Performance (%) vs log10(CO2 ratio), with Pareto front."""
+def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)', noname=False):
+    """2×3 subplots, Δ Performance (%) vs log10(CO2 ratio), with Pareto front.
+
+    If noname=True, omits per-point labels EXCEPT for models on the Pareto front,
+    and saves to *_noname.png.
+    """
     fig, axes = plt.subplots(2, 3, figsize=(20, 14))
     axes = axes.flatten()
 
@@ -318,11 +335,13 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
         # Pareto front (upper-left dominant)
         grp_sorted = grp.sort_values('log_co2_ratio')
         pareto_x, pareto_y = [], []
+        pareto_models = set()
         best_perf = -np.inf
         for _, row in grp_sorted.iterrows():
             if row['delta_perf_pct'] >= best_perf:
                 pareto_x.append(row['log_co2_ratio'])
                 pareto_y.append(row['delta_perf_pct'])
+                pareto_models.add(row['model'])
                 best_perf = row['delta_perf_pct']
 
         # axis limits (independent per task)
@@ -363,7 +382,7 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
             },
         }
         positions = MANUAL_POSITIONS.get(task, {})
-        label_fs = 14 
+        label_fs = 20 if noname else 14  # fewer labels in noname → larger font
 
         # plot points
         texts2 = []
@@ -376,6 +395,9 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
             ax.scatter(row['log_co2_ratio'], row['delta_perf_pct'],
                        color=TASK_COLORS[task], marker=m, s=sz,
                        edgecolors=ec, linewidths=lw, zorder=4)
+            # In noname mode, only label models on the Pareto front
+            if noname and row['model'] not in pareto_models:
+                continue
             label = f"{row['model']} ({row['year']})"
             pos = positions.get(row['model'], None)
             if pos is not None:
@@ -415,10 +437,11 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
                loc='lower center', ncol=6, fontsize=20, framealpha=0.9,
                bbox_to_anchor=(0.5, -0.02), title_fontsize=20)
     fig.subplots_adjust(left=0.08, right=0.97, top=0.95, bottom=0.14, hspace=0.35, wspace=0.3)
-    out = os.path.join(OUT_DIR, '2_pareto_delta_pct.png')
+    fname = '2_pareto_delta_pct_noname.png' if noname else '2_pareto_delta_pct.png'
+    out = os.path.join(OUT_DIR, fname)
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
-    print(f"Fig 2 saved → {out}")
+    print(f"Fig 2{' (noname, Pareto-only labels)' if noname else ''} saved → {out}")
 
 
 def plot_fig2_gradient(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
@@ -553,9 +576,12 @@ def plot_fig2_gradient(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job
 
 
 # ── Figure 3: CO2 Decomposition ───────────────────────────────────────────
-def plot_fig3(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/exp)'):
+def plot_fig3(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/exp)', noname=False):
     """6 rows (tasks) × 3 cols (size vs CO2, time vs CO2, size vs time). No fit lines.
-    Uses log10-transformed values on linear axes for clean tick labels."""
+    Uses log10-transformed values on linear axes for clean tick labels.
+
+    If noname=True, omits per-point model labels and saves to *_noname.png.
+    """
     fig, axes = plt.subplots(6, 3, figsize=(20, 32))
 
     panels = [
@@ -599,7 +625,13 @@ def plot_fig3(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/exp)'):
                 lw = 0.6
                 ax.scatter(log_xv, log_yv, color=c, marker=m, s=sz,
                            edgecolors=ec, linewidths=lw, zorder=3)
-                texts3.append(ax.text(log_xv, log_yv, row['model'], fontsize=14, zorder=5))
+                # In noname mode, still label NequIP/ORB in the Model Size vs
+                # Inference Time column (j==2) for StructOpt/MDSim — worth discussing.
+                highlight = (j == 2 and task in ('StructOpt', 'MDSim')
+                             and row['model'] in ('NequIP', 'ORB'))
+                if not noname or highlight:
+                    label_fs = 20 if noname else 14  # fewer labels in noname → larger font
+                    texts3.append(ax.text(log_xv, log_yv, row['model'], fontsize=label_fs, zorder=5))
             # Regression + R² for inference time vs CO₂ (column 1)
             if j == 1 and len(log_xs) > 1:
                 log_xs_arr = np.array(log_xs)
@@ -631,22 +663,28 @@ def plot_fig3(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/exp)'):
                 ax.text(-0.3, 0.5, task, transform=ax.transAxes, fontsize=22,
                         fontweight='bold', color=c, va='center', ha='center', rotation=90)
             # adjust_text AFTER all axis setup
-            adjust_text(texts3, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
-                        force_points=(2.0, 2.0), iterations=200,
-                        arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
+            if texts3:
+                adjust_text(texts3, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
+                            force_points=(2.0, 2.0), iterations=200,
+                            arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
 
     fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=20,
                loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.01),
                framealpha=0.9, title_fontsize=20)
     fig.subplots_adjust(left=0.12, right=0.97, top=0.96, bottom=0.06, hspace=0.35, wspace=0.4)
-    out = os.path.join(OUT_DIR, '3_co2_decomposition_combined.png')
+    fname = ('3_co2_decomposition_combined_noname.png' if noname
+             else '3_co2_decomposition_combined.png')
+    out = os.path.join(OUT_DIR, fname)
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
-    print(f"Fig 3 saved → {out}")
+    print(f"Fig 3{' (noname)' if noname else ''} saved → {out}")
 
 
-def plot_fig3_horizontal(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/exp)'):
-    """3 rows (panels) × 6 cols (tasks). Transposed version of fig3."""
+def plot_fig3_horizontal(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/exp)', noname=False):
+    """3 rows (panels) × 6 cols (tasks). Transposed version of fig3.
+
+    If noname=True, omits per-point model labels and saves to *_noname.png.
+    """
     fig, axes = plt.subplots(3, 6, figsize=(42, 18))
 
     panels = [
@@ -691,7 +729,8 @@ def plot_fig3_horizontal(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/e
                 lw = 0.6
                 ax.scatter(log_xv, log_yv, color=c, marker=m, s=sz,
                            edgecolors=ec, linewidths=lw, zorder=3)
-                texts3.append(ax.text(log_xv, log_yv, row['model'], fontsize=14, zorder=5))
+                if not noname:
+                    texts3.append(ax.text(log_xv, log_yv, row['model'], fontsize=14, zorder=5))
             # Regression + R² for inference time vs CO₂ (row 1)
             if i == 1 and len(log_xs) > 1:
                 log_xs_arr = np.array(log_xs)
@@ -722,18 +761,21 @@ def plot_fig3_horizontal(df, co2_col='CO2_per_exp', co2_label='log₁₀(CO₂/e
                 ax.set_ylabel(ylabel, fontsize=20)
             # Each row has a different x variable — always show x-axis
             ax.set_xlabel(xlabel, fontsize=20)
-            adjust_text(texts3, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
-                        force_points=(2.0, 2.0), iterations=200,
-                        arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
+            if texts3:
+                adjust_text(texts3, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
+                            force_points=(2.0, 2.0), iterations=200,
+                            arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
 
     fig.legend(handles=get_arch_legend_handles(), title='Architecture', fontsize=20,
                loc='lower center', ncol=len(ARCH_MARKERS), bbox_to_anchor=(0.5, -0.05),
                framealpha=0.9, title_fontsize=20)
     fig.subplots_adjust(left=0.10, right=0.97, top=0.95, bottom=0.06, hspace=0.45, wspace=0.4)
-    out = os.path.join(OUT_DIR, '3_co2_decomposition_combined_horizontal.png')
+    fname = ('3_co2_decomposition_combined_horizontal_noname.png' if noname
+             else '3_co2_decomposition_combined_horizontal.png')
+    out = os.path.join(OUT_DIR, fname)
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
-    print(f"Fig 3 horizontal saved → {out}")
+    print(f"Fig 3 horizontal{' (noname)' if noname else ''} saved → {out}")
 
 # ── Figure 4: CO2 Reference Points ────────────────────────────────────────
 def _compute_pareto(grp):
@@ -1202,6 +1244,180 @@ def plot_fig4_combined(df):
     print(f"Fig 4ab saved → {out}")
 
 
+# ── Figure 4 horizontal: (a) worst Pareto on left, (b) 2nd-best Pareto on right ─
+def plot_fig4_combined_horizontal(df):
+    """Side-by-side Fig 4: (a) worst-Pareto bars (left), (b) worst + 2nd-best overlay (right).
+    Each panel has its own y-axis labels since panel (b) shows 2nd-best model names."""
+
+    # ── Compute worst Pareto per task (same as fig4 / fig4b) ──
+    task_map = {
+        'Forward': 'Forward', 'Retro': 'Retro', 'MolGen': 'MolGen',
+        'MatGen': 'MatGen', 'StructOpt': 'StructOpt', 'MDSim': 'MDSim',
+    }
+    worst_pareto = {}
+    for task, key in task_map.items():
+        grp = df[df['task'] == task].copy()
+        if grp.empty:
+            continue
+        pareto_models = _compute_pareto(grp)
+        pareto_grp = grp[grp['model'].isin(pareto_models)]
+        worst = pareto_grp.loc[pareto_grp['CO2_per_job'].idxmax()]
+        worst_pareto[key] = (worst['model'], worst['CO2_per_job'])
+
+    # ── Second-best models (mirror fig4b) ──
+    second_best_names = {
+        'Forward': 'LocalTransform', 'Retro': 'LocalRetro',
+        'MolGen': 'REINVENT4', 'MatGen': 'DiffCSP',
+        'StructOpt': 'NequIP', 'MDSim': 'SevenNet',
+    }
+    second_best = {}
+    for task, model_name in second_best_names.items():
+        row = df[(df['task'] == task) & (df['model'] == model_name)]
+        if not row.empty:
+            second_best[task] = (model_name, row.iloc[0]['CO2_per_job'])
+
+    # ── Resolve ref_data (carrying task_key for fig4b overlay) ──
+    ref_data = []
+    for (cat, label, task_key, fallback_desc, fallback_co2, unit) in ref_data_raw:
+        if task_key and task_key in worst_pareto:
+            model_name, co2 = worst_pareto[task_key]
+            ref_data.append((cat, label, task_key, model_name, co2, unit))
+        else:
+            ref_data.append((cat, label, None, fallback_desc, fallback_co2, unit))
+    ref_data.sort(key=lambda x: x[4])
+
+    categories  = [d[0] for d in ref_data]
+    main_labels = [d[1] for d in ref_data]
+    task_keys   = [d[2] for d in ref_data]
+    descs       = [d[3] for d in ref_data]
+    values      = [d[4] for d in ref_data]
+    units       = [d[5] for d in ref_data]
+
+    AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction',
+                     'AI Structure Opt', 'AI MD simulation'}
+    CHEM_CATEGORIES = {'Chemical simulation', 'Chemical synthesis'}
+
+    # ── Palette ──
+    ai_color       = '#1E88E5'
+    ai_color_light = '#D6EAFF'
+    chem_color     = '#FFAB91'
+    base_color     = '#CFD8DC'
+
+    def _pick_top(cat):  # fig4 highlight_ai=True style
+        if cat in AI_CATEGORIES:
+            return ai_color, '#1565C0', 1.5, 0.72, '///'
+        if cat in CHEM_CATEGORIES:
+            return chem_color, '#E0E0E0', 0.5, 0.58, ''
+        return base_color, '#E0E0E0', 0.5, 0.55, ''
+
+    def _pick_light(cat):  # fig4b light pass
+        if cat in AI_CATEGORIES:
+            return ai_color_light, '#D6EAFF', 0.5, ''
+        if cat in CHEM_CATEGORIES:
+            return chem_color, '#E0E0E0', 0.5, ''
+        return base_color, '#E0E0E0', 0.5, ''
+
+    # Side-by-side; do NOT share y-axis since each panel has its own descriptive labels
+    fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(22, 9))
+
+    # ── Panel (a): worst-Pareto bars (fig4 style) ──
+    for i, (val, cat) in enumerate(zip(values, categories)):
+        fc, ec, lw, h, hp = _pick_top(cat)
+        ax_a.barh(i, val, color=fc, edgecolor=ec, linewidth=lw, height=h, hatch=hp)
+    for i, (val, unit) in enumerate(zip(values, units)):
+        label = (f'{val / 1000:.1f} kg CO₂ eq/{unit}' if val >= 1000
+                 else f'{val:.1f} g CO₂ eq/{unit}')
+        ax_a.text(val * 1.4, i, label, va='center', fontsize=8.5)
+
+    # ── Panel (b): light worst-Pareto + bold 2nd-best overlay (fig4b style) ──
+    bar_height = 0.72
+    for i, (val, cat) in enumerate(zip(values, categories)):
+        fc, ec, lw, hp = _pick_light(cat)
+        h = bar_height if cat in AI_CATEGORIES else 0.58 if cat in CHEM_CATEGORIES else 0.55
+        ax_b.barh(i, val, color=fc, edgecolor=ec, linewidth=lw, height=h, hatch=hp)
+    for i, (cat, tk) in enumerate(zip(categories, task_keys)):
+        if tk and tk in second_best:
+            sb_co2 = second_best[tk][1]
+            ax_b.barh(i, sb_co2, color=ai_color, edgecolor='#1565C0',
+                      linewidth=1.5, height=bar_height, hatch='///')
+    for i, (val, unit, tk) in enumerate(zip(values, units, task_keys)):
+        if tk and tk in second_best:
+            sb_co2 = second_best[tk][1]
+            label = (f'{sb_co2 / 1000:.1f} kg CO₂ eq/{unit}' if sb_co2 >= 1000
+                     else f'{sb_co2:.1f} g CO₂ eq/{unit}')
+            outer = max(val, sb_co2)
+            ax_b.text(outer * 1.4, i, label,
+                      va='center', fontsize=8.5, fontweight='bold', color='#1565C0')
+        else:
+            label = (f'{val / 1000:.1f} kg CO₂ eq/{unit}' if val >= 1000
+                     else f'{val:.1f} g CO₂ eq/{unit}')
+            ax_b.text(val * 1.4, i, label, va='center', fontsize=8.5)
+
+    # ── Shared axis settings (each panel has its own y-labels) ──
+    for ax in (ax_a, ax_b):
+        ax.set_yticks(range(len(ref_data)))
+        ax.set_yticklabels([''] * len(ref_data))
+        ax.set_xscale('log')
+        ax.set_xlim(0.5, 5e8)
+        ax.tick_params(labelsize=12)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.set_xlabel('CO₂ Emission', fontsize=14)
+
+    # Panel (a) y-labels: main label + worst-Pareto model name (italic gray)
+    for i, (main, desc) in enumerate(zip(main_labels, descs)):
+        ax_a.text(-0.03, i, main, transform=ax_a.get_yaxis_transform(),
+                  ha='right', va='center', fontsize=10.5, fontweight='bold', color='black')
+        ax_a.text(-0.035, i - 0.42, desc, transform=ax_a.get_yaxis_transform(),
+                  ha='right', va='center', fontsize=8.5, fontstyle='italic', color='#777777')
+    # Panel (b) y-labels: main label + 2nd-best model (blue) where applicable
+    for i, (main, desc, tk) in enumerate(zip(main_labels, descs, task_keys)):
+        ax_b.text(-0.03, i, main, transform=ax_b.get_yaxis_transform(),
+                  ha='right', va='center', fontsize=10.5, fontweight='bold', color='black')
+        if tk and tk in second_best:
+            sb_name = second_best[tk][0]
+            ax_b.text(-0.035, i - 0.42, sb_name, transform=ax_b.get_yaxis_transform(),
+                      ha='right', va='center', fontsize=8.5, fontweight='bold',
+                      fontstyle='italic', color='#1565C0')
+        else:
+            ax_b.text(-0.035, i - 0.42, desc, transform=ax_b.get_yaxis_transform(),
+                      ha='right', va='center', fontsize=8.5, fontstyle='italic', color='#777777')
+
+    # ── Panel labels (a) / (b) at top-left ──
+    ax_a.text(-0.30, 1.02, 'a', transform=ax_a.transAxes,
+              fontsize=18, fontweight='bold', va='bottom', ha='left')
+    ax_b.text(-0.30, 1.02, 'b', transform=ax_b.transAxes,
+              fontsize=18, fontweight='bold', va='bottom', ha='left')
+
+    # ── Legends ──
+    leg_a = [
+        mpatches.Patch(facecolor=ai_color, edgecolor='#1565C0',
+                       linewidth=1.5, hatch='///', label='AI models (this work)'),
+        mpatches.Patch(facecolor=chem_color, label='Conventional chemistry'),
+        mpatches.Patch(facecolor=base_color, label='Everyday activities / LLM'),
+    ]
+    ax_a.legend(handles=leg_a, loc='lower right', fontsize=10,
+                framealpha=0.9, title='Category', title_fontsize=11)
+
+    leg_b = [
+        mpatches.Patch(facecolor=ai_color, edgecolor='#1565C0',
+                       linewidth=1.5, hatch='///', label='AI models (2nd-best Pareto)'),
+        mpatches.Patch(facecolor=ai_color_light, edgecolor='#D6EAFF',
+                       label='AI models (worst Pareto)'),
+        mpatches.Patch(facecolor=chem_color, label='Conventional chemistry'),
+        mpatches.Patch(facecolor=base_color, label='Everyday activities / LLM'),
+    ]
+    ax_b.legend(handles=leg_b, loc='lower right', fontsize=10,
+                framealpha=0.9, title='Category', title_fontsize=11)
+
+    # Generous left/inter-panel space so the descriptive labels for each panel fit
+    plt.subplots_adjust(left=0.16, right=0.98, wspace=0.45)
+    out = os.path.join(OUT_DIR, '4ab_co2_reference_combined_horizontal.png')
+    fig.savefig(out, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Fig 4ab horizontal saved → {out}")
+
+
 # ── Figure 5: Cross-task CO2 decomposition (2 panels) ─────────────────────
 def plot_fig5(df):
     """Two panels: log10(inference time) vs log10(CO2) and log10(model size) vs log10(CO2),
@@ -1280,8 +1496,12 @@ ALT_LABELS = {
 }
 
 
-def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
-    """Pareto plots using alternative metrics for 4 tasks."""
+def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)', noname=False):
+    """Pareto plots using alternative metrics for 4 tasks.
+
+    If noname=True, omits per-point labels EXCEPT for models on the Pareto front,
+    and saves to *_noname.png.
+    """
     fig, axes = plt.subplots(1, 4, figsize=(28, 7))
 
     # Add alt_perf column
@@ -1306,11 +1526,13 @@ def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
         # Pareto front
         grp_sorted = grp.sort_values('log_co2_ratio')
         pareto_x, pareto_y = [], []
+        pareto_models = set()
         best = -np.inf
         for _, row in grp_sorted.iterrows():
             if row['delta_alt_pct'] >= best:
                 pareto_x.append(row['log_co2_ratio'])
                 pareto_y.append(row['delta_alt_pct'])
+                pareto_models.add(row['model'])
                 best = row['delta_alt_pct']
 
         # Axis limits
@@ -1346,14 +1568,18 @@ def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
             ax.scatter(row['log_co2_ratio'], row['delta_alt_pct'],
                        color=TASK_COLORS[task], marker=m, s=marker_size(m),
                        edgecolors=ec, linewidths=lw, zorder=4)
+            # In noname mode, only label models on the Pareto front
+            if noname and row['model'] not in pareto_models:
+                continue
             label = f"{row['model']} ({row['year']})"
             tx6, ty6 = row['log_co2_ratio'], row['delta_alt_pct']
             if task == 'Forward' and row['model'] == 'Graph2SMILES':
                 ty6 += 5.0
             elif task == 'Forward' and row['model'] == 'LocalTransform':
                 ty6 -= 5.0
+            label_fs = 20 if noname else 14  # fewer labels in noname → larger font
             texts6.append(ax.text(tx6, ty6, label,
-                                  fontsize=14, zorder=5))
+                                  fontsize=label_fs, zorder=5))
 
         ax.set_xlim(xmin, xmax)
         ax.set_ylim(ymin, ymax)
@@ -1363,9 +1589,10 @@ def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
         ax.tick_params(labelsize=16)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
-        adjust_text(texts6, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
-                    force_points=(2.0, 2.0), iterations=200,
-                    arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
+        if texts6:
+            adjust_text(texts6, ax=ax, expand=(1.5, 1.8), force_text=(2.0, 2.0),
+                        force_points=(2.0, 2.0), iterations=200,
+                        arrowprops=dict(arrowstyle='-', color='gray', lw=0.5, alpha=0.5))
 
     arch_handles = get_arch_legend_handles()
     quad_handles = [
@@ -1380,20 +1607,24 @@ def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)'):
                loc='lower center', ncol=6, fontsize=20, framealpha=0.9,
                bbox_to_anchor=(0.5, -0.14))
     fig.subplots_adjust(bottom=0.18, wspace=0.35)
-    out = os.path.join(OUT_DIR, '6_pareto_alt_metrics.png')
+    fname = '6_pareto_alt_metrics_noname.png' if noname else '6_pareto_alt_metrics.png'
+    out = os.path.join(OUT_DIR, fname)
     fig.savefig(out, dpi=300, bbox_inches='tight')
     plt.close(fig)
-    print(f"Fig 6 saved → {out}")
+    print(f"Fig 6{' (noname, Pareto-only labels)' if noname else ''} saved → {out}")
 
 
 # ── Main ───────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate paper figures')
     parser.add_argument('--fig', nargs='*', type=int, default=[1, 2, 3, 4, 5, 6],
-                        help='Which figures to generate (default: all). 7=fig1 horizontal, 8=fig3 horizontal, 11=fig2 year gradient')
+                        help='Which figures to generate (default: all). 7=fig1 horizontal, 8=fig3 horizontal, 11=fig2 year gradient, 12=fig4ab horizontal')
     parser.add_argument('--dpi', type=int, default=300)
     parser.add_argument('--co2', choices=['per_exp', 'per_job'], default='per_exp',
                         help='CO2 metric: per_exp or per_job (default: per_job)')
+    parser.add_argument('--noname', action='store_true',
+                        help='For figs 1/2/3/6 (and horizontal variants of 1/3), omit per-point '
+                             'model labels and save as *_noname.png. Figs 2 and 6 keep Pareto-front labels.')
     args = parser.parse_args()
 
     # Set CO2 column and label based on argument
@@ -1407,32 +1638,34 @@ if __name__ == '__main__':
     plt.rcParams.update({'font.family': 'sans-serif', 'font.size': 20})
 
     df = None
-    if any(f in args.fig for f in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]):
+    if any(f in args.fig for f in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]):
         df = load_data()
         print(f"Loaded {len(df)} data points across {df['task'].nunique()} tasks")
         print(f"Using CO2 metric: {args.co2} ({co2_col})")
 
     if 1 in args.fig:
-        plot_fig1(df, co2_col, co2_label)
+        plot_fig1(df, co2_col, co2_label, noname=args.noname)
     if 2 in args.fig:
-        plot_fig2(df, co2_col, co2_label)
+        plot_fig2(df, co2_col, co2_label, noname=args.noname)
     if 3 in args.fig:
-        plot_fig3(df)
+        plot_fig3(df, noname=args.noname)
     if 4 in args.fig:
         plot_fig4(df)
     if 5 in args.fig:
         plot_fig5(df)
     if 6 in args.fig:
-        plot_fig6(df, co2_col, co2_label)
+        plot_fig6(df, co2_col, co2_label, noname=args.noname)
     if 7 in args.fig:
-        plot_fig1_horizontal(df, co2_col, co2_label)
+        plot_fig1_horizontal(df, co2_col, co2_label, noname=args.noname)
     if 8 in args.fig:
-        plot_fig3_horizontal(df)
+        plot_fig3_horizontal(df, noname=args.noname)
     if 9 in args.fig:
         plot_fig4b(df)
     if 10 in args.fig:
         plot_fig4_combined(df)
     if 11 in args.fig:
         plot_fig2_gradient(df, co2_col, co2_label)
+    if 12 in args.fig:
+        plot_fig4_combined_horizontal(df)
 
     print("Done!")
