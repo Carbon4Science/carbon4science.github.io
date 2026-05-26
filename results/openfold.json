@@ -1,15 +1,16 @@
 {
   "model": "openfold",
   "benchmark": "default_first5_plus_unified_shared_msa_first5",
-  "exported_at_utc": "2026-05-22T16:24:47+00:00",
+  "exported_at_utc": "2026-05-26T10:59:51+00:00",
   "source_repository": "/home/chen/projects/Protein-Folding-Benchmark",
   "source_result_dirs": {
     "default_no_msa_models": "results/default_modes_first5_carbon_metadata",
-    "unified_shared_msa_models": "results/four_msa_models_shared_msa_first5"
+    "unified_shared_msa_models": "results/four_msa_models_shared_msa_first5",
+    "official_af2_split_stage": "results/af2_first5_split_carbon"
   },
   "target_set": "data/targets/targets_first5.csv",
   "top_k": 1,
-  "msa_policy": "esmfold, omegafold, boltz2, and chai1 use their default/no-MSA benchmark rows; colabfold, openfold, protenix, and openfold3 use one shared ColabFold/MMseqs2 MSA generated per target",
+  "msa_policy": "esmfold, omegafold, boltz2, and chai1 use their default/no-MSA benchmark rows; colabfold, openfold, protenix, and openfold3 use one shared ColabFold/MMseqs2 MSA generated per target; af2 uses official AlphaFold2 database search with split MSA/features and JAX inference accounting",
   "aggregate_summary": {
     "model": "openfold",
     "n_targets": "5",
@@ -532,5 +533,6 @@
       "msa_command": "conda run -n colabfold colabfold_search --mmseqs /data/chen/software/mmseqs/bin/mmseqs --gpu 1 --threads 64 results/four_msa_models_shared_msa_first5/msa/sequences/7UTD_chainA.fasta /data/chen/protein_folding_databases/colabfold results/four_msa_models_shared_msa_first5/msa/msas/7UTD_chainA/raw",
       "notes": "Normalized from results/four_msa_models_shared_msa_first5/msa/msas/7UTD_chainA/raw/7UTD_chainA.a3m; monomer target uses non_pairing.a3m and leaves pairing.a3m empty"
     }
-  ]
+  ],
+  "af2_stage_metadata": []
 }

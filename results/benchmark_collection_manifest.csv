@@ -1,0 +1,191 @@
+path,kind,model,target_id,selected_for_consolidation,source_result_dir,cleanup_action,cleanup_reason,safe_to_remove
+results/default_modes_first5_carbon_metadata/run_metadata.csv,source_file,esmfold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/run_status.csv,source_file,esmfold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7QIH_chainA_scores.csv,source_file,esmfold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7ROA_chainA_scores.csv,source_file,esmfold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7UTD_chainA_scores.csv,source_file,esmfold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7UYX_chainA_scores.csv,source_file,esmfold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/8ORK_chainA_scores.csv,source_file,esmfold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/six_backend_first5_carbon_smoke/run_metadata.csv,source_file,esmfold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/run_status.csv,source_file,esmfold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7QIH_chainA_scores.csv,source_file,esmfold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7ROA_chainA_scores.csv,source_file,esmfold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7UTD_chainA_scores.csv,source_file,esmfold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7UYX_chainA_scores.csv,source_file,esmfold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/8ORK_chainA_scores.csv,source_file,esmfold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/run_metadata.csv,source_file,omegafold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/run_status.csv,source_file,omegafold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7QIH_chainA_scores.csv,source_file,omegafold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7ROA_chainA_scores.csv,source_file,omegafold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7UTD_chainA_scores.csv,source_file,omegafold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7UYX_chainA_scores.csv,source_file,omegafold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/8ORK_chainA_scores.csv,source_file,omegafold,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/six_backend_first5_carbon_smoke/run_metadata.csv,source_file,omegafold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/run_status.csv,source_file,omegafold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7QIH_chainA_scores.csv,source_file,omegafold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7ROA_chainA_scores.csv,source_file,omegafold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7UTD_chainA_scores.csv,source_file,omegafold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7UYX_chainA_scores.csv,source_file,omegafold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/8ORK_chainA_scores.csv,source_file,omegafold,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/run_metadata.csv,source_file,boltz2,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/run_status.csv,source_file,boltz2,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7QIH_chainA_scores.csv,source_file,boltz2,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7ROA_chainA_scores.csv,source_file,boltz2,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7UTD_chainA_scores.csv,source_file,boltz2,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7UYX_chainA_scores.csv,source_file,boltz2,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/8ORK_chainA_scores.csv,source_file,boltz2,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/six_backend_first5_carbon_smoke/run_metadata.csv,source_file,boltz2,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/run_status.csv,source_file,boltz2,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7QIH_chainA_scores.csv,source_file,boltz2,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7ROA_chainA_scores.csv,source_file,boltz2,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7UTD_chainA_scores.csv,source_file,boltz2,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7UYX_chainA_scores.csv,source_file,boltz2,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/8ORK_chainA_scores.csv,source_file,boltz2,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/run_metadata.csv,source_file,chai1,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/run_status.csv,source_file,chai1,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7QIH_chainA_scores.csv,source_file,chai1,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7ROA_chainA_scores.csv,source_file,chai1,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7UTD_chainA_scores.csv,source_file,chai1,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/7UYX_chainA_scores.csv,source_file,chai1,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/scores/8ORK_chainA_scores.csv,source_file,chai1,,true,results/default_modes_first5_carbon_metadata,keep,source file for consolidated benchmark,false
+results/six_backend_first5_carbon_smoke/run_metadata.csv,source_file,chai1,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/run_status.csv,source_file,chai1,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7QIH_chainA_scores.csv,source_file,chai1,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7ROA_chainA_scores.csv,source_file,chai1,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7UTD_chainA_scores.csv,source_file,chai1,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7UYX_chainA_scores.csv,source_file,chai1,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/8ORK_chainA_scores.csv,source_file,chai1,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/run_metadata.csv,source_file,colabfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/run_status.csv,source_file,colabfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/msa/msa_metadata.csv,source_file,colabfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/shared_msa_score_cost_summary.csv,source_file,colabfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7QIH_chainA_scores.csv,source_file,colabfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7ROA_chainA_scores.csv,source_file,colabfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7UTD_chainA_scores.csv,source_file,colabfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7UYX_chainA_scores.csv,source_file,colabfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/8ORK_chainA_scores.csv,source_file,colabfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/run_metadata.csv,source_file,colabfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/run_status.csv,source_file,colabfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7QIH_chainA_scores.csv,source_file,colabfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7ROA_chainA_scores.csv,source_file,colabfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7UTD_chainA_scores.csv,source_file,colabfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7UYX_chainA_scores.csv,source_file,colabfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/8ORK_chainA_scores.csv,source_file,colabfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/run_metadata.csv,source_file,openfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/run_status.csv,source_file,openfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/msa/msa_metadata.csv,source_file,openfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/shared_msa_score_cost_summary.csv,source_file,openfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7QIH_chainA_scores.csv,source_file,openfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7ROA_chainA_scores.csv,source_file,openfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7UTD_chainA_scores.csv,source_file,openfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7UYX_chainA_scores.csv,source_file,openfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/8ORK_chainA_scores.csv,source_file,openfold,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/run_metadata.csv,source_file,openfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/run_status.csv,source_file,openfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7QIH_chainA_scores.csv,source_file,openfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7ROA_chainA_scores.csv,source_file,openfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7UTD_chainA_scores.csv,source_file,openfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7UYX_chainA_scores.csv,source_file,openfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/8ORK_chainA_scores.csv,source_file,openfold,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/run_metadata.csv,source_file,protenix,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/run_status.csv,source_file,protenix,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/msa/msa_metadata.csv,source_file,protenix,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/shared_msa_score_cost_summary.csv,source_file,protenix,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7QIH_chainA_scores.csv,source_file,protenix,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7ROA_chainA_scores.csv,source_file,protenix,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7UTD_chainA_scores.csv,source_file,protenix,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7UYX_chainA_scores.csv,source_file,protenix,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/8ORK_chainA_scores.csv,source_file,protenix,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/protenix_openfold3_shared_msa_first5/run_metadata.csv,source_file,protenix,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/run_status.csv,source_file,protenix,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/shared_msa_score_cost_summary.csv,source_file,protenix,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7QIH_chainA_scores.csv,source_file,protenix,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7ROA_chainA_scores.csv,source_file,protenix,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7UTD_chainA_scores.csv,source_file,protenix,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7UYX_chainA_scores.csv,source_file,protenix,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/8ORK_chainA_scores.csv,source_file,protenix,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/run_metadata.csv,source_file,openfold3,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/run_status.csv,source_file,openfold3,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/msa/msa_metadata.csv,source_file,openfold3,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/shared_msa_score_cost_summary.csv,source_file,openfold3,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7QIH_chainA_scores.csv,source_file,openfold3,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7ROA_chainA_scores.csv,source_file,openfold3,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7UTD_chainA_scores.csv,source_file,openfold3,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/7UYX_chainA_scores.csv,source_file,openfold3,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/four_msa_models_shared_msa_first5/scores/8ORK_chainA_scores.csv,source_file,openfold3,,true,results/four_msa_models_shared_msa_first5,keep,source file for consolidated benchmark,false
+results/protenix_openfold3_shared_msa_first5/run_metadata.csv,source_file,openfold3,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/run_status.csv,source_file,openfold3,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/shared_msa_score_cost_summary.csv,source_file,openfold3,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7QIH_chainA_scores.csv,source_file,openfold3,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7ROA_chainA_scores.csv,source_file,openfold3,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7UTD_chainA_scores.csv,source_file,openfold3,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7UYX_chainA_scores.csv,source_file,openfold3,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/8ORK_chainA_scores.csv,source_file,openfold3,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/af2_first5_split_carbon/run_metadata.csv,source_file,af2,,true,results/af2_first5_split_carbon,keep,source file for consolidated benchmark,false
+results/af2_first5_split_carbon/run_status.csv,source_file,af2,,true,results/af2_first5_split_carbon,keep,source file for consolidated benchmark,false
+results/af2_first5_split_carbon/af2_stage_metadata.csv,source_file,af2,,true,results/af2_first5_split_carbon,keep,source file for consolidated benchmark,false
+results/af2_first5_split_carbon/scores/7QIH_chainA_scores.csv,source_file,af2,,true,results/af2_first5_split_carbon,keep,source file for consolidated benchmark,false
+results/af2_first5_split_carbon/scores/7ROA_chainA_scores.csv,source_file,af2,,true,results/af2_first5_split_carbon,keep,source file for consolidated benchmark,false
+results/af2_first5_split_carbon/scores/7UTD_chainA_scores.csv,source_file,af2,,true,results/af2_first5_split_carbon,keep,source file for consolidated benchmark,false
+results/af2_first5_split_carbon/scores/7UYX_chainA_scores.csv,source_file,af2,,true,results/af2_first5_split_carbon,keep,source file for consolidated benchmark,false
+results/af2_first5_split_carbon/scores/8ORK_chainA_scores.csv,source_file,af2,,true,results/af2_first5_split_carbon,keep,source file for consolidated benchmark,false
+results/default_modes_first5_carbon_metadata/run_metadata.csv,source_file,,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/run_status.csv,source_file,,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7QIH_chainA_scores.csv,source_file,,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7ROA_chainA_scores.csv,source_file,,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7UTD_chainA_scores.csv,source_file,,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/7UYX_chainA_scores.csv,source_file,,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/default_modes_first5_carbon_metadata/scores/8ORK_chainA_scores.csv,source_file,,,false,results/default_modes_first5_carbon_metadata,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/run_metadata.csv,source_file,,,false,results/four_msa_models_shared_msa_first5,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/run_status.csv,source_file,,,false,results/four_msa_models_shared_msa_first5,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/msa/msa_metadata.csv,source_file,,,false,results/four_msa_models_shared_msa_first5,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/shared_msa_score_cost_summary.csv,source_file,,,false,results/four_msa_models_shared_msa_first5,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/scores/7QIH_chainA_scores.csv,source_file,,,false,results/four_msa_models_shared_msa_first5,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/scores/7ROA_chainA_scores.csv,source_file,,,false,results/four_msa_models_shared_msa_first5,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/scores/7UTD_chainA_scores.csv,source_file,,,false,results/four_msa_models_shared_msa_first5,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/scores/7UYX_chainA_scores.csv,source_file,,,false,results/four_msa_models_shared_msa_first5,keep,preferred source retained for traceability,false
+results/four_msa_models_shared_msa_first5/scores/8ORK_chainA_scores.csv,source_file,,,false,results/four_msa_models_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/run_metadata.csv,source_file,,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/run_status.csv,source_file,,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/shared_msa_score_cost_summary.csv,source_file,,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7QIH_chainA_scores.csv,source_file,,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7ROA_chainA_scores.csv,source_file,,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7UTD_chainA_scores.csv,source_file,,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/7UYX_chainA_scores.csv,source_file,,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/protenix_openfold3_shared_msa_first5/scores/8ORK_chainA_scores.csv,source_file,,,false,results/protenix_openfold3_shared_msa_first5,keep,preferred source retained for traceability,false
+results/af2_first5_split_carbon/run_metadata.csv,source_file,,,false,results/af2_first5_split_carbon,keep,preferred source retained for traceability,false
+results/af2_first5_split_carbon/run_status.csv,source_file,,,false,results/af2_first5_split_carbon,keep,preferred source retained for traceability,false
+results/af2_first5_split_carbon/af2_stage_metadata.csv,source_file,,,false,results/af2_first5_split_carbon,keep,preferred source retained for traceability,false
+results/af2_first5_split_carbon/scores/7QIH_chainA_scores.csv,source_file,,,false,results/af2_first5_split_carbon,keep,preferred source retained for traceability,false
+results/af2_first5_split_carbon/scores/7ROA_chainA_scores.csv,source_file,,,false,results/af2_first5_split_carbon,keep,preferred source retained for traceability,false
+results/af2_first5_split_carbon/scores/7UTD_chainA_scores.csv,source_file,,,false,results/af2_first5_split_carbon,keep,preferred source retained for traceability,false
+results/af2_first5_split_carbon/scores/7UYX_chainA_scores.csv,source_file,,,false,results/af2_first5_split_carbon,keep,preferred source retained for traceability,false
+results/af2_first5_split_carbon/scores/8ORK_chainA_scores.csv,source_file,,,false,results/af2_first5_split_carbon,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/run_metadata.csv,source_file,,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/run_status.csv,source_file,,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7QIH_chainA_scores.csv,source_file,,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7ROA_chainA_scores.csv,source_file,,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7UTD_chainA_scores.csv,source_file,,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/7UYX_chainA_scores.csv,source_file,,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/six_backend_first5_carbon_smoke/scores/8ORK_chainA_scores.csv,source_file,,,false,results/six_backend_first5_carbon_smoke,keep,preferred source retained for traceability,false
+results/af2_one_target_split_carbon,result_dir,,,false,results/af2_one_target_split_carbon,archive,already archived to results/_archived_test_artifacts_20260526/af2_one_target_split_carbon,true
+results/backend_smoke,result_dir,,,false,results/backend_smoke,archive,already archived to results/_archived_test_artifacts_20260526/backend_smoke,true
+results/carbon_country_override_che_smoke,result_dir,,,false,results/carbon_country_override_che_smoke,archive,already archived to results/_archived_test_artifacts_20260526/carbon_country_override_che_smoke,true
+results/carbon_smoke_one_target,result_dir,,,false,results/carbon_smoke_one_target,archive,already archived to results/_archived_test_artifacts_20260526/carbon_smoke_one_target,true
+results/carbon_test,result_dir,,,false,results/carbon_test,archive,already archived to results/_archived_test_artifacts_20260526/carbon_test,true
+results/default_modes_one_target_carbon_metadata_smoke,result_dir,,,false,results/default_modes_one_target_carbon_metadata_smoke,archive,already archived to results/_archived_test_artifacts_20260526/default_modes_one_target_carbon_metadata_smoke,true
+results/four_backend_first5_real_smoke,result_dir,,,false,results/four_backend_first5_real_smoke,archive,already archived to results/_archived_test_artifacts_20260526/four_backend_first5_real_smoke,true
+results/msa_mode_smoke,result_dir,,,false,results/msa_mode_smoke,archive,already archived to results/_archived_test_artifacts_20260526/msa_mode_smoke,true
+results/real_backend_smoke,result_dir,,,false,results/real_backend_smoke,archive,already archived to results/_archived_test_artifacts_20260526/real_backend_smoke,true
+results/shared_msa_colabfold_7ROA,result_dir,,,false,results/shared_msa_colabfold_7ROA,archive,already archived to results/_archived_test_artifacts_20260526/shared_msa_colabfold_7ROA,true
+results/timing_smoke,result_dir,,,false,results/timing_smoke,archive,already archived to results/_archived_test_artifacts_20260526/timing_smoke,true
+results/af2_first5_split_carbon,result_dir,,,false,results/af2_first5_split_carbon,keep,"canonical source, documentation table source, or documented ablation source",false
+results/colabfold_single_vs_msa_first5_carbon,result_dir,,,false,results/colabfold_single_vs_msa_first5_carbon,keep,"canonical source, documentation table source, or documented ablation source",false
+results/consolidated,result_dir,,,false,results/consolidated,keep,"canonical source, documentation table source, or documented ablation source",false
+results/default_modes_first5_carbon_metadata,result_dir,,,false,results/default_modes_first5_carbon_metadata,keep,"canonical source, documentation table source, or documented ablation source",false
+results/four_msa_models_shared_msa_first5,result_dir,,,false,results/four_msa_models_shared_msa_first5,keep,"canonical source, documentation table source, or documented ablation source",false
+results/openfold_single_vs_msa_first5_carbon,result_dir,,,false,results/openfold_single_vs_msa_first5_carbon,keep,"canonical source, documentation table source, or documented ablation source",false
+results/protenix_openfold3_shared_msa_first5,result_dir,,,false,results/protenix_openfold3_shared_msa_first5,keep,"canonical source, documentation table source, or documented ablation source",false
+results/readme_tables,result_dir,,,false,results/readme_tables,keep,"canonical source, documentation table source, or documented ablation source",false
+results/shared_msa_colabfold_first5,result_dir,,,false,results/shared_msa_colabfold_first5,keep,"canonical source, documentation table source, or documented ablation source",false
+results/six_backend_first5_carbon_smoke,result_dir,,,false,results/six_backend_first5_carbon_smoke,keep,"canonical source, documentation table source, or documented ablation source",false

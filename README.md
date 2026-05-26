@@ -4,7 +4,7 @@
 
 ## Goal
 
-Compare structure-prediction accuracy against runtime, energy use, and CO2 emissions for locally runnable folding backends from `Protein-Folding-Benchmark`. The current clean results export includes default/no-MSA first-five rows for ESMFold, OmegaFold, Boltz-2, and Chai-1 plus the latest unified shared-MSA first-five rows for ColabFold, OpenFold, Protenix, and OpenFold3.
+Compare structure-prediction accuracy against runtime, energy use, and CO2 emissions for locally runnable folding backends from `Protein-Folding-Benchmark`. The current clean results export includes default/no-MSA first-five rows for ESMFold, OmegaFold, Boltz-2, and Chai-1; the latest unified shared-MSA first-five rows for ColabFold, OpenFold, Protenix, and OpenFold3; and an official AlphaFold2 (`af2`) split-stage first-five run.
 
 ## Dataset
 
@@ -28,7 +28,7 @@ Compare structure-prediction accuracy against runtime, energy use, and CO2 emiss
 | Protenix | Zhang et al., "Protenix-v1: Toward High-Accuracy Open-Source Biomolecular Structure Prediction" | [`10.64898/2026.02.05.703733`](https://doi.org/10.64898/2026.02.05.703733) | [`bytedance/Protenix`](https://github.com/bytedance/Protenix) |
 | AlphaFold2 | Jumper et al., "Highly accurate protein structure prediction with AlphaFold" | [`10.1038/s41586-021-03819-2`](https://doi.org/10.1038/s41586-021-03819-2) | [`google-deepmind/alphafold`](https://github.com/google-deepmind/alphafold) |
 
-AlphaFold2 is listed as a reference method only; it is not reported as a successful benchmarked backend in this export because the source benchmark repo does not currently have the official AlphaFold2 parameters and database layout installed.
+AlphaFold2 is now reported as the official `af2` backend using DeepMind AlphaFold2 source, official parameters, full AlphaFold database search, and split MSA/features versus JAX inference carbon accounting. ColabFold remains reported separately as ColabFold, not relabeled as AF2.
 
 ## Benchmark Protocol
 
@@ -63,13 +63,14 @@ Scoring reports:
 | OpenFold | shared precomputed ColabFold/MMseqs2 MSA | shared A3M copied into OpenFold precomputed-alignment layout |
 | Protenix | shared precomputed ColabFold/MMseqs2 MSA | shared A3M converted to paired/unpaired Protenix inputs |
 | OpenFold3 | shared precomputed ColabFold/MMseqs2 MSA | shared A3M copied as `cfdb_hits.a3m`; low-memory backend on RTX A5000 |
+| AF2 | official AlphaFold2 database search | backend ID `af2`; split MSA/features and JAX inference timing/carbon, full AlphaFold DBs, `top_k=1` |
 
 ## Carbon Method
 
 - Tracker: CodeCarbon offline tracker.
 - Current default benchmark policy: world-average accounting. New `--track-carbon` runs omit `--carbon-country-iso-code` and record `carbon_country_iso_code=WORLD`, `carbon_intensity_mode=world_average`, and `carbon_intensity_source=configurable_default_world_average`.
 - Default world-average intensity in the benchmark repo: `475 g CO2e/kWh`.
-- The Carbon4Science `results/` directory is kept clean and currently contains only the latest clean export: default/no-MSA rows for ESMFold, OmegaFold, Boltz-2, and Chai-1 plus unified shared-MSA rows for ColabFold, OpenFold, Protenix, and OpenFold3.
+- The Carbon4Science `results/` directory is kept clean and currently contains only the latest clean export: default/no-MSA rows for ESMFold, OmegaFold, Boltz-2, and Chai-1; unified shared-MSA rows for ColabFold, OpenFold, Protenix, and OpenFold3; and official AF2 split-stage rows.
 - Raw CodeCarbon CSVs are retained in the benchmark repo under each result directory's `carbon/` folder and summarized in `results/benchmark-metadata.csv`.
 
 ## Hardware
@@ -117,6 +118,12 @@ In the shared-MSA table below, model-only CO2e is reported separately from total
 | protenix | yes; shared_precomputed_msa | 5 | 0.867 | 0.855 | 4.452 | 91.6 | 2.72 | 565.7 | 16.31 | shared A3M converted to Protenix paired/unpaired inputs |
 | openfold3 | yes; shared_precomputed_msa | 5 | 0.852 | 0.835 | 5.195 | 113.9 | 3.72 | 588.0 | 17.31 | shared A3M copied as cfdb_hits.a3m; low-memory experimental run |
 
+### Official AlphaFold2 split-stage first-five benchmark
+
+| Model | Mode / MSA | n_success | Mean lDDT-Ca | Mean TM-score | Mean Ca RMSD (A) | Mean MSA/features time (s) | Mean MSA/features CO2e (g) | Mean inference time (s) | Mean inference CO2e (g) | Mean total time (s) | Mean total CO2e (g) | Notes |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| af2 | yes; official_af2_database_search | 5 | 0.875 | 0.852 | 4.025 | 1723.6 | 45.12 | 130.4 | 4.50 | 1854.0 | 49.62 | official DeepMind AlphaFold2 `model_1`, full AlphaFold DBs, Amber relaxation disabled, `top_k=1` |
+
 ### ColabFold single-sequence vs MSA ablation
 
 | Model | Mode / MSA | n_success | Mean lDDT-Ca | Mean TM-score | Mean Ca RMSD (A) | Mean inference time (s) | Mean model CO2e (g) |
@@ -137,6 +144,10 @@ The `results/` directory is intentionally clean and contains only the latest exp
 
 - `results/benchmark-score.csv` - per-target score and cost rows for all exported models.
 - `results/benchmark-metadata.csv` - per-target runtime, carbon, and MSA metadata rows.
+- `results/benchmark_metadata_all_models.csv` - consolidated runtime, carbon, hardware, source, and MSA provenance rows for the latest all-model collection.
+- `results/benchmark_scores_all_models.csv` - consolidated per-target structure scores for the latest all-model collection.
+- `results/benchmark_model_summary_all_models.csv` - one summary row per exported model.
+- `results/benchmark_collection_manifest.csv` - source-file and cleanup manifest for the consolidated collection.
 - `results/esmfold.json`
 - `results/omegafold.json`
 - `results/boltz2.json`
@@ -145,6 +156,7 @@ The `results/` directory is intentionally clean and contains only the latest exp
 - `results/openfold.json`
 - `results/openfold3.json`
 - `results/protenix.json`
+- `results/af2.json`
 
 ## Reproduction
 
@@ -166,4 +178,16 @@ conda run -n folding-benchmark python scripts/run_benchmark_from_targets.py \
 - This is a five-target smoke benchmark, not a full CASP benchmark.
 - Protenix and OpenFold3 are experimental shared-MSA exports and are not canonical enabled backends in `Protein-Folding-Benchmark/configs/models.yaml`; ColabFold and OpenFold are included here through shared-MSA side-study runners.
 - OpenFold3 uses a low-memory configuration validated on the local 24 GB RTX A5000 setup; broader validation is still needed.
-- Official AlphaFold2 is not reported as a benchmarked method here because the official parameters and AlphaFold database layout are not installed in the source repo. ColabFold is reported as ColabFold, not relabeled as AF2.
+- Official AlphaFold2 is reported only as backend ID `af2` using the official source/database path; ColabFold is reported separately and is not relabeled as AF2.
+
+Official AF2 first-five split-stage command shape from the source repo:
+
+```bash
+conda run -n folding-benchmark python scripts/run_benchmark_from_targets.py \
+  --targets data/targets/targets_first5.csv \
+  --config tmp/backend_smoke/models_af2_only.yaml \
+  --top-k 1 \
+  --predictions-dir results/af2_first5_split_carbon/predictions \
+  --results-dir results/af2_first5_split_carbon \
+  --max-trials 1
+```
