@@ -19,6 +19,7 @@ It contains 416 scored protein/model rows: 52 targets x 8 scored models. The sco
 - **Dataset name:** CASP15/CASP16 unique PDB-chain target set, residue count `<1000`.
 - **N:** 52 targets.
 - **Source target CSV:** `data/targets/targets_casp15_casp16_unique_lt1000_prepared.csv` in `Protein-Folding-Benchmark`.
+- **Exported dataset CSV:** `results/benchmark-dataset.csv`.
 - **Export manifest:** `results/benchmark_collection_manifest.csv`.
 - **References:** Reference PDB paths are recorded in `results/benchmark_scores_all_models.csv` and model JSON files.
 
@@ -119,6 +120,7 @@ The all-target summary includes both lowercase compatibility columns such as `me
 
 The `results/` directory is intentionally clean and contains the latest export:
 
+- `results/benchmark-dataset.csv` - the 52-target benchmark dataset used for this export, including target IDs, sequences, reference PDB paths, and CASP notes.
 - `results/benchmark-score.csv` - compact per-protein/model score, GDT_TS, runtime, and carbon rows.
 - `results/benchmark_scores_all_models.csv` - detailed per-protein/model score rows, including references and prediction paths.
 - `results/benchmark-metadata.csv` - latest successful per-protein/model runtime, carbon, MSA, and provenance rows.

@@ -2,6 +2,9 @@ key,value
 exported_at_utc,2026-05-29T09:18:02+00:00
 source_result_dir,results/casp15_casp16_unique_lt1000_all_default_20260529_resume
 target_set,data/targets/targets_casp15_casp16_unique_lt1000_prepared.csv
+dataset_file,results/benchmark-dataset.csv
+dataset_source_target_csv,data/targets/targets_casp15_casp16_unique_lt1000_prepared.csv
+n_dataset_rows,52
 n_targets,52
 n_models,8
 n_model_json_files,9
