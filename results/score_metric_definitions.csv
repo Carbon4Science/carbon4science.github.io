@@ -1,0 +1,7 @@
+metric,full_name,scale,description
+lddt_ca,Local Distance Difference Test over C-alpha atoms,0-1; higher is better,Primary local-geometry ranking metric computed from matched C-alpha atoms.
+gdt_ts,Global Distance Test - Total Score,0-1; higher is better,"Average of fractions of aligned residues within 1, 2, 4, and 8 Angstrom distance cutoffs after superposition."
+gdt_ts_percent,Global Distance Test - Total Score percent,0-100; higher is better,The same GDT_TS value expressed as a percentage.
+gdt_p1/gdt_p2/gdt_p4/gdt_p8,GDT cutoff fractions,0-1; higher is better,"Fractions of aligned residues within 1, 2, 4, and 8 Angstrom cutoffs used to compute GDT_TS."
+tmalign_tm_score_ref,TM-score normalized by reference length,0-1; higher is better,Secondary global topology metric from USalign/TM-align normalized by reference length.
+ca_rmsd,C-alpha RMSD,Angstrom; lower is better,Diagnostic C-alpha RMSD from the benchmark's configured residue matching mode.
