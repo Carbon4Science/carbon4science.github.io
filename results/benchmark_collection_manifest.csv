@@ -4,6 +4,7 @@ source_result_dir,results/casp15_casp16_unique_lt1000_all_default_20260529_resum
 target_set,data/targets/targets_casp15_casp16_unique_lt1000_prepared.csv
 n_targets,52
 n_models,8
+n_model_json_files,9
 n_score_rows,416
 n_metadata_rows_latest_success_only,416
 score_scale_GDT_TS,0-1; higher is better
