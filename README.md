@@ -75,6 +75,7 @@ Scoring reports:
 | `omegafold` | no MSA; `native_single_sequence` | sequence-only baseline |
 | `boltz2` | no MSA; `model_default_no_msa` | canonical Boltz backend ID is `boltz2` |
 | `openfold3` | MSA metadata unknown in current runner export | experimental backend; current metadata records `model_default_unknown` |
+| `protenix` | not scored in this export | included as `results/protenix.json` placeholder; no 52-target score/runtime rows in the current all-default run |
 
 ## Carbon Method
 
@@ -108,8 +109,11 @@ Source summary: `results/benchmark_model_summary_all_models.csv`.
 | omegafold | 52/52 | 0.686 | 0.627 | 0.165 | 11.885 |
 | boltz2 | 52/52 | 0.546 | 0.494 | 0.182 | 16.132 |
 | openfold3 | 52/52 | 0.406 | 0.364 | 0.157 | 19.353 |
+| protenix | 0/52 |  |  |  |  |
 
 The all-target summary includes both lowercase compatibility columns such as `mean_best_gdt_ts` and visible aliases such as `mean_best_GDT_TS`.
+
+`protenix` is listed here for completeness because `results/protenix.json` is part of the exported JSON bundle; it has no scored rows in `benchmark_model_summary_all_models.csv` for this run.
 
 ## Exported Files
 
