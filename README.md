@@ -69,12 +69,29 @@ Scoring reports:
 |---|---|---|
 | `af2` | MSA; `official_af2_database_search` | official DeepMind AlphaFold2 database search; split MSA/features and JAX inference carbon accounting |
 | `colabfold` | MSA; `shared_precomputed_msa` | reuses precomputed ColabFold/MMseqs2 A3M metadata from the benchmark run |
-| `openfold` | MSA; `shared_precomputed_msa` | reuses precomputed ColabFold/MMseqs2 A3M in OpenFold-compatible layout |
+| `openfold` | MSA; `shared_precomputed_msa` | loads AlphaFold2 `params_model_1` weights through the OpenFold inference engine (weights byte-identical to `af2`; see Training-data cutoffs) |
 | `protenix` | MSA; `shared_precomputed_msa` | ByteDance AF3-like diffusion model; reuses ColabFold/MMseqs2 A3M |
 | `chai1` | no MSA; `native_embedding_no_msa` | default Chai-1 embeddings without external MSAs/templates |
 | `esmfold` | no MSA; `native_single_sequence` | sequence-language-model baseline |
 | `omegafold` | no MSA; `native_single_sequence` | sequence-only baseline |
 | `boltz2` | no MSA; `model_default_no_msa` | canonical Boltz backend ID is `boltz2` |
+
+## Training-data cutoffs
+
+Training-run timestamps are not embedded in any checkpoint. The benchmark-relevant date is the **PDB release-date cutoff** used when building each model's training set — the newest structure the model was allowed to see, which determines potential leakage into the CASP15/16 target set.
+
+| Model | PDB cutoff | Status | Source |
+|---|---|---|---|
+| af2 | 2018-04-30 | Confirmed | [Jumper et al. 2021 suppl.](https://www.nature.com/articles/s41586-021-03819-2) (CASP13-aligned monomer training cutoff) |
+| colabfold | 2018-04-30 | Confirmed | inherits AF2 `alphafold2_ptm` weights → same cutoff |
+| openfold | 2018-04-30 | Confirmed | **this benchmark** runs AF2 `params_model_1` weights via the OpenFold engine; not OpenFold's own retrained (Dec-2021) checkpoint |
+| esmfold | 2020-05-01 | Confirmed | folding-head PDB cutoff; [Lin et al. 2023](https://www.science.org/doi/10.1126/science.ade2574) |
+| chai1 | 2021-01-12 | Confirmed | [Chai-1 technical report](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) |
+| protenix | 2021-09-30 | Confirmed | `protenix_base_default_v1.0.0` follows AF3 training cutoff; [Protenix README](https://github.com/bytedance/Protenix/blob/main/README.md) |
+| boltz2 | 2023-06-01 | Confirmed | [Passaro et al. 2025](https://www.biorxiv.org/content/10.1101/2025.06.14.659707v1.full): "every PDB structure up to 06/01/2023" |
+| omegafold | not documented | Unconfirmed | no explicit PDB date published by the authors; [~2022 inferred from release](https://github.com/HeliXonProtein/OmegaFold/issues/13) |
+
+Our 45-target set contains **33 CASP15 targets (2022)** and **12 CASP16 targets (2024)**. All cutoffs predate CASP16. Only **Boltz-2 (cutoff 2023-06-01)** postdates CASP15, meaning its 33 CASP15-target results should be interpreted with a potential training-data leakage caveat. All other models predated CASP15.
 
 ## Carbon Method
 
@@ -104,16 +121,18 @@ Source summary: `results/benchmark_model_summary_all_models.csv`.
 
 | Year | Venue        | Model     | Architecture         | Params | lDDT-Cα   | TM-score  | GDT_TS (%) | Cα-RMSD (Å) | CO₂/exp (g) | CO₂/job (g) | Time/exp (s) | Time/job (s) |
 | ---- | ------------ | --------- | -------------------- | ------ | --------- | --------- | ---------- | ----------- | ----------- | ----------- | ------------ | ------------ |
-| 2021 | Nature       | af2       | Evoformer + MSA      | 93 M   | 0.868     | 0.761     | 59.15      | 11.379      | 2,103.0     | 46.73       | 77,832       | 1,729.6      |
-| 2022 | Nat. Methods | colabfold | Evoformer + MMseqs2  | 93 M   | **0.876** | 0.770     | **60.96**  | 11.972      | 522.2       | 11.60       | 30,126       | 669.5        |
-| 2022 | bioRxiv      | omegafold | PLM + Geoformer      | ~670 M | 0.770     | 0.669     | 47.18      | 17.345      | **180.1**   | **4.00**    | **5,535**    | **123.0**    |
-| 2023 | Science      | esmfold   | ESM-2 LM + folding   | ~15 B  | 0.811     | 0.704     | 52.36      | 15.395      | 237.0       | 5.27        | 16,345       | 363.2        |
-| 2024 | bioRxiv      | chai1     | Diffusion (AF3-like) | —      | 0.798     | 0.695     | 48.79      | 17.648      | 892.4       | 19.83       | 63,738       | 1,416.4      |
-| 2024 | Nat. Methods | openfold  | Evoformer + MSA      | 93 M   | 0.875     | **0.771** | 60.84      | **11.734**  | 477.6       | 10.61       | 26,854       | 596.8        |
-| 2025 | bioRxiv      | boltz2    | Diffusion (AF3-like) | —      | 0.765     | 0.714     | 51.82      | 17.605      | 796.5       | 17.70       | 53,137       | 1,180.8      |
-| 2025 | bioRxiv      | protenix  | Diffusion (AF3-like) | —      | 0.871     | 0.744     | 57.50      | 15.361      | 442.3       | 9.83        | 27,555       | 612.3        |
+| 2021 | Nature       | af2       | Evoformer + MSA      | 93.2 M              | 0.868     | 0.761     | 59.15      | 11.379      | 2,103.0     | 46.73       | 77,832       | 1,729.6      |
+| 2022 | Nat. Methods | colabfold | Evoformer + MMseqs2  | 93.2 M              | **0.876** | 0.770     | **60.96**  | 11.972      | 522.2       | 11.60       | 30,126       | 669.5        |
+| 2022 | bioRxiv      | omegafold | PLM + Geoformer      | 795 M               | 0.770     | 0.669     | 47.18      | 17.345      | **180.1**   | **4.00**    | **5,535**    | **123.0**    |
+| 2023 | Science      | esmfold   | ESM-2 LM + folding   | 693 M (+2.84B ESM2) | 0.811     | 0.704     | 52.36      | 15.395      | 237.0       | 5.27        | 16,345       | 363.2        |
+| 2024 | bioRxiv      | chai1     | Diffusion (AF3-like) | 316 M (+2.84B ESM2) | 0.798     | 0.695     | 48.79      | 17.648      | 892.4       | 19.83       | 63,738       | 1,416.4      |
+| 2024 | Nat. Methods | openfold  | Evoformer + MSA      | 93.2 M              | 0.875     | **0.771** | 60.84      | **11.734**  | 477.6       | 10.61       | 26,854       | 596.8        |
+| 2025 | bioRxiv      | boltz2    | Diffusion (AF3-like) | 521 M               | 0.765     | 0.714     | 51.82      | 17.605      | 796.5       | 17.70       | 53,137       | 1,180.8      |
+| 2025 | bioRxiv      | protenix  | Diffusion (AF3-like) | 368 M               | 0.871     | 0.744     | 57.50      | 15.361      | 442.3       | 9.83        | 27,555       | 612.3        |
 
 All 45/45 targets scored successfully for every model. **Bold** = best value in column (for Cα-RMSD, lower is better). GDT_TS is shown on a 0–100 scale (`gdt_ts_percent`). CO₂/exp and Time/exp are totals over all 45 targets using `total_carbon_with_shared_msa_g` / `total_time_with_shared_msa_sec` from `results/benchmark-score.csv`; per-job columns divide by 45.
+
+Parameter counts were measured directly from the local model weights: JAX `.npz` array sizes (summed `arr.size`) for the AF2-family models (af2, colabfold, openfold reuse the same Evoformer weights at 93.2M each); summed `tensor.numel()` over PyTorch/TorchScript checkpoint weights containers for the remaining models. `(+2.84B ESM2)` denotes the separate ESM-2 3B language model (`esm2_t36_3B_UR50D`) that `chai1` and `esmfold` load as a sequence embedder at inference; the folding-trunk parameters are listed first.
 
 ## Exported Files
 
@@ -178,6 +197,6 @@ Source runs:
 
 - This is a 45-target local benchmark, not the full CASP15/CASP16 benchmark universe.
 - Model outputs are local-run artifacts from one workstation and should be interpreted with that hardware and software context.
-- Architecture parameter counts for Chai-1, Boltz-2, and Protenix are not publicly disclosed and are marked `—`.
 - Carbon estimates use CodeCarbon offline world-average accounting, not direct facility metering.
 - References are extracted per-target from mmCIF files using the manifest's `chain_id` and `residue_start`/`residue_end`; results are not directly comparable to benchmarks using different reference extraction strategies.
+- Training-data cutoffs are documented in the `## Training-data cutoffs` section. Boltz-2 (cutoff 2023-06-01) postdates the CASP15 targets (33/45) and may have trained on structures overlapping that target set. OmegaFold's cutoff is not publicly documented.
