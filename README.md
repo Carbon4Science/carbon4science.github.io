@@ -6,22 +6,22 @@
 
 Compare structure-prediction accuracy against runtime, energy use, and CO2 emissions for locally runnable folding backends from `Protein-Folding-Benchmark`.
 
-The current clean Carbon4Science export is the 52-target CASP15/CASP16 unique `<1000` residue benchmark copied from:
+The current Carbon4Science export is the **45-target CASP15/CASP16 unique `<1000` residue benchmark** built from three combined benchmark runs:
 
 ```text
-/home/chen/projects/Protein-Folding-Benchmark/results/casp15_casp16_unique_lt1000_all_default_20260529_resume
+/home/chen/projects/Protein-Folding-Benchmark/results/2026-06-06-combine-8models
 ```
 
-It contains 416 scored protein/model rows: 52 targets x 8 scored models. The scored models are `af2`, `colabfold`, `openfold`, `chai1`, `esmfold`, `omegafold`, `boltz2`, and `openfold3`. The exported JSON bundle includes those 8 scored model files plus `protenix.json`; `protenix.json` is an explicit not-included placeholder for this export, rather than stale historical data.
+It contains **360 scored protein/model rows: 45 targets × 8 scored models**. The scored models are `af2`, `colabfold`, `openfold`, `protenix`, `chai1`, `esmfold`, `omegafold`, and `boltz2`. All 45 targets are successfully predicted and scored for every model.
 
 ## Dataset
 
 - **Dataset name:** CASP15/CASP16 unique PDB-chain target set, residue count `<1000`.
-- **N:** 52 targets.
+- **N:** 45 targets (common across all three combined runs).
 - **Source target CSV:** `data/targets/targets_casp15_casp16_unique_lt1000_prepared.csv` in `Protein-Folding-Benchmark`.
 - **Exported dataset CSV:** `results/benchmark-dataset.csv`.
 - **Export manifest:** `results/benchmark_collection_manifest.csv`.
-- **References:** Reference PDB paths are recorded in `results/benchmark_scores_all_models.csv` and model JSON files.
+- **References:** Per-target reference PDBs are extracted from cached mmCIF files using the manifest's explicit `chain_id` and `residue_start`/`residue_end` range. Reference paths are recorded in `results/benchmark_scores_all_models.csv` and each model's JSON file.
 
 ## Method References
 
@@ -33,7 +33,6 @@ It contains 416 scored protein/model rows: 52 targets x 8 scored models. The sco
 | Chai-1 | Boitreaud et al., "Chai-1: Decoding the molecular interactions of life" | [`10.1101/2024.10.10.615955`](https://doi.org/10.1101/2024.10.10.615955) | [`chaidiscovery/chai-lab`](https://github.com/chaidiscovery/chai-lab) |
 | ColabFold | Mirdita et al., "ColabFold: making protein folding accessible to all" | [`10.1038/s41592-022-01488-1`](https://doi.org/10.1038/s41592-022-01488-1) | [`sokrypton/ColabFold`](https://github.com/sokrypton/ColabFold) |
 | OpenFold | Ahdritz et al., "OpenFold: retraining AlphaFold2 yields new insights into its learning mechanisms and capacity for generalization" | [`10.1038/s41592-024-02272-z`](https://doi.org/10.1038/s41592-024-02272-z) | [`aqlaboratory/openfold`](https://github.com/aqlaboratory/openfold) |
-| OpenFold3-preview | The OpenFold3 Team, OpenFold3-preview software / report | [`10.5281/zenodo.19001000`](https://doi.org/10.5281/zenodo.19001000) | [`aqlaboratory/openfold-3`](https://github.com/aqlaboratory/openfold-3) |
 | Protenix | Zhang et al., "Protenix-v1: Toward High-Accuracy Open-Source Biomolecular Structure Prediction" | [`10.64898/2026.02.05.703733`](https://doi.org/10.64898/2026.02.05.703733) | [`bytedance/Protenix`](https://github.com/bytedance/Protenix) |
 | AlphaFold2 | Jumper et al., "Highly accurate protein structure prediction with AlphaFold" | [`10.1038/s41586-021-03819-2`](https://doi.org/10.1038/s41586-021-03819-2) | [`google-deepmind/alphafold`](https://github.com/google-deepmind/alphafold) |
 
@@ -56,27 +55,26 @@ Scoring reports:
 | `lddt_ca` | lDDT over C-alpha atoms; primary ranking metric. |
 | `tmalign_tm_score_ref` | TM-score normalized by reference length from USalign/TM-align. |
 | `ca_rmsd` | C-alpha RMSD after sequential alignment. |
-| `GDT_TS` / `gdt_ts` | Global Distance Test - Total Score on a 0-1 scale. |
-| `GDT_TS_percent` / `gdt_ts_percent` | Global Distance Test - Total Score on a 0-100 scale. |
+| `GDT_TS` / `gdt_ts` | Global Distance Test - Total Score on a 0–1 scale. |
+| `GDT_TS_percent` / `gdt_ts_percent` | Global Distance Test - Total Score on a 0–100 scale. |
 | `inference_time_sec` | Controller wall-clock runtime per target/model. |
 | `carbon_emissions_g` | CodeCarbon offline emissions in grams CO2e. |
 | `carbon_energy_consumed_kwh` | CodeCarbon energy consumption in kWh. |
 
-`GDT_TS` is the visible alias used in the exported Carbon4Science CSVs; the lowercase `gdt_ts` column is retained for compatibility with the benchmark scripts.
+`GDT_TS` is the visible alias used in the exported Carbon4Science CSVs; the lowercase `gdt_ts` column is retained for compatibility with the benchmark scripts. Scoring uses `--match-mode sequence` (Needleman-Wunsch Cα alignment against per-target reference PDBs).
 
 ## Models
 
 | Model | Mode / MSA in current export | Notes |
 |---|---|---|
-| `af2` | MSA; `official_af2_database_search` | official DeepMind AlphaFold2 database search; split MSA/features and JAX inference accounting |
+| `af2` | MSA; `official_af2_database_search` | official DeepMind AlphaFold2 database search; split MSA/features and JAX inference carbon accounting |
 | `colabfold` | MSA; `shared_precomputed_msa` | reuses precomputed ColabFold/MMseqs2 A3M metadata from the benchmark run |
 | `openfold` | MSA; `shared_precomputed_msa` | reuses precomputed ColabFold/MMseqs2 A3M in OpenFold-compatible layout |
+| `protenix` | MSA; `shared_precomputed_msa` | ByteDance AF3-like diffusion model; reuses ColabFold/MMseqs2 A3M |
 | `chai1` | no MSA; `native_embedding_no_msa` | default Chai-1 embeddings without external MSAs/templates |
 | `esmfold` | no MSA; `native_single_sequence` | sequence-language-model baseline |
 | `omegafold` | no MSA; `native_single_sequence` | sequence-only baseline |
 | `boltz2` | no MSA; `model_default_no_msa` | canonical Boltz backend ID is `boltz2` |
-| `openfold3` | MSA metadata unknown in current runner export | experimental backend; current metadata records `model_default_unknown` |
-| `protenix` | not scored in this export | included as `results/protenix.json` placeholder; no 52-target score/runtime rows in the current all-default run |
 
 ## Carbon Method
 
@@ -85,13 +83,13 @@ Scoring reports:
 - Recorded country code: `WORLD`.
 - Recorded intensity source: `configurable_default_world_average`.
 - Default intensity: `475 g CO2e/kWh`.
-- Raw CodeCarbon CSVs remain in the source benchmark result directory. Carbon4Science stores cleaned per-protein metadata in `results/benchmark-metadata.csv`.
+- Raw CodeCarbon CSVs remain in the source benchmark result directory under `predictions/<target>/<model>/carbon/`. Carbon4Science stores cleaned per-protein metadata in `results/benchmark-metadata.csv`.
 
 ## Hardware
 
 - CPU: Intel Xeon Gold 6240R, 1 socket, 24 cores / 48 threads.
 - RAM: 251 GiB visible.
-- GPU: 3 x NVIDIA RTX A5000, 24,564 MiB each.
+- GPU: 3 × NVIDIA RTX A5000, 24,564 MiB each.
 - Driver: 580.159.03.
 - CUDA reported by driver: 13.0.
 - OS/kernel: Ubuntu Linux, kernel `6.8.0-117-generic`, x86_64.
@@ -100,85 +98,86 @@ Scoring reports:
 
 Source summary: `results/benchmark_model_summary_all_models.csv`.
 
-| Model | Targets successful | Mean lDDT-Ca | Mean TM-score | Mean GDT_TS | Mean Ca RMSD (A) |
-|---|---:|---:|---:|---:|---:|
-| af2 | 52/52 | 0.845 | 0.773 | 0.246 | 6.527 |
-| colabfold | 52/52 | 0.825 | 0.761 | 0.247 | 7.417 |
-| openfold | 52/52 | 0.821 | 0.759 | 0.247 | 6.846 |
-| chai1 | 52/52 | 0.727 | 0.662 | 0.242 | 11.431 |
-| esmfold | 52/52 | 0.722 | 0.664 | 0.243 | 10.042 |
-| omegafold | 52/52 | 0.686 | 0.627 | 0.165 | 11.885 |
-| boltz2 | 52/52 | 0.546 | 0.494 | 0.182 | 16.132 |
-| openfold3 | 52/52 | 0.406 | 0.364 | 0.157 | 19.353 |
-| protenix | 0/52 |  |  |  |  |
+**Dataset:** CASP15/CASP16 unique <1000-residue monomers · **N =** 45 targets · **Metric:** lDDT-Cα (primary) · **CO₂/job:** per target (exp = 45 targets)
 
-The all-target summary includes both lowercase compatibility columns such as `mean_best_gdt_ts` and visible aliases such as `mean_best_GDT_TS`.
+**Hardware:** 3 × NVIDIA RTX A5000 (24 GB) · Intel Xeon Gold 6240R (24c/48t) · 251 GiB RAM
 
-`protenix` is listed here for completeness because `results/protenix.json` is part of the exported JSON bundle; it has no scored rows in `benchmark_model_summary_all_models.csv` for this run.
+| Year | Venue        | Model     | Architecture         | Params | lDDT-Cα   | TM-score  | GDT_TS (%) | Cα-RMSD (Å) | CO₂/exp (g) | CO₂/job (g) | Time/exp (s) | Time/job (s) |
+| ---- | ------------ | --------- | -------------------- | ------ | --------- | --------- | ---------- | ----------- | ----------- | ----------- | ------------ | ------------ |
+| 2021 | Nature       | af2       | Evoformer + MSA      | 93 M   | 0.868     | 0.761     | 59.15      | 11.379      | 2,103.0     | 46.73       | 77,832       | 1,729.6      |
+| 2022 | Nat. Methods | colabfold | Evoformer + MMseqs2  | 93 M   | **0.876** | 0.770     | **60.96**  | 11.972      | 522.2       | 11.60       | 30,126       | 669.5        |
+| 2022 | bioRxiv      | omegafold | PLM + Geoformer      | ~670 M | 0.770     | 0.669     | 47.18      | 17.345      | **180.1**   | **4.00**    | **5,535**    | **123.0**    |
+| 2023 | Science      | esmfold   | ESM-2 LM + folding   | ~15 B  | 0.811     | 0.704     | 52.36      | 15.395      | 237.0       | 5.27        | 16,345       | 363.2        |
+| 2024 | bioRxiv      | chai1     | Diffusion (AF3-like) | —      | 0.798     | 0.695     | 48.79      | 17.648      | 892.4       | 19.83       | 63,738       | 1,416.4      |
+| 2024 | Nat. Methods | openfold  | Evoformer + MSA      | 93 M   | 0.875     | **0.771** | 60.84      | **11.734**  | 477.6       | 10.61       | 26,854       | 596.8        |
+| 2025 | bioRxiv      | boltz2    | Diffusion (AF3-like) | —      | 0.765     | 0.714     | 51.82      | 17.605      | 796.5       | 17.70       | 53,137       | 1,180.8      |
+| 2025 | bioRxiv      | protenix  | Diffusion (AF3-like) | —      | 0.871     | 0.744     | 57.50      | 15.361      | 442.3       | 9.83        | 27,555       | 612.3        |
+
+All 45/45 targets scored successfully for every model. **Bold** = best value in column (for Cα-RMSD, lower is better). GDT_TS is shown on a 0–100 scale (`gdt_ts_percent`). CO₂/exp and Time/exp are totals over all 45 targets using `total_carbon_with_shared_msa_g` / `total_time_with_shared_msa_sec` from `results/benchmark-score.csv`; per-job columns divide by 45.
 
 ## Exported Files
 
 The `results/` directory is intentionally clean and contains the latest export:
 
-- `results/benchmark-dataset.csv` - the 52-target benchmark dataset used for this export, including target IDs, sequences, reference PDB paths, and CASP notes.
-- `results/benchmark-score.csv` - compact per-protein/model score, GDT_TS, runtime, and carbon rows.
-- `results/benchmark_scores_all_models.csv` - detailed per-protein/model score rows, including references and prediction paths.
-- `results/benchmark-metadata.csv` - latest successful per-protein/model runtime, carbon, MSA, and provenance rows.
-- `results/benchmark_metadata_all_models.csv` - same cleaned metadata table retained for compatibility with prior exports.
-- `results/benchmark_model_summary_all_models.csv` - one summary row per exported model.
-- `results/benchmark_collection_manifest.csv` - source result directory, target set, scored row counts, JSON file count, and GDT_TS scale notes.
-- `results/score_metric_definitions.csv` and `results/score_metric_definitions.md` - score metric definitions.
+- `results/benchmark-dataset.csv` — the 45-target benchmark dataset: target IDs, sequences, reference PDB paths, and CASP notes.
+- `results/benchmark-score.csv` — compact per-protein/model score, GDT_TS, runtime, and carbon rows.
+- `results/benchmark_scores_all_models.csv` — detailed per-protein/model score rows, including references and prediction paths.
+- `results/benchmark-metadata.csv` — per-protein/model runtime, carbon, MSA, and provenance rows.
+- `results/benchmark_metadata_all_models.csv` — same metadata table retained for compatibility with prior exports.
+- `results/benchmark_model_summary_all_models.csv` — one summary row per exported model.
+- `results/benchmark_collection_manifest.csv` — source result directory, target set, scored row counts, JSON file count, and GDT_TS scale notes.
+- `results/score_metric_definitions.csv` and `results/score_metric_definitions.md` — score metric definitions.
 - `results/af2.json`
 - `results/colabfold.json`
 - `results/openfold.json`
+- `results/protenix.json`
 - `results/chai1.json`
 - `results/esmfold.json`
 - `results/omegafold.json`
 - `results/boltz2.json`
-- `results/openfold3.json`
-- `results/protenix.json` - included in the JSON bundle as an explicit not-included placeholder for this export.
 
 ## Reproduction
 
-Command shape used for the 52-target benchmark in the source repo:
+The 45-target benchmark is assembled from three separate backend runs and scored with the combined-run scripts. From the `Protein-Folding-Benchmark` repo root:
 
+**1. Combine predictions from the three source runs:**
 ```bash
-conda run -n folding-benchmark python scripts/run_benchmark_from_targets.py \
-  --targets data/targets/targets_casp15_casp16_unique_lt1000_prepared.csv \
-  --config results/casp15_casp16_unique_lt1000_all_default_20260529_resume/models_all_available_default.yaml \
-  --models af2,colabfold,openfold,chai1,esmfold,omegafold,boltz2,openfold3 \
-  --top-k 1 \
-  --predictions-dir results/casp15_casp16_unique_lt1000_all_default_20260529_resume/predictions \
-  --sequences-dir results/casp15_casp16_unique_lt1000_all_default_20260529_resume/sequences \
-  --logs-dir results/casp15_casp16_unique_lt1000_all_default_20260529_resume/logs \
-  --results-dir results/casp15_casp16_unique_lt1000_all_default_20260529_resume \
-  --run-metadata results/casp15_casp16_unique_lt1000_all_default_20260529_resume/run_metadata.csv \
-  --run-status results/casp15_casp16_unique_lt1000_all_default_20260529_resume/run_status.csv \
-  --resume \
-  --track-carbon \
-  --carbon-country-iso-code WORLD
+conda run -n folding-benchmark python scripts/combine_8model_predictions.py \
+  --dest results/2026-06-06-combine-8models
 ```
 
-Scoring command shape:
-
+**2. Build per-target reference PDBs (correct chain + residue range from manifest):**
 ```bash
-conda run -n folding-benchmark python scripts/score_benchmark_from_targets.py \
-  --targets data/targets/targets_casp15_casp16_unique_lt1000_prepared.csv \
-  --config results/casp15_casp16_unique_lt1000_all_default_20260529_resume/models_all_available_default.yaml \
-  --models openfold,openfold3,boltz2,chai1,esmfold,colabfold,af2,omegafold \
-  --top-k 1 \
-  --predictions-dir results/casp15_casp16_unique_lt1000_all_default_20260529_resume/predictions \
-  --scores-dir results/casp15_casp16_unique_lt1000_all_default_20260529_resume/scores \
-  --results-dir results/casp15_casp16_unique_lt1000_all_default_20260529_resume \
-  --run-metadata results/casp15_casp16_unique_lt1000_all_default_20260529_resume/run_metadata.csv \
-  --use-tmalign \
-  --use-gdt-ts
+conda run -n folding-benchmark python scripts/build_combined_references.py \
+  --run-dir results/2026-06-06-combine-8models
 ```
+
+**3. Score all 45 targets × 8 models:**
+```bash
+conda run -n folding-benchmark python scripts/score_combined_8models.py \
+  --run-dir results/2026-06-06-combine-8models \
+  --match-mode sequence
+```
+
+**4. Export to carbon4science format:**
+```bash
+conda run -n folding-benchmark python scripts/export_combined_to_carbon4science.py \
+  --run-dir results/2026-06-06-combine-8models \
+  --out-dir ../carbon4science.github.io/results
+```
+
+Source runs:
+
+| Group | Result directory | Models |
+|---|---|---|
+| MSA-free | `results/20260601_104732_casp15_casp16_unique_lt1000_all_default_msa-free` | chai1, esmfold, omegafold |
+| ColabFold MSA | `results/20260603_142659_casp15_casp16_unique_lt1000_all_default_colabfold` | boltz2, colabfold, openfold, protenix |
+| AlphaFold2 | `results/20260604_134750_casp15_casp16_unique_lt1000_all_default-af2` | af2 |
 
 ## Limitations
 
-- This is a 52-target local benchmark, not the full CASP15/CASP16 benchmark universe.
+- This is a 45-target local benchmark, not the full CASP15/CASP16 benchmark universe.
 - Model outputs are local-run artifacts from one workstation and should be interpreted with that hardware and software context.
-- `openfold3` remains experimental in this harness; current metadata does not confirm its MSA provenance.
-- `protenix` is not included in the current 52-target all-default export.
+- Architecture parameter counts for Chai-1, Boltz-2, and Protenix are not publicly disclosed and are marked `—`.
 - Carbon estimates use CodeCarbon offline world-average accounting, not direct facility metering.
+- References are extracted per-target from mmCIF files using the manifest's `chain_id` and `residue_start`/`residue_end`; results are not directly comparable to benchmarks using different reference extraction strategies.
