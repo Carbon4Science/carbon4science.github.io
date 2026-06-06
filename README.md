@@ -4,15 +4,24 @@
 
 ## Goal
 
-Compare structure-prediction accuracy against runtime, energy use, and CO2 emissions for locally runnable folding backends from `Protein-Folding-Benchmark`. The current clean results export includes default/no-MSA first-five rows for ESMFold, OmegaFold, Boltz-2, and Chai-1; the latest unified shared-MSA first-five rows for ColabFold, OpenFold, Protenix, and OpenFold3; and an official AlphaFold2 (`af2`) split-stage first-five run.
+Compare structure-prediction accuracy against runtime, energy use, and CO2 emissions for locally runnable folding backends from `Protein-Folding-Benchmark`.
+
+The current Carbon4Science export is the **45-target CASP15/CASP16 unique `<1000` residue benchmark** built from three combined benchmark runs:
+
+```text
+/home/chen/projects/Protein-Folding-Benchmark/results/2026-06-06-combine-8models
+```
+
+It contains **360 scored protein/model rows: 45 targets × 8 scored models**. The scored models are `af2`, `colabfold`, `openfold`, `protenix`, `chai1`, `esmfold`, `omegafold`, and `boltz2`. All 45 targets are successfully predicted and scored for every model.
 
 ## Dataset
 
-- **Dataset name:** First five CASP-derived targets from `Protein-Folding-Benchmark`.
-- **N:** 5 targets.
-- **Location:** `data/protein_folding_first5_targets.csv`.
-- **References:** Reference PDB paths are recorded in the exported target CSV and per-target score CSVs.
-
+- **Dataset name:** CASP15/CASP16 unique PDB-chain target set, residue count `<1000`.
+- **N:** 45 targets (common across all three combined runs).
+- **Source target CSV:** `data/targets/targets_casp15_casp16_unique_lt1000_prepared.csv` in `Protein-Folding-Benchmark`.
+- **Exported dataset CSV:** `results/benchmark-dataset.csv`.
+- **Export manifest:** `results/benchmark_collection_manifest.csv`.
+- **References:** Per-target reference PDBs are extracted from cached mmCIF files using the manifest's explicit `chain_id` and `residue_start`/`residue_end` range. Reference paths are recorded in `results/benchmark_scores_all_models.csv` and each model's JSON file.
 
 ## Method References
 
@@ -24,11 +33,10 @@ Compare structure-prediction accuracy against runtime, energy use, and CO2 emiss
 | Chai-1 | Boitreaud et al., "Chai-1: Decoding the molecular interactions of life" | [`10.1101/2024.10.10.615955`](https://doi.org/10.1101/2024.10.10.615955) | [`chaidiscovery/chai-lab`](https://github.com/chaidiscovery/chai-lab) |
 | ColabFold | Mirdita et al., "ColabFold: making protein folding accessible to all" | [`10.1038/s41592-022-01488-1`](https://doi.org/10.1038/s41592-022-01488-1) | [`sokrypton/ColabFold`](https://github.com/sokrypton/ColabFold) |
 | OpenFold | Ahdritz et al., "OpenFold: retraining AlphaFold2 yields new insights into its learning mechanisms and capacity for generalization" | [`10.1038/s41592-024-02272-z`](https://doi.org/10.1038/s41592-024-02272-z) | [`aqlaboratory/openfold`](https://github.com/aqlaboratory/openfold) |
-| OpenFold3-preview | The OpenFold3 Team, OpenFold3-preview software / report | [`10.5281/zenodo.19001000`](https://doi.org/10.5281/zenodo.19001000) | [`aqlaboratory/openfold-3`](https://github.com/aqlaboratory/openfold-3) |
 | Protenix | Zhang et al., "Protenix-v1: Toward High-Accuracy Open-Source Biomolecular Structure Prediction" | [`10.64898/2026.02.05.703733`](https://doi.org/10.64898/2026.02.05.703733) | [`bytedance/Protenix`](https://github.com/bytedance/Protenix) |
 | AlphaFold2 | Jumper et al., "Highly accurate protein structure prediction with AlphaFold" | [`10.1038/s41586-021-03819-2`](https://doi.org/10.1038/s41586-021-03819-2) | [`google-deepmind/alphafold`](https://github.com/google-deepmind/alphafold) |
 
-AlphaFold2 is now reported as the official `af2` backend using DeepMind AlphaFold2 source, official parameters, full AlphaFold database search, and split MSA/features versus JAX inference carbon accounting. ColabFold remains reported separately as ColabFold, not relabeled as AF2.
+AlphaFold2 is reported as the official `af2` backend using DeepMind AlphaFold2 source, official parameters, full AlphaFold database search, and split MSA/features versus JAX inference carbon accounting. ColabFold remains reported separately as ColabFold, not relabeled as AF2.
 
 ## Benchmark Protocol
 
@@ -38,160 +46,157 @@ The source benchmark repo is `/home/chen/projects/Protein-Folding-Benchmark`. Ea
 bash runners/run_MODEL.sh input.fasta output_dir top_k
 ```
 
-Each runner writes standardized predictions as `rank_001.pdb`, `rank_002.pdb`, and so on, plus `metadata.json`. For this Carbon4Science contribution the reported first-five runs use `top_k=1` for compact, comparable carbon accounting.
+Each runner writes standardized predictions as `rank_001.pdb`, `rank_002.pdb`, and so on, plus `metadata.json`. This export uses `top_k=1` for compact, comparable carbon accounting.
 
 Scoring reports:
 
 | Metric | Description |
 |---|---|
-| `lddt_ca` | lDDT over C-alpha atoms |
-| `tmalign_tm_score_ref` | TM-score normalized by reference length from USalign/TM-align |
-| `ca_rmsd` | C-alpha RMSD after sequential alignment |
-| `gdt_ts` | GDT_TS on a 0-1 scale, from external `TMscore` when available |
-| `gdt_ts_percent` | GDT_TS on a 0-100 scale |
-| `inference_time_sec` | controller wall-clock runtime per target/model |
-| `carbon_emissions_g` | CodeCarbon offline emissions in grams CO2e |
-| `carbon_energy_consumed_kwh` | CodeCarbon energy consumption in kWh |
+| `lddt_ca` | lDDT over C-alpha atoms; primary ranking metric. |
+| `tmalign_tm_score_ref` | TM-score normalized by reference length from USalign/TM-align. |
+| `ca_rmsd` | C-alpha RMSD after sequential alignment. |
+| `GDT_TS` / `gdt_ts` | Global Distance Test - Total Score on a 0–1 scale. |
+| `GDT_TS_percent` / `gdt_ts_percent` | Global Distance Test - Total Score on a 0–100 scale. |
+| `inference_time_sec` | Controller wall-clock runtime per target/model. |
+| `carbon_emissions_g` | CodeCarbon offline emissions in grams CO2e. |
+| `carbon_energy_consumed_kwh` | CodeCarbon energy consumption in kWh. |
+
+`GDT_TS` is the visible alias used in the exported Carbon4Science CSVs; the lowercase `gdt_ts` column is retained for compatibility with the benchmark scripts. Scoring uses `--match-mode sequence` (Needleman-Wunsch Cα alignment against per-target reference PDBs).
 
 ## Models
 
 | Model | Mode / MSA in current export | Notes |
 |---|---|---|
-| ESMFold | no MSA; native single-sequence | sequence-language-model baseline |
-| OmegaFold | no MSA; native single-sequence | sequence-only baseline |
-| Boltz-2 | no MSA in local runner | `boltz2` backend with explicit no-MSA/default local mode |
-| Chai-1 | no MSA; native embeddings | default Chai-1 CLI uses embeddings without external MSAs/templates; metadata is no longer `unknown` |
-| ColabFold | shared precomputed ColabFold/MMseqs2 MSA | shared A3M used directly as ColabFold input; no MMseqs search inside model runner |
-| OpenFold | shared precomputed ColabFold/MMseqs2 MSA | shared A3M copied into OpenFold precomputed-alignment layout |
-| Protenix | shared precomputed ColabFold/MMseqs2 MSA | shared A3M converted to paired/unpaired Protenix inputs |
-| OpenFold3 | shared precomputed ColabFold/MMseqs2 MSA | shared A3M copied as `cfdb_hits.a3m`; low-memory backend on RTX A5000 |
-| AF2 | official AlphaFold2 database search | backend ID `af2`; split MSA/features and JAX inference timing/carbon, full AlphaFold DBs, `top_k=1` |
+| `af2` | MSA; `official_af2_database_search` | official DeepMind AlphaFold2 database search; split MSA/features and JAX inference carbon accounting |
+| `colabfold` | MSA; `shared_precomputed_msa` | reuses precomputed ColabFold/MMseqs2 A3M metadata from the benchmark run |
+| `openfold` | MSA; `shared_precomputed_msa` | loads AlphaFold2 `params_model_1` weights through the OpenFold inference engine (weights byte-identical to `af2`; see Training-data cutoffs) |
+| `protenix` | MSA; `shared_precomputed_msa` | ByteDance AF3-like diffusion model; reuses ColabFold/MMseqs2 A3M |
+| `chai1` | no MSA; `native_embedding_no_msa` | default Chai-1 embeddings without external MSAs/templates |
+| `esmfold` | no MSA; `native_single_sequence` | sequence-language-model baseline |
+| `omegafold` | no MSA; `native_single_sequence` | sequence-only baseline |
+| `boltz2` | no MSA; `model_default_no_msa` | canonical Boltz backend ID is `boltz2` |
+
+## Training-data cutoffs
+
+Training-run timestamps are not embedded in any checkpoint. The benchmark-relevant date is the **PDB release-date cutoff** used when building each model's training set — the newest structure the model was allowed to see, which determines potential leakage into the CASP15/16 target set.
+
+| Model | PDB cutoff | Status | Source |
+|---|---|---|---|
+| af2 | 2018-04-30 | Confirmed | [Jumper et al. 2021 suppl.](https://www.nature.com/articles/s41586-021-03819-2) (CASP13-aligned monomer training cutoff) |
+| colabfold | 2018-04-30 | Confirmed | inherits AF2 `alphafold2_ptm` weights → same cutoff |
+| openfold | 2018-04-30 | Confirmed | **this benchmark** runs AF2 `params_model_1` weights via the OpenFold engine; not OpenFold's own retrained (Dec-2021) checkpoint |
+| esmfold | 2020-05-01 | Confirmed | folding-head PDB cutoff; [Lin et al. 2023](https://www.science.org/doi/10.1126/science.ade2574) |
+| chai1 | 2021-01-12 | Confirmed | [Chai-1 technical report](https://chaiassets.com/chai-1/paper/technical_report_v1.pdf) |
+| protenix | 2021-09-30 | Confirmed | `protenix_base_default_v1.0.0` follows AF3 training cutoff; [Protenix README](https://github.com/bytedance/Protenix/blob/main/README.md) |
+| boltz2 | 2023-06-01 | Confirmed | [Passaro et al. 2025](https://www.biorxiv.org/content/10.1101/2025.06.14.659707v1.full): "every PDB structure up to 06/01/2023" |
+| omegafold | not documented | Unconfirmed | no explicit PDB date published by the authors; [~2022 inferred from release](https://github.com/HeliXonProtein/OmegaFold/issues/13) |
+
+Our 45-target set contains **33 CASP15 targets (2022)** and **12 CASP16 targets (2024)**. All cutoffs predate CASP16. Only **Boltz-2 (cutoff 2023-06-01)** postdates CASP15, meaning its 33 CASP15-target results should be interpreted with a potential training-data leakage caveat. All other models predated CASP15.
 
 ## Carbon Method
 
 - Tracker: CodeCarbon offline tracker.
-- Current default benchmark policy: world-average accounting. New `--track-carbon` runs omit `--carbon-country-iso-code` and record `carbon_country_iso_code=WORLD`, `carbon_intensity_mode=world_average`, and `carbon_intensity_source=configurable_default_world_average`.
-- Default world-average intensity in the benchmark repo: `475 g CO2e/kWh`.
-- The Carbon4Science `results/` directory is kept clean and currently contains only the latest clean export: default/no-MSA rows for ESMFold, OmegaFold, Boltz-2, and Chai-1; unified shared-MSA rows for ColabFold, OpenFold, Protenix, and OpenFold3; and official AF2 split-stage rows.
-- Raw CodeCarbon CSVs are retained in the benchmark repo under each result directory's `carbon/` folder and summarized in `results/benchmark-metadata.csv`.
+- Accounting policy: world-average emissions intensity.
+- Recorded country code: `WORLD`.
+- Recorded intensity source: `configurable_default_world_average`.
+- Default intensity: `475 g CO2e/kWh`.
+- Raw CodeCarbon CSVs remain in the source benchmark result directory under `predictions/<target>/<model>/carbon/`. Carbon4Science stores cleaned per-protein metadata in `results/benchmark-metadata.csv`.
 
 ## Hardware
 
 - CPU: Intel Xeon Gold 6240R, 1 socket, 24 cores / 48 threads.
 - RAM: 251 GiB visible.
-- GPU: 3 x NVIDIA RTX A5000, 24,564 MiB each.
+- GPU: 3 × NVIDIA RTX A5000, 24,564 MiB each.
 - Driver: 580.159.03.
 - CUDA reported by driver: 13.0.
 - OS/kernel: Ubuntu Linux, kernel `6.8.0-117-generic`, x86_64.
 
-## Shared MSA Accounting
+## Current Results
 
-The shared-MSA workflow separates homology search from model inference:
+Source summary: `results/benchmark_model_summary_all_models.csv`.
 
-1. ColabFold/MMseqs2 is run once per target against `/data/chen/protein_folding_databases/colabfold`.
-2. The resulting per-target A3M files and MSA search carbon metadata are stored in the source benchmark result directory.
-3. ColabFold, OpenFold, Protenix, and OpenFold3 reuse those same A3M files; no model runner reruns MMseqs in this benchmark.
-4. Model inference rows mark `msa_generation_included_in_timing=false`, `msa_generation_included_in_carbon=false`, and `msa_reused=true`.
-5. `benchmark-score.csv` records per-target scores and runtime/carbon totals. For shared-MSA models it joins MSA cost, model inference cost, and structure scores; for default/no-MSA models the total cost is the model run cost.
+**Dataset:** CASP15/CASP16 unique <1000-residue monomers · **N =** 45 targets · **Metric:** lDDT-Cα (primary) · **CO₂/job:** per target (exp = 45 targets)
 
-In the shared-MSA table below, model-only CO2e is reported separately from total CO2e with shared MSA cost added back for end-to-end comparability.
+**Hardware:** 3 × NVIDIA RTX A5000 (24 GB) · Intel Xeon Gold 6240R (24c/48t) · 251 GiB RAM
 
-The external `TMscore` GDT_TS value is preferred for reported tables; source CSVs also retain `gdt_ts_method` and `gdt_ts_error` columns.
+| Year | Venue        | Model     | Architecture         | Params | lDDT-Cα   | TM-score  | GDT_TS (%) | Cα-RMSD (Å) | CO₂/exp (g) | CO₂/job (g) | Time/exp (s) | Time/job (s) |
+| ---- | ------------ | --------- | -------------------- | ------ | --------- | --------- | ---------- | ----------- | ----------- | ----------- | ------------ | ------------ |
+| 2021 | Nature       | af2       | Evoformer + MSA      | 93.2 M              | 0.868     | 0.761     | 59.15      | 11.379      | 2,103.0     | 46.73       | 77,832       | 1,729.6      |
+| 2022 | Nat. Methods | colabfold | Evoformer + MMseqs2  | 93.2 M              | **0.876** | 0.770     | **60.96**  | 11.972      | 522.2       | 11.60       | 30,126       | 669.5        |
+| 2022 | bioRxiv      | omegafold | PLM + Geoformer      | 795 M               | 0.770     | 0.669     | 47.18      | 17.345      | **180.1**   | **4.00**    | **5,535**    | **123.0**    |
+| 2023 | Science      | esmfold   | ESM-2 LM + folding   | 693 M (+2.84B ESM2) | 0.811     | 0.704     | 52.36      | 15.395      | 237.0       | 5.27        | 16,345       | 363.2        |
+| 2024 | bioRxiv      | chai1     | Diffusion (AF3-like) | 316 M (+2.84B ESM2) | 0.798     | 0.695     | 48.79      | 17.648      | 892.4       | 19.83       | 63,738       | 1,416.4      |
+| 2024 | Nat. Methods | openfold  | Evoformer + MSA      | 93.2 M              | 0.875     | **0.771** | 60.84      | **11.734**  | 477.6       | 10.61       | 26,854       | 596.8        |
+| 2025 | bioRxiv      | boltz2    | Diffusion (AF3-like) | 521 M               | 0.765     | 0.714     | 51.82      | 17.605      | 796.5       | 17.70       | 53,137       | 1,180.8      |
+| 2025 | bioRxiv      | protenix  | Diffusion (AF3-like) | 368 M               | 0.871     | 0.744     | 57.50      | 15.361      | 442.3       | 9.83        | 27,555       | 612.3        |
 
-## Results
+All 45/45 targets scored successfully for every model. **Bold** = best value in column (for Cα-RMSD, lower is better). GDT_TS is shown on a 0–100 scale (`gdt_ts_percent`). CO₂/exp and Time/exp are totals over all 45 targets using `total_carbon_with_shared_msa_g` / `total_time_with_shared_msa_sec` from `results/benchmark-score.csv`; per-job columns divide by 45.
 
-<!-- Generated by scripts/make_readme_benchmark_tables.py -->
-
-### Default/native first-five benchmark
-
-| Model | Mode / MSA | n_success | Mean lDDT-Ca | Mean TM-score | Mean GDT_TS | Mean Ca RMSD (A) | Mean inference time (s) | Mean model CO2e (g) | MSA cost included? | Notes |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---|---|
-| esmfold | no; native_single_sequence | 5 | 0.748 | 0.750 | 0.234 | 5.888 | 57.8 | 1.04 | no | single-sequence language model |
-| omegafold | no; native_single_sequence | 5 | 0.671 | 0.700 | 0.192 | 7.378 | 86.6 | 1.56 | no | single-sequence model |
-| boltz2 | no; model_default_no_msa | 5 | 0.564 | 0.591 | 0.200 | 11.693 | 54.3 | 0.98 | no | local runner uses explicit no-MSA mode |
-| chai1 | no; native_embedding_no_msa | 5 | 0.721 | 0.718 | 0.229 | 6.552 | 104.5 | 1.89 | no | default Chai-1 uses embeddings without MSAs/templates |
-| colabfold | yes; default_msa | 5 | 0.842 | 0.819 | 0.232 | 4.718 | 618.1 | 11.15 | yes | fresh ColabFold/MMseqs search per target |
-| openfold | yes; default_msa | 5 | 0.852 | 0.848 | 0.235 | 3.693 | 545.1 | 9.83 | yes | fresh ColabFold/MMseqs A3M passed to OpenFold |
-
-### Unified shared-MSA first-five benchmark
-
-| Model | Mode / MSA | n_success | Mean lDDT-Ca | Mean TM-score | Mean GDT_TS | Mean Ca RMSD (A) | Mean model time (s) | Mean model CO2e (g) | Mean total time with shared MSA (s) | Mean total CO2e with shared MSA (g) | Notes |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| colabfold | yes; shared_precomputed_msa | 5 | 0.840 | 0.816 | 0.233 | 4.743 | 127.6 | 4.24 | 601.7 | 17.82 | shared A3M used directly as ColabFold input; no MMseqs search inside model runner |
-| openfold | yes; shared_precomputed_msa | 5 | 0.829 | 0.819 | 0.233 | 3.897 | 55.3 | 2.52 | 529.5 | 16.11 | shared A3M copied into OpenFold precomputed-alignment layout |
-| protenix | yes; shared_precomputed_msa | 5 | 0.867 | 0.855 | 0.229 | 4.452 | 91.6 | 2.72 | 565.7 | 16.31 | shared A3M converted to Protenix paired/unpaired inputs |
-| openfold3 | yes; shared_precomputed_msa | 5 | 0.852 | 0.835 | 0.223 | 5.195 | 113.9 | 3.72 | 588.0 | 17.31 | shared A3M copied as cfdb_hits.a3m; low-memory experimental run |
-
-### Official AlphaFold2 split-stage first-five benchmark
-
-| Model | Mode / MSA | n_success | Mean lDDT-Ca | Mean TM-score | Mean GDT_TS | Mean Ca RMSD (A) | Mean MSA/features time (s) | Mean MSA/features CO2e (g) | Mean inference time (s) | Mean inference CO2e (g) | Mean total time (s) | Mean total CO2e (g) | Notes |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| af2 | yes; official_af2_database_search | 5 | 0.875 | 0.852 | 0.235 | 4.025 | 1723.6 | 45.12 | 130.4 | 4.50 | 1854.0 | 49.62 | official DeepMind AlphaFold2 `model_1`, full AlphaFold DBs, Amber relaxation disabled, `top_k=1` |
-
-### ColabFold single-sequence vs MSA ablation
-
-| Model | Mode / MSA | n_success | Mean lDDT-Ca | Mean TM-score | Mean GDT_TS | Mean Ca RMSD (A) | Mean inference time (s) | Mean model CO2e (g) |
-|---|---|---:|---:|---:|---:|---:|---:|---:|
-| colabfold_single | no; forced_single_sequence_ablation | 5 | 0.352 | 0.291 |  | 19.875 | 98.0 | 0.35 |
-| colabfold_msa | yes; msa_ablation | 5 | 0.840 | 0.819 |  | 4.753 | 613.5 | 1.84 |
-
-### OpenFold single-sequence vs MSA ablation
-
-| Model | Mode / MSA | n_success | Mean lDDT-Ca | Mean TM-score | Mean GDT_TS | Mean Ca RMSD (A) | Mean inference time (s) | Mean model CO2e (g) |
-|---|---|---:|---:|---:|---:|---:|---:|---:|
-| openfold_single | no; forced_single_sequence_ablation | 5 | 0.385 | 0.340 |  | 19.854 | 53.1 | 0.24 |
-| openfold_msa | yes; msa_ablation | 5 | 0.819 | 0.812 |  | 4.148 | 545.3 | 1.66 |
+Parameter counts were measured directly from the local model weights: JAX `.npz` array sizes (summed `arr.size`) for the AF2-family models (af2, colabfold, openfold reuse the same Evoformer weights at 93.2M each); summed `tensor.numel()` over PyTorch/TorchScript checkpoint weights containers for the remaining models. `(+2.84B ESM2)` denotes the separate ESM-2 3B language model (`esm2_t36_3B_UR50D`) that `chai1` and `esmfold` load as a sequence embedder at inference; the folding-trunk parameters are listed first.
 
 ## Exported Files
 
-The `results/` directory is intentionally clean and contains only the latest export:
+The `results/` directory is intentionally clean and contains the latest export:
 
-- `results/benchmark-score.csv` - per-target score, GDT_TS, and cost rows for all exported models.
-- `results/benchmark-metadata.csv` - per-target runtime, carbon, and MSA metadata rows.
-- `results/benchmark_metadata_all_models.csv` - consolidated runtime, carbon, hardware, source, and MSA provenance rows for the latest all-model collection.
-- `results/benchmark_scores_all_models.csv` - consolidated per-target structure scores for the latest all-model collection.
-- `results/benchmark_model_summary_all_models.csv` - one summary row per exported model.
-- `results/benchmark_collection_manifest.csv` - source-file and cleanup manifest for the consolidated collection.
+- `results/benchmark-dataset.csv` — the 45-target benchmark dataset: target IDs, sequences, reference PDB paths, and CASP notes.
+- `results/benchmark-score.csv` — compact per-protein/model score, GDT_TS, runtime, and carbon rows.
+- `results/benchmark_scores_all_models.csv` — detailed per-protein/model score rows, including references and prediction paths.
+- `results/benchmark-metadata.csv` — per-protein/model runtime, carbon, MSA, and provenance rows.
+- `results/benchmark_metadata_all_models.csv` — same metadata table retained for compatibility with prior exports.
+- `results/benchmark_model_summary_all_models.csv` — one summary row per exported model.
+- `results/benchmark_collection_manifest.csv` — source result directory, target set, scored row counts, JSON file count, and GDT_TS scale notes.
+- `results/score_metric_definitions.csv` and `results/score_metric_definitions.md` — score metric definitions.
+- `results/af2.json`
+- `results/colabfold.json`
+- `results/openfold.json`
+- `results/protenix.json`
+- `results/chai1.json`
 - `results/esmfold.json`
 - `results/omegafold.json`
 - `results/boltz2.json`
-- `results/chai1.json`
-- `results/colabfold.json`
-- `results/openfold.json`
-- `results/openfold3.json`
-- `results/protenix.json`
-- `results/af2.json`
 
 ## Reproduction
 
-Latest unified shared-MSA first-five benchmark command shape from the source repo:
+The 45-target benchmark is assembled from three separate backend runs and scored with the combined-run scripts. From the `Protein-Folding-Benchmark` repo root:
 
+**1. Combine predictions from the three source runs:**
 ```bash
-conda run -n folding-benchmark python scripts/run_benchmark_from_targets.py \
-  --targets data/targets/targets_first5.csv \
-  --config tmp/backend_smoke/models_four_msa_shared.yaml \
-  --models colabfold,openfold,protenix,openfold3 \
-  --top-k 1 \
-  --shared-msa-metadata results/four_msa_models_shared_msa_first5/msa/msa_metadata.csv \
-  --shared-msa-root results/four_msa_models_shared_msa_first5/msa/msas \
-  --track-carbon
+conda run -n folding-benchmark python scripts/combine_8model_predictions.py \
+  --dest results/2026-06-06-combine-8models
 ```
+
+**2. Build per-target reference PDBs (correct chain + residue range from manifest):**
+```bash
+conda run -n folding-benchmark python scripts/build_combined_references.py \
+  --run-dir results/2026-06-06-combine-8models
+```
+
+**3. Score all 45 targets × 8 models:**
+```bash
+conda run -n folding-benchmark python scripts/score_combined_8models.py \
+  --run-dir results/2026-06-06-combine-8models \
+  --match-mode sequence
+```
+
+**4. Export to carbon4science format:**
+```bash
+conda run -n folding-benchmark python scripts/export_combined_to_carbon4science.py \
+  --run-dir results/2026-06-06-combine-8models \
+  --out-dir ../carbon4science.github.io/results
+```
+
+Source runs:
+
+| Group | Result directory | Models |
+|---|---|---|
+| MSA-free | `results/20260601_104732_casp15_casp16_unique_lt1000_all_default_msa-free` | chai1, esmfold, omegafold |
+| ColabFold MSA | `results/20260603_142659_casp15_casp16_unique_lt1000_all_default_colabfold` | boltz2, colabfold, openfold, protenix |
+| AlphaFold2 | `results/20260604_134750_casp15_casp16_unique_lt1000_all_default-af2` | af2 |
 
 ## Limitations
 
-- This is a five-target smoke benchmark, not a full CASP benchmark.
-- Protenix and OpenFold3 are experimental shared-MSA exports and are not canonical enabled backends in `Protein-Folding-Benchmark/configs/models.yaml`; ColabFold and OpenFold are included here through shared-MSA side-study runners.
-- OpenFold3 uses a low-memory configuration validated on the local 24 GB RTX A5000 setup; broader validation is still needed.
-- Official AlphaFold2 is reported only as backend ID `af2` using the official source/database path; ColabFold is reported separately and is not relabeled as AF2.
-
-Official AF2 first-five split-stage command shape from the source repo:
-
-```bash
-conda run -n folding-benchmark python scripts/run_benchmark_from_targets.py \
-  --targets data/targets/targets_first5.csv \
-  --config tmp/backend_smoke/models_af2_only.yaml \
-  --top-k 1 \
-  --predictions-dir results/af2_first5_split_carbon/predictions \
-  --results-dir results/af2_first5_split_carbon \
-  --max-trials 1
-```
+- This is a 45-target local benchmark, not the full CASP15/CASP16 benchmark universe.
+- Model outputs are local-run artifacts from one workstation and should be interpreted with that hardware and software context.
+- Carbon estimates use CodeCarbon offline world-average accounting, not direct facility metering.
+- References are extracted per-target from mmCIF files using the manifest's `chain_id` and `residue_start`/`residue_end`; results are not directly comparable to benchmarks using different reference extraction strategies.
+- Training-data cutoffs are documented in the `## Training-data cutoffs` section. Boltz-2 (cutoff 2023-06-01) postdates the CASP15 targets (33/45) and may have trained on structures overlapping that target set. OmegaFold's cutoff is not publicly documented.
