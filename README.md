@@ -180,6 +180,25 @@ All tasks benchmarked on the same hardware with full carbon tracking.
 
 ---
 
+### 7. Protein Folding
+
+**System:** CASP15/CASP16 unique <1000-residue monomers · **N =** 45 targets · **Metric:** GDT-TS (%) · **CO₂/job:** per 45 targets
+
+| Year | Venue        | Model     | Architecture         | Params | GDT-TS (%) | lDDT-Cα   | CO₂/exp (g) | CO₂/job (g) | Time/exp (s) | Time/job (s) |
+| ---- | ------------ | --------- | -------------------- | ------ | ---------- | --------- | ----------- | ----------- | ------------ | ------------ |
+| 2021 | Nature       | AF2       | Evoformer + MSA      | 93.2M  | 59.15      | 0.868     | 46.73       | 2,103.0     | 1,729.6      | 77,832       |
+| 2022 | Nat. Methods | ColabFold | Evoformer + MMseqs2  | 93.2M  | **60.96**  | **0.876** | 11.60       | 522.2       | 669.5        | 30,126       |
+| 2022 | bioRxiv      | OmegaFold | PLM + Geoformer      | 795M   | 47.18      | 0.770     | **4.00**    | **180.1**   | **123.0**    | **5,535**    |
+| 2023 | Science      | ESMFold   | ESM-2 LM + folding   | 693M   | 52.36      | 0.811     | 5.27        | 237.0       | 363.2        | 16,345       |
+| 2024 | bioRxiv      | Chai-1    | Diffusion (AF3-like) | 316M   | 48.79      | 0.798     | 19.83       | 892.4       | 1,416.4      | 63,738       |
+| 2024 | Nat. Methods | OpenFold  | Evoformer + MSA      | 93.2M  | 60.84      | 0.875     | 10.61       | 477.6       | 596.8        | 26,854       |
+| 2025 | bioRxiv      | Boltz-2   | Diffusion (AF3-like) | 521M   | 51.82      | 0.765     | 17.70       | 796.5       | 1,180.8      | 53,137       |
+| 2025 | bioRxiv      | Protenix  | Diffusion (AF3-like) | 368M   | 57.50      | 0.871     | 9.83        | 442.3       | 612.3        | 27,555       |
+
+> GDT-TS (%) is the primary ranking metric; lDDT-Cα is the secondary metric. Per-exp values are per single target; per-job values are totals over all 45 targets. Carbon uses CodeCarbon offline world-average accounting (475 gCO₂/kWh) on 3 × NVIDIA RTX A5000 (24 GB). Boltz-2's training cutoff (2023-06-01) postdates the 33 CASP15 targets — interpret with a potential leakage caveat.
+
+---
+
 ## Key Insights
 
 - **Simpler models dominate the efficiency frontier:** In every task, at least one GNN or small LM achieves near-SOTA accuracy at 10–100× lower CO₂ than the best-performing model

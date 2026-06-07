@@ -384,7 +384,7 @@
       <div class="stat-item">
         <div class="stat-icon">
           <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" opacity=".7"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-          <span class="stat-value" id="stat-tasks">6</span>
+          <span class="stat-value" id="stat-tasks">7</span>
         </div>
         <span class="stat-label">Tasks</span>
       </div>
@@ -502,6 +502,7 @@ const TASK_CONFIG = {
   MatGen:    { majorLabel: 'mSUN (%)',   minorLabel: 'SUN (%)',     color: '#2ca02c', desc: 'MP-20 · 1,000 structures',     job: '1 job = 1,000 structures' },
   StructOpt: { majorLabel: 'CPS',        minorLabel: null,          color: '#d62728', desc: 'WBM · 100 structures',         job: '1 job = 1,000 structures' },
   MDSim:     { majorLabel: 'MSD',        minorLabel: null,          color: '#9467bd', desc: 'LGPS · 75K steps × 3 seeds',  job: '1 job = 1M steps' },
+  Folding:   { majorLabel: 'GDT-TS (%)', minorLabel: 'lDDT-Cα',     color: '#8c564b', desc: 'CASP15/16 · 45 targets',      job: '1 job = 45 proteins' },
 };
 
 const ARCH_SYMBOLS = {
@@ -580,8 +581,8 @@ const GLOBAL_PARETO = computeParetoSet(ALL_DATA);
 function fmtMetric(v, task) {
   if (v === '' || v === null || v === undefined) return '—';
   const n = Number(v);
-  if (task === 'StructOpt' || task === 'MDSim') return n.toFixed(3);
-  return n.toFixed(2);
+  // Sub-1 scores (CPS, MSD, lDDT) → 3 decimals; percentages/counts → 2 decimals
+  return n < 1 ? n.toFixed(3) : n.toFixed(2);
 }
 
 function fmtTime(s) {
@@ -948,7 +949,7 @@ const REF_DATA = [
   { category: 'AI Chemical generation',  label: 'Material generation',      desc: 'MP-20 · 1K structures',         value: 270.40,  unit: '1K structures',      taskKey: 'MatGen' },
   { category: 'AI Chemical generation',  label: 'Molecule generation',      desc: 'ChEMBL 28 · 10K molecules',     value: 355.24,  unit: '10K molecules',      taskKey: 'MolGen' },
   { category: 'AI Synthesis prediction', label: 'Synthesis Planning',       desc: 'USPTO-50K · 500 molecules',     value: 403.45,  unit: '500 molecules',      taskKey: 'Retro' },
-  { category: 'AI Structure Opt',        label: 'MLIP relaxation',          desc: 'WBM · 1K structures',           value: 138.6,   unit: '1K structures',      taskKey: 'StructOpt' },
+  { category: 'AI Protein folding',      label: 'Protein folding',          desc: 'CASP15/16 · 1 protein',         value: 11.60,   unit: '1 protein',          taskKey: 'Folding' },
   { category: 'AI MD simulation',        label: 'MLIP MD',                  desc: 'LGPS · 1M steps',               value: 3486,    unit: '1M steps',           taskKey: 'MDSim' },
   { category: 'Everyday activities',     label: 'Commercial aviation',      desc: 'Boeing 737',                    value: 15800,   unit: 'km',                 taskKey: null },
   { category: 'Chemical synthesis',      label: 'Battery synthesis',        desc: 'Vanadium flow battery',         value: 37000,   unit: 'MWh',                taskKey: null },
@@ -961,13 +962,13 @@ const REF_CAT_COLORS = {
   'LLM inference':           '#CFD8DC',
   'AI Synthesis prediction': '#1E88E5',
   'AI Chemical generation':  '#1E88E5',
-  'AI Structure Opt':        '#1E88E5',
+  'AI Protein folding':      '#1E88E5',
   'AI MD simulation':        '#1E88E5',
   'Everyday activities':     '#CFD8DC',
   'Chemical simulation':     '#FFAB91',
   'Chemical synthesis':      '#FFAB91',
 };
-const AI_CATEGORIES = new Set(['AI Synthesis prediction', 'AI Chemical generation', 'AI Structure Opt', 'AI MD simulation']);
+const AI_CATEGORIES = new Set(['AI Synthesis prediction', 'AI Chemical generation', 'AI Protein folding', 'AI MD simulation']);
 
 /* ──────────────────────────────────────────────────────
    RENDER CHART — switches based on active tab
