@@ -27,7 +27,9 @@ from adjustText import adjust_text
 OUT_DIR = 'analysis/figures'
 os.makedirs(OUT_DIR, exist_ok=True)
 
-TASK_ORDER = ['MatGen', 'MolGen', 'Retro', 'Forward', 'StructOpt', 'MDSim']
+# StructOpt is kept in the leaderboard data (all_data.csv / data.js / README) but
+# omitted from the task-grid figures (Figs 1-3); MDSim is the 5th task, Folding the 6th.
+TASK_ORDER = ['MatGen', 'MolGen', 'Retro', 'Forward', 'MDSim', 'Folding']
 
 TASK_COLORS = {
     'MatGen':    '#2ca02c',
@@ -36,6 +38,7 @@ TASK_COLORS = {
     'Forward':   '#ff7f0e',
     'StructOpt': '#d62728',
     'MDSim':     '#9467bd',
+    'Folding':   '#8c564b',
 }
 
 TASK_PERF_LABEL = {
@@ -45,6 +48,7 @@ TASK_PERF_LABEL = {
     'Forward': 'Top-3 Acc (%)',
     'StructOpt': 'CPS',
     'MDSim': 'MSD',
+    'Folding': 'GDT-TS (%)',
 }
 
 ARCH_MARKERS = {
@@ -70,7 +74,7 @@ ref_data_raw = [
     ('AI Chemical generation',   'Molecule generation',      'MolGen',     'DeFoG',                       355.2,  '10K molecules'),
     ('AI Synthesis prediction',  'Synthesis Planning',       'Retro',      'RetroBridge',                 403,     '500 molecules'),
     ('AI MD simulation',         'MLIP MD',                  'MDSim',      'eSEN',                        3486,    '1M steps'),
-    ('AI Structure Opt',         'MLIP relaxation',          'StructOpt',  'eSEN',                         139,    '1K structures'),
+    ('AI Protein folding',       'Protein folding',          'Folding',    'ColabFold',                   11.60,  '1 protein'),
     ('Everyday activities',      'Commercial aviation',      None,         'Boeing 737',                  15800,   'km'),
     ('Chemical synthesis',       'Battery synthesis',        None,         'Vanadium flow battery',       37000,   'MWh'),
     ('Chemical synthesis',       'Material synthesis',       None,         'UiO-66-NH₂ (aqueous-based)',  43000,   'kg'),
@@ -87,7 +91,7 @@ REF_CATEGORY_COLORS = {
     'Chemical synthesis':        '#E53935',   # red
     'AI Chemical generation':    '#2ca02c',   # green (= MatGen)
     'AI Synthesis prediction':   '#ff7f0e',   # orange (= Forward)
-    'AI Structure Opt':          '#d62728',   # red-orange (= StructOpt)
+    'AI Protein folding':        '#8c564b',   # brown (= Folding)
     'AI MD simulation':          '#9467bd',   # purple (= MDSim)
 }
 
@@ -95,7 +99,7 @@ REF_CATEGORY_COLORS = {
 REF_LEGEND_ORDER = [
     'Everyday activities', 'LLM inference', 'Chemical simulation',
     'Chemical synthesis', 'AI Chemical generation', 'AI Synthesis prediction',
-    'AI Structure Opt', 'AI MD simulation',
+    'AI Protein folding', 'AI MD simulation',
 ]
 
 
@@ -319,7 +323,7 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)', nonam
     If noname=True, omits per-point labels EXCEPT for models on the Pareto front,
     and saves to *_noname.png.
     """
-    fig, axes = plt.subplots(2, 3, figsize=(20, 14))
+    fig, axes = plt.subplots(2, 3, figsize=(27, 14))
     axes = axes.flatten()
 
     for ax, task in zip(axes, TASK_ORDER):
@@ -395,8 +399,8 @@ def plot_fig2(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)', nonam
             ax.scatter(row['log_co2_ratio'], row['delta_perf_pct'],
                        color=TASK_COLORS[task], marker=m, s=sz,
                        edgecolors=ec, linewidths=lw, zorder=4)
-            # In noname mode, only label models on the Pareto front
-            if noname and row['model'] not in pareto_models:
+            # In noname mode, only label models on the Pareto front (plus the baseline)
+            if noname and row['model'] not in pareto_models and not is_base:
                 continue
             label = f"{row['model']} ({row['year']})"
             pos = positions.get(row['model'], None)
@@ -811,7 +815,7 @@ def plot_fig4(df, highlight_ai=True):
         'Retro':     'Retro',
         'MolGen':    'MolGen',
         'MatGen':    'MatGen',
-        'StructOpt': 'StructOpt',
+        'Folding':   'Folding',
         'MDSim':     'MDSim',
     }
     worst_pareto = {}  # task -> (model_name, co2_per_job)
@@ -822,7 +826,8 @@ def plot_fig4(df, highlight_ai=True):
         pareto_models = _compute_pareto(grp)
         pareto_grp = grp[grp['model'].isin(pareto_models)]
         worst = pareto_grp.loc[pareto_grp['CO2_per_job'].idxmax()]
-        worst_pareto[key] = (worst['model'], worst['CO2_per_job'])
+        # Protein folding runs one protein at a time → report per-protein CO2
+        worst_pareto[key] = (worst['model'], worst['CO2_per_exp' if key == 'Folding' else 'CO2_per_job'])
 
     # (category, main_label, task_key, fallback_desc, fallback_co2, unit)
     # task_key=None for non-AI entries
@@ -844,7 +849,7 @@ def plot_fig4(df, highlight_ai=True):
     values      = [d[3] for d in ref_data]
     units       = [d[4] for d in ref_data]
     AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction',
-                     'AI Structure Opt', 'AI MD simulation'}
+                     'AI Protein folding', 'AI MD simulation'}
     CHEM_CATEGORIES = {'Chemical simulation', 'Chemical synthesis'}
 
     if highlight_ai:
@@ -929,7 +934,7 @@ def plot_fig4b(df):
         'Retro':     'Retro',
         'MolGen':    'MolGen',
         'MatGen':    'MatGen',
-        'StructOpt': 'StructOpt',
+        'Folding':   'Folding',
         'MDSim':     'MDSim',
     }
     worst_pareto = {}
@@ -940,7 +945,8 @@ def plot_fig4b(df):
         pareto_models = _compute_pareto(grp)
         pareto_grp = grp[grp['model'].isin(pareto_models)]
         worst = pareto_grp.loc[pareto_grp['CO2_per_job'].idxmax()]
-        worst_pareto[key] = (worst['model'], worst['CO2_per_job'])
+        # Protein folding runs one protein at a time → report per-protein CO2
+        worst_pareto[key] = (worst['model'], worst['CO2_per_exp' if key == 'Folding' else 'CO2_per_job'])
 
     # ── Second-best models (user-specified) ──
     second_best_names = {
@@ -948,14 +954,14 @@ def plot_fig4b(df):
         'Retro':     'LocalRetro',
         'MolGen':    'REINVENT4',
         'MatGen':    'DiffCSP',
-        'StructOpt': 'NequIP',
+        'Folding':   'OpenFold',
         'MDSim':     'SevenNet',
     }
     second_best = {}
     for task, model_name in second_best_names.items():
         row = df[(df['task'] == task) & (df['model'] == model_name)]
         if not row.empty:
-            co2 = row.iloc[0]['CO2_per_job']
+            co2 = row.iloc[0]['CO2_per_exp' if task == 'Folding' else 'CO2_per_job']
             second_best[task] = (model_name, co2)
 
     # Resolve worst-Pareto entries
@@ -977,7 +983,7 @@ def plot_fig4b(df):
     units       = [d[5] for d in ref_data]
 
     AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction',
-                     'AI Structure Opt', 'AI MD simulation'}
+                     'AI Protein folding', 'AI MD simulation'}
 
     # ── Colour palette ──
     ai_color       = '#1E88E5'
@@ -1079,7 +1085,7 @@ def plot_fig4_combined(df):
     # ── Compute worst Pareto per task (same as fig4 / fig4b) ──
     task_map = {
         'Forward': 'Forward', 'Retro': 'Retro', 'MolGen': 'MolGen',
-        'MatGen': 'MatGen', 'StructOpt': 'StructOpt', 'MDSim': 'MDSim',
+        'MatGen': 'MatGen', 'Folding': 'Folding', 'MDSim': 'MDSim',
     }
     worst_pareto = {}
     for task, key in task_map.items():
@@ -1089,19 +1095,20 @@ def plot_fig4_combined(df):
         pareto_models = _compute_pareto(grp)
         pareto_grp = grp[grp['model'].isin(pareto_models)]
         worst = pareto_grp.loc[pareto_grp['CO2_per_job'].idxmax()]
-        worst_pareto[key] = (worst['model'], worst['CO2_per_job'])
+        # Protein folding runs one protein at a time → report per-protein CO2
+        worst_pareto[key] = (worst['model'], worst['CO2_per_exp' if key == 'Folding' else 'CO2_per_job'])
 
     # ── Second-best models (mirror fig4b) ──
     second_best_names = {
         'Forward': 'LocalTransform', 'Retro': 'LocalRetro',
         'MolGen': 'REINVENT4', 'MatGen': 'DiffCSP',
-        'StructOpt': 'NequIP', 'MDSim': 'SevenNet',
+        'Folding': 'OpenFold', 'MDSim': 'SevenNet',
     }
     second_best = {}
     for task, model_name in second_best_names.items():
         row = df[(df['task'] == task) & (df['model'] == model_name)]
         if not row.empty:
-            second_best[task] = (model_name, row.iloc[0]['CO2_per_job'])
+            second_best[task] = (model_name, row.iloc[0]['CO2_per_exp' if task == 'Folding' else 'CO2_per_job'])
 
     # ── Resolve ref_data (carrying task_key for fig4b overlay) ──
     ref_data = []
@@ -1121,7 +1128,7 @@ def plot_fig4_combined(df):
     units       = [d[5] for d in ref_data]
 
     AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction',
-                     'AI Structure Opt', 'AI MD simulation'}
+                     'AI Protein folding', 'AI MD simulation'}
     CHEM_CATEGORIES = {'Chemical simulation', 'Chemical synthesis'}
 
     # ── Palette ──
@@ -1252,7 +1259,7 @@ def plot_fig4_combined_horizontal(df):
     # ── Compute worst Pareto per task (same as fig4 / fig4b) ──
     task_map = {
         'Forward': 'Forward', 'Retro': 'Retro', 'MolGen': 'MolGen',
-        'MatGen': 'MatGen', 'StructOpt': 'StructOpt', 'MDSim': 'MDSim',
+        'MatGen': 'MatGen', 'Folding': 'Folding', 'MDSim': 'MDSim',
     }
     worst_pareto = {}
     for task, key in task_map.items():
@@ -1262,19 +1269,20 @@ def plot_fig4_combined_horizontal(df):
         pareto_models = _compute_pareto(grp)
         pareto_grp = grp[grp['model'].isin(pareto_models)]
         worst = pareto_grp.loc[pareto_grp['CO2_per_job'].idxmax()]
-        worst_pareto[key] = (worst['model'], worst['CO2_per_job'])
+        # Protein folding runs one protein at a time → report per-protein CO2
+        worst_pareto[key] = (worst['model'], worst['CO2_per_exp' if key == 'Folding' else 'CO2_per_job'])
 
     # ── Second-best models (mirror fig4b) ──
     second_best_names = {
         'Forward': 'LocalTransform', 'Retro': 'LocalRetro',
         'MolGen': 'REINVENT4', 'MatGen': 'DiffCSP',
-        'StructOpt': 'NequIP', 'MDSim': 'SevenNet',
+        'Folding': 'OpenFold', 'MDSim': 'SevenNet',
     }
     second_best = {}
     for task, model_name in second_best_names.items():
         row = df[(df['task'] == task) & (df['model'] == model_name)]
         if not row.empty:
-            second_best[task] = (model_name, row.iloc[0]['CO2_per_job'])
+            second_best[task] = (model_name, row.iloc[0]['CO2_per_exp' if task == 'Folding' else 'CO2_per_job'])
 
     # ── Resolve ref_data (carrying task_key for fig4b overlay) ──
     ref_data = []
@@ -1294,7 +1302,7 @@ def plot_fig4_combined_horizontal(df):
     units       = [d[5] for d in ref_data]
 
     AI_CATEGORIES = {'AI Chemical generation', 'AI Synthesis prediction',
-                     'AI Structure Opt', 'AI MD simulation'}
+                     'AI Protein folding', 'AI MD simulation'}
     CHEM_CATEGORIES = {'Chemical simulation', 'Chemical synthesis'}
 
     # ── Palette ──
@@ -1489,20 +1497,25 @@ MOLGEN_VUNS = {
     'DiGress': 81.18, 'REINVENT4': 85.44, 'SmileyLlama': 85.16, 'DeFoG': 81.73
 }
 
-ALT_TASK_ORDER = ['MatGen', 'MolGen', 'Retro', 'Forward']
+# StructOpt is the MLIP-family alternative to MDSim (its CPS metric); Folding's
+# alternative metric is lDDT-Cα (vs. its primary GDT-TS (%) in Figs 1-3).
+ALT_TASK_ORDER = ['MatGen', 'MolGen', 'Retro', 'Forward', 'StructOpt', 'Folding']
 ALT_LABELS = {
     'MatGen': 'SUN (%)', 'MolGen': 'VUNS (%)',
     'Retro': 'Top-10 Acc (%)', 'Forward': 'Top-1 Acc (%)',
+    'StructOpt': 'CPS', 'Folding': 'lDDT-Cα',
 }
 
 
 def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)', noname=False):
-    """Pareto plots using alternative metrics for 4 tasks.
+    """Pareto plots using alternative metrics, laid out like Fig 2 (2×3).
 
-    If noname=True, omits per-point labels EXCEPT for models on the Pareto front,
-    and saves to *_noname.png.
+    Includes the MLIP-family StructOpt panel (CPS) and the Folding panel
+    (TM-score). If noname=True, omits per-point labels EXCEPT for models on the
+    Pareto front (plus the baseline), and saves to *_noname.png.
     """
-    fig, axes = plt.subplots(1, 4, figsize=(28, 7))
+    fig, axes = plt.subplots(2, 3, figsize=(27, 14))
+    axes = axes.flatten()
 
     # Add alt_perf column
     df = df.copy()
@@ -1513,6 +1526,10 @@ def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)', nonam
             df.at[idx, 'alt_perf'] = MOLGEN_VUNS[model]
         elif task in ALT_METRICS and model in ALT_METRICS[task]:
             df.at[idx, 'alt_perf'] = ALT_METRICS[task][model]
+        elif task == 'StructOpt':
+            df.at[idx, 'alt_perf'] = row['major_metric']   # CPS
+        elif task == 'Folding':
+            df.at[idx, 'alt_perf'] = row['minor_metric']   # lDDT-Cα
 
     for ax, task in zip(axes, ALT_TASK_ORDER):
         grp = df[(df['task'] == task) & df['alt_perf'].notna()].copy()
@@ -1568,8 +1585,8 @@ def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)', nonam
             ax.scatter(row['log_co2_ratio'], row['delta_alt_pct'],
                        color=TASK_COLORS[task], marker=m, s=marker_size(m),
                        edgecolors=ec, linewidths=lw, zorder=4)
-            # In noname mode, only label models on the Pareto front
-            if noname and row['model'] not in pareto_models:
+            # In noname mode, only label models on the Pareto front (plus the baseline)
+            if noname and row['model'] not in pareto_models and not is_base:
                 continue
             label = f"{row['model']} ({row['year']})"
             tx6, ty6 = row['log_co2_ratio'], row['delta_alt_pct']
@@ -1605,8 +1622,8 @@ def plot_fig6(df, co2_col='CO2_per_job', co2_label='log₁₀(CO₂/job)', nonam
                                 linewidth=1.5, label='Pareto Front')
     fig.legend(handles=arch_handles + [pareto_line] + quad_handles,
                loc='lower center', ncol=6, fontsize=20, framealpha=0.9,
-               bbox_to_anchor=(0.5, -0.14))
-    fig.subplots_adjust(bottom=0.18, wspace=0.35)
+               bbox_to_anchor=(0.5, -0.02))
+    fig.subplots_adjust(left=0.08, right=0.97, top=0.95, bottom=0.14, hspace=0.35, wspace=0.3)
     fname = '6_pareto_alt_metrics_noname.png' if noname else '6_pareto_alt_metrics.png'
     out = os.path.join(OUT_DIR, fname)
     fig.savefig(out, dpi=300, bbox_inches='tight')
