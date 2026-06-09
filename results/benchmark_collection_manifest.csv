@@ -1,8 +1,8 @@
 key,value
-exported_at_utc,2026-06-06T17:10:28+00:00
+exported_at_utc,2026-06-09T20:54:27+00:00
 benchmark_name,casp15_casp16_unique_lt1000_combined_8models_20260606
-source_result_dir,results/2026-06-06-combine-8models
-target_set,results/2026-06-06-combine-8models/metadata/scoring_targets.csv
+source_result_dir,results/2026-06-09-combine-8models-gpu
+target_set,results/2026-06-09-combine-8models-gpu/metadata/scoring_targets.csv
 dataset_file,results/benchmark-dataset.csv
 n_dataset_rows,45
 n_targets,45
