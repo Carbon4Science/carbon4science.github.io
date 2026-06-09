@@ -74,7 +74,7 @@ Scoring reports:
 | `chai1` | no MSA; `native_embedding_no_msa` | default Chai-1 embeddings without external MSAs/templates |
 | `esmfold` | no MSA; `native_single_sequence` | sequence-language-model baseline |
 | `omegafold` | no MSA; `native_single_sequence` | sequence-only baseline |
-| `boltz2` | no MSA; `model_default_no_msa` | canonical Boltz backend ID is `boltz2` |
+| `boltz2` | MSA; `shared_precomputed_msa` | reuses precomputed ColabFold/MMseqs2 A3M; charged the shared MSA-build cost like openfold/protenix |
 
 ## Training-data cutoffs
 
@@ -124,13 +124,13 @@ Source summary: `results/benchmark_model_summary_all_models.csv`.
 | 2021 | Nature       | af2       | Evoformer + MSA      | 93.2 M              | 0.868     | 0.761     | 59.15      | **11.379**  | 2,103.0     | 46.73       | 77,832       | 1,729.6      |
 | 2022 | Nat. Methods | colabfold | Evoformer + MMseqs2  | 93.2 M              | **0.876** | 0.770     | **60.96**  | 11.972      | 522.2       | 11.60       | 30,126       | 669.5        |
 | 2022 | bioRxiv      | omegafold | PLM + Geoformer      | 795 M               | 0.770     | 0.669     | 47.18      | 17.345      | 180.1       | 4.00        | 5,535        | 123.0        |
-| 2023 | Science      | esmfold   | ESM-2 LM + folding   | 693 M (+2.84B ESM2) | 0.810     | 0.704     | 52.16      | 15.397      | 71.3        | 1.58        | 3,235        | 71.9         |
+| 2023 | Science      | esmfold   | ESM-2 LM + folding   | 693 M (+2.84B ESM2) | 0.810     | 0.704     | 52.16      | 15.397      | **71.3**    | **1.58**    | **3,235**    | **71.9**     |
 | 2024 | bioRxiv      | chai1     | Diffusion (AF3-like) | 316 M (+2.84B ESM2) | 0.799     | 0.693     | 49.71      | 17.962      | 184.2       | 4.09        | 7,283        | 161.9        |
 | 2024 | Nat. Methods | openfold  | Evoformer + MSA      | 93.2 M              | 0.875     | **0.771** | 60.84      | 11.734      | 477.6       | 10.61       | 26,854       | 596.8        |
-| 2025 | bioRxiv      | boltz2    | Diffusion (AF3-like) | 521 M               | 0.864     | 0.730     | 57.57      | 17.597      | **59.0**    | **1.31**    | **3,003**    | **66.7**     |
+| 2025 | bioRxiv      | boltz2    | Diffusion (AF3-like) | 521 M               | 0.864     | 0.730     | 57.57      | 17.597      | 428.4       | 9.52        | 26,442       | 587.6        |
 | 2025 | bioRxiv      | protenix  | Diffusion (AF3-like) | 368 M               | 0.871     | 0.744     | 57.50      | 15.361      | 442.3       | 9.83        | 27,555       | 612.3        |
 
-All 45/45 targets scored successfully for every model. **Bold** = best value in column (for Cα-RMSD, lower is better). GDT_TS is shown on a 0–100 scale (`gdt_ts_percent`). CO₂/exp and Time/exp are totals over all 45 targets using `total_carbon_with_shared_msa_g` / `total_time_with_shared_msa_sec` from `results/benchmark-score.csv`; per-job columns divide by 45.
+All 45/45 targets scored successfully for every model. **Bold** = best value in column (for Cα-RMSD, lower is better). GDT_TS is shown on a 0–100 scale (`gdt_ts_percent`). CO₂/exp and Time/exp are totals over all 45 targets using `total_carbon_with_shared_msa_g` / `total_time_with_shared_msa_sec` from `results/benchmark-score.csv`; per-job columns divide by 45. For the four shared-MSA models (colabfold, openfold, protenix, boltz2) the total includes the shared ColabFold/MMseqs2 MSA-build cost; each model is charged the same per-target build time even though the MSA is computed once.
 
 Parameter counts were measured directly from the local model weights: JAX `.npz` array sizes (summed `arr.size`) for the AF2-family models (af2, colabfold, openfold reuse the same Evoformer weights at 93.2M each); summed `tensor.numel()` over PyTorch/TorchScript checkpoint weights containers for the remaining models. `(+2.84B ESM2)` denotes the separate ESM-2 3B language model (`esm2_t36_3B_UR50D`) that `chai1` and `esmfold` load as a sequence embedder at inference; the folding-trunk parameters are listed first.
 
