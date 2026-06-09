@@ -9,10 +9,10 @@ Compare structure-prediction accuracy against runtime, energy use, and CO2 emiss
 The current Carbon4Science export is the **45-target CASP15/CASP16 unique `<1000` residue benchmark** built from three combined benchmark runs:
 
 ```text
-/home/chen/projects/Protein-Folding-Benchmark/results/2026-06-06-combine-8models
+/home/chen/projects/Protein-Folding-Benchmark/results/2026-06-09-combine-8models-gpu
 ```
 
-It contains **360 scored protein/model rows: 45 targets × 8 scored models**. The scored models are `af2`, `colabfold`, `openfold`, `protenix`, `chai1`, `esmfold`, `omegafold`, and `boltz2`. All 45 targets are successfully predicted and scored for every model.
+It contains **360 scored protein/model rows: 45 targets × 8 scored models**. The scored models are `af2`, `colabfold`, `openfold`, `protenix`, `chai1`, `esmfold`, `omegafold`, and `boltz2`. All 45 targets are successfully predicted and scored for every model. `chai1`, `esmfold`, and `boltz2` were re-run on GPU (2026-06-09) to make all eight models GPU-measured; the other five models are unchanged from the original runs.
 
 ## Dataset
 
@@ -121,13 +121,13 @@ Source summary: `results/benchmark_model_summary_all_models.csv`.
 
 | Year | Venue        | Model     | Architecture         | Params | lDDT-Cα   | TM-score  | GDT_TS (%) | Cα-RMSD (Å) | CO₂/exp (g) | CO₂/job (g) | Time/exp (s) | Time/job (s) |
 | ---- | ------------ | --------- | -------------------- | ------ | --------- | --------- | ---------- | ----------- | ----------- | ----------- | ------------ | ------------ |
-| 2021 | Nature       | af2       | Evoformer + MSA      | 93.2 M              | 0.868     | 0.761     | 59.15      | 11.379      | 2,103.0     | 46.73       | 77,832       | 1,729.6      |
+| 2021 | Nature       | af2       | Evoformer + MSA      | 93.2 M              | 0.868     | 0.761     | 59.15      | **11.379**  | 2,103.0     | 46.73       | 77,832       | 1,729.6      |
 | 2022 | Nat. Methods | colabfold | Evoformer + MMseqs2  | 93.2 M              | **0.876** | 0.770     | **60.96**  | 11.972      | 522.2       | 11.60       | 30,126       | 669.5        |
-| 2022 | bioRxiv      | omegafold | PLM + Geoformer      | 795 M               | 0.770     | 0.669     | 47.18      | 17.345      | **180.1**   | **4.00**    | **5,535**    | **123.0**    |
-| 2023 | Science      | esmfold   | ESM-2 LM + folding   | 693 M (+2.84B ESM2) | 0.811     | 0.704     | 52.36      | 15.395      | 237.0       | 5.27        | 16,345       | 363.2        |
-| 2024 | bioRxiv      | chai1     | Diffusion (AF3-like) | 316 M (+2.84B ESM2) | 0.798     | 0.695     | 48.79      | 17.648      | 892.4       | 19.83       | 63,738       | 1,416.4      |
-| 2024 | Nat. Methods | openfold  | Evoformer + MSA      | 93.2 M              | 0.875     | **0.771** | 60.84      | **11.734**  | 477.6       | 10.61       | 26,854       | 596.8        |
-| 2025 | bioRxiv      | boltz2    | Diffusion (AF3-like) | 521 M               | 0.765     | 0.714     | 51.82      | 17.605      | 796.5       | 17.70       | 53,137       | 1,180.8      |
+| 2022 | bioRxiv      | omegafold | PLM + Geoformer      | 795 M               | 0.770     | 0.669     | 47.18      | 17.345      | 180.1       | 4.00        | 5,535        | 123.0        |
+| 2023 | Science      | esmfold   | ESM-2 LM + folding   | 693 M (+2.84B ESM2) | 0.810     | 0.704     | 52.16      | 15.397      | 71.3        | 1.58        | 3,235        | 71.9         |
+| 2024 | bioRxiv      | chai1     | Diffusion (AF3-like) | 316 M (+2.84B ESM2) | 0.799     | 0.693     | 49.71      | 17.962      | 184.2       | 4.09        | 7,283        | 161.9        |
+| 2024 | Nat. Methods | openfold  | Evoformer + MSA      | 93.2 M              | 0.875     | **0.771** | 60.84      | 11.734      | 477.6       | 10.61       | 26,854       | 596.8        |
+| 2025 | bioRxiv      | boltz2    | Diffusion (AF3-like) | 521 M               | 0.864     | 0.730     | 57.57      | 17.597      | **59.0**    | **1.31**    | **3,003**    | **66.7**     |
 | 2025 | bioRxiv      | protenix  | Diffusion (AF3-like) | 368 M               | 0.871     | 0.744     | 57.50      | 15.361      | 442.3       | 9.83        | 27,555       | 612.3        |
 
 All 45/45 targets scored successfully for every model. **Bold** = best value in column (for Cα-RMSD, lower is better). GDT_TS is shown on a 0–100 scale (`gdt_ts_percent`). CO₂/exp and Time/exp are totals over all 45 targets using `total_carbon_with_shared_msa_g` / `total_time_with_shared_msa_sec` from `results/benchmark-score.csv`; per-job columns divide by 45.
@@ -157,31 +157,31 @@ The `results/` directory is intentionally clean and contains the latest export:
 
 ## Reproduction
 
-The 45-target benchmark is assembled from three separate backend runs and scored with the combined-run scripts. From the `Protein-Folding-Benchmark` repo root:
+The 45-target benchmark is assembled from five source runs (three original GPU runs plus two GPU reruns for the three CPU-executed models) and scored with the combined-run scripts. From the `Protein-Folding-Benchmark` repo root:
 
-**1. Combine predictions from the three source runs:**
+**1. Combine predictions from the five source runs:**
 ```bash
 conda run -n folding-benchmark python scripts/combine_8model_predictions.py \
-  --dest results/2026-06-06-combine-8models
+  --dest results/2026-06-09-combine-8models-gpu
 ```
 
 **2. Build per-target reference PDBs (correct chain + residue range from manifest):**
 ```bash
 conda run -n folding-benchmark python scripts/build_combined_references.py \
-  --run-dir results/2026-06-06-combine-8models
+  --run-dir results/2026-06-09-combine-8models-gpu
 ```
 
 **3. Score all 45 targets × 8 models:**
 ```bash
 conda run -n folding-benchmark python scripts/score_combined_8models.py \
-  --run-dir results/2026-06-06-combine-8models \
+  --run-dir results/2026-06-09-combine-8models-gpu \
   --match-mode sequence
 ```
 
 **4. Export to carbon4science format:**
 ```bash
 conda run -n folding-benchmark python scripts/export_combined_to_carbon4science.py \
-  --run-dir results/2026-06-06-combine-8models \
+  --run-dir results/2026-06-09-combine-8models-gpu \
   --out-dir ../carbon4science.github.io/results
 ```
 
@@ -189,8 +189,10 @@ Source runs:
 
 | Group | Result directory | Models |
 |---|---|---|
-| MSA-free | `results/20260601_104732_casp15_casp16_unique_lt1000_all_default_msa-free` | chai1, esmfold, omegafold |
-| ColabFold MSA | `results/20260603_142659_casp15_casp16_unique_lt1000_all_default_colabfold` | boltz2, colabfold, openfold, protenix |
+| MSA-free (GPU rerun 2026-06-09) | `results/20260609_gpu_rerun_msa-free` | chai1, esmfold |
+| MSA-free (original) | `results/20260601_104732_casp15_casp16_unique_lt1000_all_default_msa-free` | omegafold |
+| ColabFold MSA (GPU rerun 2026-06-09) | `results/20260609_gpu_rerun_colabfold` | boltz2 |
+| ColabFold MSA (original) | `results/20260603_142659_casp15_casp16_unique_lt1000_all_default_colabfold` | colabfold, openfold, protenix |
 | AlphaFold2 | `results/20260604_134750_casp15_casp16_unique_lt1000_all_default-af2` | af2 |
 
 ## Limitations
