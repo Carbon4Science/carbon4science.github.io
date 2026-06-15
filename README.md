@@ -112,8 +112,8 @@ All tasks benchmarked on the same hardware with full carbon tracking.
 | Year | Venue                | Model         | Architecture  | Params | VUN (%)   | VUNS (%)  | CO₂/exp (g) | CO₂/job (g) | Time/exp (s) | Time/job (s) |
 | ---- | -------------------- | ------------- | ------------- | ------ | --------- | --------- | ----------- | ----------- | ------------ | ------------ |
 | 2017 | J. Cheminf.          | REINVENT      | LM            | 4.2M   | 87.90     | 80.88     | 0.18        | 0.18        | 14           | 14           |
-| 2018 | ICML                 | JT-VAE        | VAE           | 5.3M   | 91.39     | **89.41** | 10.58       | 10.58       | 662          | 662          |
-| 2020 | ICML                 | HierVAE       | VAE           | 8.0M   | 92.10     | 88.89     | 11.97       | 11.97       | 757          | 757          |
+| 2018 | ICML                 | JT-VAE        | GNN           | 5.3M   | 91.39     | **89.41** | 10.58       | 10.58       | 662          | 662          |
+| 2020 | ICML                 | HierVAE       | GNN           | 8.0M   | 92.10     | 88.89     | 11.97       | 11.97       | 757          | 757          |
 | 2021 | J. Chem. Inf. Model. | MolGPT        | LM            | 9.5M   | 77.15     | 76.65     | 1.07        | 1.07        | 37           | 37           |
 | 2023 | ICML                 | DiGress       | Diffusion     | 16.2M  | 82.45     | 81.18     | 175.35      | 175.35      | 5,201        | 5,201        |
 | 2024 | J. Cheminf.          | REINVENT4     | LM            | 5.8M   | 94.16     | 85.44     | **0.07**    | **0.07**    | **8**        | **8**        |
@@ -134,10 +134,10 @@ All tasks benchmarked on the same hardware with full carbon tracking.
 | 2023 | NeurIPS      | DiffCSP        | Diffusion     | 12.4M  | 29.0     | 4.3     | 12.7        | 12.60       | 381          | 381          |
 | 2024 | Nat. Commun. | CrystaLLM      | LM            | 25.9M  | 16.4     | 3.5     | 19.3        | 19.20       | 942          | 942          |
 | 2024 | ICML         | FlowMM         | Flow Matching | 28.3M  | 23.9     | 4.3     | 12.8        | 12.80       | 547          | 547          |
-| 2025 | arXiv        | **ChargeDIFF** | Diffusion     | 59.5M  | **33.5** | 4.4     | 133.5       | 133.50      | 2,994        | 2,994        |
 | 2025 | Nature       | MatterGen      | Diffusion     | 44.6M  | 33.4     | **5.2** | 248.1       | 248.10      | 8,079        | 8,079        |
 | 2025 | ICML         | ADiT           | Diffusion     | 231.9M | 29.6     | **5.5** | 112.5       | 112.50      | 10,512       | 10,512       |
 | 2025 | ICML         | CrystalFlow    | Flow Matching | 20.9M  | 21.7     | 3.0     | **1.5**     | **1.50**    | **43**       | **43**       |
+| 2026 | Nat. Commun. | **ChargeDIFF** | Diffusion     | 59.5M  | **33.5** | 4.4     | 133.5       | 133.50      | 2,994        | 2,994        |
 
 
 ---
@@ -186,13 +186,13 @@ All tasks benchmarked on the same hardware with full carbon tracking.
 
 | Year | Venue        | Model     | Architecture         | Params | GDT-TS (%) | lDDT-Cα   | CO₂/exp (g) | CO₂/job (g) | Time/exp (s) | Time/job (s) |
 | ---- | ------------ | --------- | -------------------- | ------ | ---------- | --------- | ----------- | ----------- | ------------ | ------------ |
-| 2021 | Nature       | AF2       | Evoformer + MSA      | 93.2M  | 59.15      | 0.868     | 46.73       | 2,103.0     | 1,729.6      | 77,832       |
+| 2021 | Nature       | AlphaFold2 | Evoformer + MSA     | 93.2M  | 59.15      | 0.868     | 46.73       | 2,103.0     | 1,729.6      | 77,832       |
 | 2022 | Nat. Methods | ColabFold | Evoformer + MMseqs2  | 93.2M  | **60.96**  | **0.876** | 11.60       | 522.2       | 669.5        | 30,126       |
-| 2022 | bioRxiv      | OmegaFold | PLM + Geoformer      | 795M   | 47.18      | 0.770     | **4.00**    | **180.1**   | **123.0**    | **5,535**    |
-| 2023 | Science      | ESMFold   | ESM-2 LM + folding   | 693M   | 52.36      | 0.811     | 5.27        | 237.0       | 363.2        | 16,345       |
-| 2024 | bioRxiv      | Chai-1    | Diffusion (AF3-like) | 316M   | 48.79      | 0.798     | 19.83       | 892.4       | 1,416.4      | 63,738       |
+| 2022 | bioRxiv      | OmegaFold | PLM + Geoformer      | 795M   | 47.18      | 0.770     | 4.00        | 180.1       | 123.0        | 5,535        |
+| 2023 | Science      | ESMFold   | ESM-2 LM + folding   | 693M   | 52.16      | 0.810     | **1.58**    | **71.3**    | **71.9**     | **3,235**    |
+| 2024 | bioRxiv      | Chai-1    | Diffusion (AF3-like) | 316M   | 49.71      | 0.799     | 4.09        | 184.2       | 161.9        | 7,283        |
 | 2024 | Nat. Methods | OpenFold  | Evoformer + MSA      | 93.2M  | 60.84      | 0.875     | 10.61       | 477.6       | 596.8        | 26,854       |
-| 2025 | bioRxiv      | Boltz-2   | Diffusion (AF3-like) | 521M   | 51.82      | 0.765     | 17.70       | 796.5       | 1,180.8      | 53,137       |
+| 2025 | bioRxiv      | Boltz-2   | Diffusion (AF3-like) | 521M   | 57.57      | 0.864     | 9.52        | 428.4       | 587.6        | 26,442       |
 | 2025 | bioRxiv      | Protenix  | Diffusion (AF3-like) | 368M   | 57.50      | 0.871     | 9.83        | 442.3       | 612.3        | 27,555       |
 
 > GDT-TS (%) is the primary ranking metric; lDDT-Cα is the secondary metric. Per-exp values are per single target; per-job values are totals over all 45 targets. Carbon uses CodeCarbon offline world-average accounting (475 gCO₂/kWh) on 3 × NVIDIA RTX A5000 (24 GB). Boltz-2's training cutoff (2023-06-01) postdates the 33 CASP15 targets — interpret with a potential leakage caveat.
