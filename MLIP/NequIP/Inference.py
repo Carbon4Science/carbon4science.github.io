@@ -30,10 +30,12 @@ def _get_calculator(device=None, checkpoint_path=None):
                 device=device,
                 chemical_species_to_atom_type_map=True,
             )
+            print("Using a saved model checkpoint for inference.")
     else:
         # Try compiled model first, fall back to saved model
         compiled_path = os.path.join(os.path.dirname(__file__), "NequIP-MP-L.nequip.pt2")
-        if os.path.exists(compiled_path):
+        #compiled_path = None  # Disable compiled model for now
+        if compiled_path is not None and os.path.exists(compiled_path):
             calc = NequIPCalculator.from_compiled_model(
                 compile_path=compiled_path,
                 device=device,
@@ -45,6 +47,7 @@ def _get_calculator(device=None, checkpoint_path=None):
                 device=device,
                 chemical_species_to_atom_type_map=True,
             )
+            print("Using a saved model checkpoint for inference.")
 
     if checkpoint_path is None:
         _calculator = calc

@@ -1,0 +1,2225 @@
+{
+  "benchmark": "Matbench Discovery dynamat",
+  "model": "SevenNet",
+  "num_structures": 17,
+  "metric": {
+    "CMDS": null
+  },
+  "initial_structures_dir": "MLIP/dynamat_initial_structures",
+  "carbon_mean_over_structures": {
+    "duration_seconds": 315.190967,
+    "energy_wh": 17.279838,
+    "emissions_g_co2": 6.470329,
+    "gpu_energy_wh": 0.0,
+    "cpu_energy_wh": 0.0,
+    "ram_energy_wh": 0.0,
+    "peak_gpu_memory_mb": 1252.360784,
+    "peak_cpu_memory_mb": 1441.754902
+  },
+  "md": {
+    "timestep_fs": 2.0,
+    "equilibration_ps": 0.0,
+    "production_ps": 10.0,
+    "traj_interval": 50,
+    "seeds": [
+      42,
+      43,
+      44
+    ]
+  },
+  "structures": [
+    {
+      "model": "SevenNet",
+      "structure": "CsSnI3_500K_Ivor_VASP",
+      "temperature_K": 500,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.469134,
+          "production_seconds": 180.913213,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/CsSnI3_500K_Ivor_VASP/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:01:52.190258",
+            "end_time": "2026-07-28T16:04:57.008891",
+            "duration_seconds": 184.8186333179474,
+            "energy_wh": 6.566553335647753,
+            "emissions_g_co2": 2.8273411700698463,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 466.7,
+            "peak_cpu_memory_mb": 1343.8,
+            "project_name": "SevenNet_dynamat_CsSnI3_500K_Ivor_VASP_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.041843,
+          "production_seconds": 179.808893,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/CsSnI3_500K_Ivor_VASP/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:04:57.109067",
+            "end_time": "2026-07-28T16:08:01.186923",
+            "duration_seconds": 184.07785558700562,
+            "energy_wh": 6.383006759639268,
+            "emissions_g_co2": 2.748312071477601,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 466.4,
+            "peak_cpu_memory_mb": 1343.8,
+            "project_name": "SevenNet_dynamat_CsSnI3_500K_Ivor_VASP_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.036063,
+          "production_seconds": 180.121432,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/CsSnI3_500K_Ivor_VASP/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:08:01.286454",
+            "end_time": "2026-07-28T16:11:05.248877",
+            "duration_seconds": 183.96242332458496,
+            "energy_wh": 6.412743048189831,
+            "emissions_g_co2": 2.7611155360299513,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 466.4,
+            "peak_cpu_memory_mb": 1345.1,
+            "project_name": "SevenNet_dynamat_CsSnI3_500K_Ivor_VASP_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 184.286304,
+        "duration_seconds_std": 0.379352,
+        "energy_wh": 6.454101,
+        "energy_wh_std": 0.080437,
+        "emissions_g_co2": 2.778923,
+        "emissions_g_co2_std": 0.034634,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 466.5,
+        "peak_gpu_memory_mb_std": 0.141421,
+        "peak_cpu_memory_mb": 1344.233333,
+        "peak_cpu_memory_mb_std": 0.612826
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "MAPbBr3_300K_Ivor_VASP",
+      "temperature_K": 300,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.03988,
+          "production_seconds": 180.269061,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/MAPbBr3_300K_Ivor_VASP/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:11:05.348555",
+            "end_time": "2026-07-28T16:14:09.510463",
+            "duration_seconds": 184.1619086265564,
+            "energy_wh": 8.861732273084947,
+            "emissions_g_co2": 3.8155694796253665,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 698.8,
+            "peak_cpu_memory_mb": 1349.6,
+            "project_name": "SevenNet_dynamat_MAPbBr3_300K_Ivor_VASP_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.03441,
+          "production_seconds": 185.50559,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/MAPbBr3_300K_Ivor_VASP/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:14:09.600195",
+            "end_time": "2026-07-28T16:17:18.896887",
+            "duration_seconds": 189.2966923713684,
+            "energy_wh": 9.305401915625204,
+            "emissions_g_co2": 4.006598986604997,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 730.5,
+            "peak_cpu_memory_mb": 1354.1,
+            "project_name": "SevenNet_dynamat_MAPbBr3_300K_Ivor_VASP_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.036576,
+          "production_seconds": 177.148628,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/MAPbBr3_300K_Ivor_VASP/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:17:18.997584",
+            "end_time": "2026-07-28T16:20:19.929436",
+            "duration_seconds": 180.93185210227966,
+            "energy_wh": 8.838909969152807,
+            "emissions_g_co2": 3.805742948688217,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 701.5,
+            "peak_cpu_memory_mb": 1357.1,
+            "project_name": "SevenNet_dynamat_MAPbBr3_300K_Ivor_VASP_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 184.796818,
+        "duration_seconds_std": 3.444316,
+        "energy_wh": 9.002015,
+        "energy_wh_std": 0.214729,
+        "emissions_g_co2": 3.87597,
+        "emissions_g_co2_std": 0.092455,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 710.266667,
+        "peak_gpu_memory_mb_std": 14.349526,
+        "peak_cpu_memory_mb": 1353.6,
+        "peak_cpu_memory_mb_std": 3.082207
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "TiSe2_400K_Ivor_VASP",
+      "temperature_K": 400,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.045605,
+          "production_seconds": 166.984684,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/TiSe2_400K_Ivor_VASP/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:20:20.037566",
+            "end_time": "2026-07-28T16:23:10.804923",
+            "duration_seconds": 170.7673568725586,
+            "energy_wh": 6.861199316261906,
+            "emissions_g_co2": 2.95420600600494,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 490.7,
+            "peak_cpu_memory_mb": 1361.6,
+            "project_name": "SevenNet_dynamat_TiSe2_400K_Ivor_VASP_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.032041,
+          "production_seconds": 178.33106,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/TiSe2_400K_Ivor_VASP/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:23:10.892575",
+            "end_time": "2026-07-28T16:26:13.020826",
+            "duration_seconds": 182.12825107574463,
+            "energy_wh": 7.124366987662531,
+            "emissions_g_co2": 3.067517320776893,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 495.2,
+            "peak_cpu_memory_mb": 1366.1,
+            "project_name": "SevenNet_dynamat_TiSe2_400K_Ivor_VASP_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.034735,
+          "production_seconds": 178.770893,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/TiSe2_400K_Ivor_VASP/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:26:13.118723",
+            "end_time": "2026-07-28T16:29:16.298982",
+            "duration_seconds": 183.18025922775269,
+            "energy_wh": 7.080018315341267,
+            "emissions_g_co2": 0.02787654570231017,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 495.2,
+            "peak_cpu_memory_mb": 1369.1,
+            "project_name": "SevenNet_dynamat_TiSe2_400K_Ivor_VASP_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 178.691956,
+        "duration_seconds_std": 5.619972,
+        "energy_wh": 7.021862,
+        "energy_wh_std": 0.115039,
+        "emissions_g_co2": 2.016533,
+        "emissions_g_co2_std": 1.406953,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 493.7,
+        "peak_gpu_memory_mb_std": 2.12132,
+        "peak_cpu_memory_mb": 1365.6,
+        "peak_cpu_memory_mb_std": 3.082207
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "anthracene_293K_Sharma_S",
+      "temperature_K": 293,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.041313,
+          "production_seconds": 183.885543,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/anthracene_293K_Sharma_S/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:29:16.406106",
+            "end_time": "2026-07-28T16:32:24.063531",
+            "duration_seconds": 187.65742564201355,
+            "energy_wh": 9.057445994510193,
+            "emissions_g_co2": 3.89983734951827,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 699.6,
+            "peak_cpu_memory_mb": 1373.6,
+            "project_name": "SevenNet_dynamat_anthracene_293K_Sharma_S_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.03576,
+          "production_seconds": 184.24432,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/anthracene_293K_Sharma_S/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:32:24.162031",
+            "end_time": "2026-07-28T16:35:33.473537",
+            "duration_seconds": 189.31150555610657,
+            "energy_wh": 9.065591863979002,
+            "emissions_g_co2": 0.03569445369471768,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 704.5,
+            "peak_cpu_memory_mb": 1379.6,
+            "project_name": "SevenNet_dynamat_anthracene_293K_Sharma_S_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.03755,
+          "production_seconds": 185.762605,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/anthracene_293K_Sharma_S/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:35:33.578382",
+            "end_time": "2026-07-28T16:38:43.097259",
+            "duration_seconds": 189.5188765525818,
+            "energy_wh": 9.122409834783527,
+            "emissions_g_co2": 3.9278086353332387,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 702.3,
+            "peak_cpu_memory_mb": 1382.6,
+            "project_name": "SevenNet_dynamat_anthracene_293K_Sharma_S_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 188.829269,
+        "duration_seconds_std": 0.832932,
+        "energy_wh": 9.081816,
+        "energy_wh_std": 0.028896,
+        "emissions_g_co2": 2.621113,
+        "emissions_g_co2_std": 1.828203,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 702.133333,
+        "peak_gpu_memory_mb_std": 2.003885,
+        "peak_cpu_memory_mb": 1378.6,
+        "peak_cpu_memory_mb_std": 3.741657
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "bulkAg_600K_Kapil",
+      "temperature_K": 600,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.046924,
+          "production_seconds": 198.759024,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkAg_600K_Kapil/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:38:43.203524",
+            "end_time": "2026-07-28T16:42:05.844451",
+            "duration_seconds": 202.64092707633972,
+            "energy_wh": 10.447724895156265,
+            "emissions_g_co2": 4.498445564932748,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 808.6,
+            "peak_cpu_memory_mb": 1387.1,
+            "project_name": "SevenNet_dynamat_bulkAg_600K_Kapil_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.037514,
+          "production_seconds": 196.952176,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkAg_600K_Kapil/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:42:05.946955",
+            "end_time": "2026-07-28T16:45:27.474155",
+            "duration_seconds": 201.52719950675964,
+            "energy_wh": 10.425908813961493,
+            "emissions_g_co2": 0.0410505044754968,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 808.6,
+            "peak_cpu_memory_mb": 1391.6,
+            "project_name": "SevenNet_dynamat_bulkAg_600K_Kapil_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.035895,
+          "production_seconds": 186.928433,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkAg_600K_Kapil/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:45:27.572423",
+            "end_time": "2026-07-28T16:48:40.526317",
+            "duration_seconds": 192.95389485359192,
+            "energy_wh": 10.228742797095368,
+            "emissions_g_co2": 0.04027419186791479,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 808.6,
+            "peak_cpu_memory_mb": 1396.1,
+            "project_name": "SevenNet_dynamat_bulkAg_600K_Kapil_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 199.040674,
+        "duration_seconds_std": 4.327952,
+        "energy_wh": 10.367459,
+        "energy_wh_std": 0.098491,
+        "emissions_g_co2": 1.52659,
+        "emissions_g_co2_std": 2.101419,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 808.6,
+        "peak_gpu_memory_mb_std": 0.0,
+        "peak_cpu_memory_mb": 1391.6,
+        "peak_cpu_memory_mb_std": 3.674235
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "bulkAu_1500K_Kapil",
+      "temperature_K": 1500,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.070952,
+          "production_seconds": 301.038533,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkAu_1500K_Kapil/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:48:40.662940",
+            "end_time": "2026-07-28T16:53:46.279508",
+            "duration_seconds": 305.61656761169434,
+            "energy_wh": 17.886140181956,
+            "emissions_g_co2": 0.07042408395184914,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1365.6,
+            "peak_cpu_memory_mb": 1402.1,
+            "project_name": "SevenNet_dynamat_bulkAu_1500K_Kapil_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.065632,
+          "production_seconds": 304.746539,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkAu_1500K_Kapil/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:53:46.412764",
+            "end_time": "2026-07-28T16:58:54.999045",
+            "duration_seconds": 308.58628129959106,
+            "energy_wh": 18.026131373538423,
+            "emissions_g_co2": 7.7614573071103194,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1366.6,
+            "peak_cpu_memory_mb": 1402.1,
+            "project_name": "SevenNet_dynamat_bulkAu_1500K_Kapil_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.059314,
+          "production_seconds": 305.071268,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkAu_1500K_Kapil/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T16:58:55.122932",
+            "end_time": "2026-07-28T17:04:04.008011",
+            "duration_seconds": 308.8850791454315,
+            "energy_wh": 18.005168129848034,
+            "emissions_g_co2": 7.752431226164279,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1359.9,
+            "peak_cpu_memory_mb": 1406.6,
+            "project_name": "SevenNet_dynamat_bulkAu_1500K_Kapil_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 307.695976,
+        "duration_seconds_std": 1.475415,
+        "energy_wh": 17.97248,
+        "energy_wh_std": 0.061648,
+        "emissions_g_co2": 5.194771,
+        "emissions_g_co2_std": 3.623462,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 1364.033333,
+        "peak_gpu_memory_mb_std": 2.951083,
+        "peak_cpu_memory_mb": 1403.6,
+        "peak_cpu_memory_mb_std": 2.12132
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "bulkCuAu_500K-Artrith_VASP",
+      "temperature_K": 500,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.07934,
+          "production_seconds": 302.560703,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkCuAu_500K-Artrith_VASP/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T17:04:04.158567",
+            "end_time": "2026-07-28T17:09:11.007047",
+            "duration_seconds": 306.84847950935364,
+            "energy_wh": 17.496855254100247,
+            "emissions_g_co2": 7.5335684761921815,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1383.9,
+            "peak_cpu_memory_mb": 1409.6,
+            "project_name": "SevenNet_dynamat_bulkCuAu_500K-Artrith_VASP_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.068356,
+          "production_seconds": 297.178212,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkCuAu_500K-Artrith_VASP/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T17:09:11.137850",
+            "end_time": "2026-07-28T17:14:12.134920",
+            "duration_seconds": 300.9970703125,
+            "energy_wh": 17.363931015148257,
+            "emissions_g_co2": 7.476335685399341,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1383.6,
+            "peak_cpu_memory_mb": 1414.1,
+            "project_name": "SevenNet_dynamat_bulkCuAu_500K-Artrith_VASP_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.067581,
+          "production_seconds": 298.204653,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkCuAu_500K-Artrith_VASP/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T17:14:12.262022",
+            "end_time": "2026-07-28T17:19:14.352999",
+            "duration_seconds": 302.09097623825073,
+            "energy_wh": 17.453336538937258,
+            "emissions_g_co2": 7.5148307535606,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1383.9,
+            "peak_cpu_memory_mb": 1420.1,
+            "project_name": "SevenNet_dynamat_bulkCuAu_500K-Artrith_VASP_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 303.312175,
+        "duration_seconds_std": 2.540111,
+        "energy_wh": 17.438041,
+        "energy_wh_std": 0.055333,
+        "emissions_g_co2": 7.508245,
+        "emissions_g_co2_std": 0.023825,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 1383.8,
+        "peak_gpu_memory_mb_std": 0.141421,
+        "peak_cpu_memory_mb": 1414.6,
+        "peak_cpu_memory_mb_std": 4.301163
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "bulkCuZrAl_1500K_A.Wadowski-J.Schmidt_VASP",
+      "temperature_K": 1500,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.073046,
+          "production_seconds": 303.333012,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkCuZrAl_1500K_A.Wadowski-J.Schmidt_VASP/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T17:19:14.488053",
+            "end_time": "2026-07-28T17:24:21.671342",
+            "duration_seconds": 307.18328881263733,
+            "energy_wh": 17.760931710167885,
+            "emissions_g_co2": 7.647271083651856,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1332.0,
+            "peak_cpu_memory_mb": 1423.1,
+            "project_name": "SevenNet_dynamat_bulkCuZrAl_1500K_A.Wadowski-J.Schmidt_VASP_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.073977,
+          "production_seconds": 316.382012,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkCuZrAl_1500K_A.Wadowski-J.Schmidt_VASP/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T17:24:21.841598",
+            "end_time": "2026-07-28T17:29:42.576966",
+            "duration_seconds": 320.7353675365448,
+            "energy_wh": 18.02403660174956,
+            "emissions_g_co2": 7.7605553675055035,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1332.8,
+            "peak_cpu_memory_mb": 1427.6,
+            "project_name": "SevenNet_dynamat_bulkCuZrAl_1500K_A.Wadowski-J.Schmidt_VASP_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.060642,
+          "production_seconds": 303.901602,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkCuZrAl_1500K_A.Wadowski-J.Schmidt_VASP/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T17:29:42.702710",
+            "end_time": "2026-07-28T17:34:50.591582",
+            "duration_seconds": 307.88887119293213,
+            "energy_wh": 17.785364408305217,
+            "emissions_g_co2": 7.657790997190753,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1332.8,
+            "peak_cpu_memory_mb": 1433.6,
+            "project_name": "SevenNet_dynamat_bulkCuZrAl_1500K_A.Wadowski-J.Schmidt_VASP_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 311.935843,
+        "duration_seconds_std": 6.228868,
+        "energy_wh": 17.856778,
+        "energy_wh_std": 0.11869,
+        "emissions_g_co2": 7.688539,
+        "emissions_g_co2_std": 0.051104,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 1332.533333,
+        "peak_gpu_memory_mb_std": 0.377124,
+        "peak_cpu_memory_mb": 1428.1,
+        "peak_cpu_memory_mb_std": 4.301163
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "bulkCu_1000K_Kapil",
+      "temperature_K": 1000,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.076799,
+          "production_seconds": 288.988809,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkCu_1000K_Kapil/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T17:34:50.733362",
+            "end_time": "2026-07-28T17:39:43.514354",
+            "duration_seconds": 292.78099179267883,
+            "energy_wh": 16.65572868417043,
+            "emissions_g_co2": 7.171407132357211,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1239.4,
+            "peak_cpu_memory_mb": 1436.6,
+            "project_name": "SevenNet_dynamat_bulkCu_1000K_Kapil_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.053565,
+          "production_seconds": 281.34546,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkCu_1000K_Kapil/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T17:39:43.628603",
+            "end_time": "2026-07-28T17:44:28.794045",
+            "duration_seconds": 285.1654419898987,
+            "energy_wh": 16.49263221986517,
+            "emissions_g_co2": 7.101183177010686,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1238.8,
+            "peak_cpu_memory_mb": 1442.6,
+            "project_name": "SevenNet_dynamat_bulkCu_1000K_Kapil_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.054079,
+          "production_seconds": 279.200528,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkCu_1000K_Kapil/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T17:44:28.914629",
+            "end_time": "2026-07-28T17:49:11.907089",
+            "duration_seconds": 282.9924592971802,
+            "energy_wh": 16.42630505286479,
+            "emissions_g_co2": 7.0726248876968345,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1238.6,
+            "peak_cpu_memory_mb": 1447.1,
+            "project_name": "SevenNet_dynamat_bulkCu_1000K_Kapil_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 286.979631,
+        "duration_seconds_std": 4.197007,
+        "energy_wh": 16.524889,
+        "energy_wh_std": 0.096399,
+        "emissions_g_co2": 7.115072,
+        "emissions_g_co2_std": 0.041506,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 1238.933333,
+        "peak_gpu_memory_mb_std": 0.339935,
+        "peak_cpu_memory_mb": 1442.1,
+        "peak_cpu_memory_mb_std": 4.301163
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "bulkLiMgAlZnSn_600K_J_Schmidt_VASP",
+      "temperature_K": 600,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.147186,
+          "production_seconds": 760.974653,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkLiMgAlZnSn_600K_J_Schmidt_VASP/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T17:49:12.119881",
+            "end_time": "2026-07-28T18:01:56.887656",
+            "duration_seconds": 764.7677752971649,
+            "energy_wh": 45.06684797505866,
+            "emissions_g_co2": 19.404297532077084,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 3002.9,
+            "peak_cpu_memory_mb": 1451.6,
+            "project_name": "SevenNet_dynamat_bulkLiMgAlZnSn_600K_J_Schmidt_VASP_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.142917,
+          "production_seconds": 756.283451,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkLiMgAlZnSn_600K_J_Schmidt_VASP/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T18:01:57.092656",
+            "end_time": "2026-07-28T18:14:37.185480",
+            "duration_seconds": 760.0928239822388,
+            "energy_wh": 44.89190485227108,
+            "emissions_g_co2": 19.328972796527804,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 2999.3,
+            "peak_cpu_memory_mb": 1456.1,
+            "project_name": "SevenNet_dynamat_bulkLiMgAlZnSn_600K_J_Schmidt_VASP_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.143856,
+          "production_seconds": 756.392247,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkLiMgAlZnSn_600K_J_Schmidt_VASP/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T18:14:37.384394",
+            "end_time": "2026-07-28T18:27:17.689593",
+            "duration_seconds": 760.3051993846893,
+            "energy_wh": 44.892032195810934,
+            "emissions_g_co2": 19.329027626453726,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 2995.7,
+            "peak_cpu_memory_mb": 1459.1,
+            "project_name": "SevenNet_dynamat_bulkLiMgAlZnSn_600K_J_Schmidt_VASP_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 761.721933,
+        "duration_seconds_std": 2.15548,
+        "energy_wh": 44.950262,
+        "energy_wh_std": 0.082439,
+        "emissions_g_co2": 19.354099,
+        "emissions_g_co2_std": 0.035496,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 2999.3,
+        "peak_gpu_memory_mb_std": 2.939388,
+        "peak_cpu_memory_mb": 1455.6,
+        "peak_cpu_memory_mb_std": 3.082207
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "bulkLiMgAlZnSn_900K_J_Schmidt_VASP",
+      "temperature_K": 900,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.142912,
+          "production_seconds": 769.288222,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkLiMgAlZnSn_900K_J_Schmidt_VASP/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T18:27:17.895664",
+            "end_time": "2026-07-28T18:40:10.986856",
+            "duration_seconds": 773.0911917686462,
+            "energy_wh": 45.450216951828075,
+            "emissions_g_co2": 19.56936356229776,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 3020.8,
+            "peak_cpu_memory_mb": 1462.1,
+            "project_name": "SevenNet_dynamat_bulkLiMgAlZnSn_900K_J_Schmidt_VASP_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.143406,
+          "production_seconds": 770.2846,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkLiMgAlZnSn_900K_J_Schmidt_VASP/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T18:40:11.217905",
+            "end_time": "2026-07-28T18:53:05.267404",
+            "duration_seconds": 774.0494990348816,
+            "energy_wh": 45.404949935720616,
+            "emissions_g_co2": 19.54987307897342,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 3008.7,
+            "peak_cpu_memory_mb": 1465.1,
+            "project_name": "SevenNet_dynamat_bulkLiMgAlZnSn_900K_J_Schmidt_VASP_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.147046,
+          "production_seconds": 775.074317,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkLiMgAlZnSn_900K_J_Schmidt_VASP/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T18:53:05.469577",
+            "end_time": "2026-07-28T19:06:05.195717",
+            "duration_seconds": 779.7261400222778,
+            "energy_wh": 45.47598804892017,
+            "emissions_g_co2": 0.17905511013389647,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 3008.7,
+            "peak_cpu_memory_mb": 1469.6,
+            "project_name": "SevenNet_dynamat_bulkLiMgAlZnSn_900K_J_Schmidt_VASP_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 775.622277,
+        "duration_seconds_std": 2.928123,
+        "energy_wh": 45.443718,
+        "energy_wh_std": 0.029363,
+        "emissions_g_co2": 13.099431,
+        "emissions_g_co2_std": 9.136089,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 3012.733333,
+        "peak_gpu_memory_mb_std": 5.703995,
+        "peak_cpu_memory_mb": 1465.6,
+        "peak_cpu_memory_mb_std": 3.082207
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "bulkMoS2_300K_NO-VdW_J.Kioseoglou_VASP",
+      "temperature_K": 300,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.051647,
+          "production_seconds": 208.394582,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkMoS2_300K_NO-VdW_J.Kioseoglou_VASP/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T19:06:05.311163",
+            "end_time": "2026-07-28T19:09:37.586304",
+            "duration_seconds": 212.27514028549194,
+            "energy_wh": 9.17694578777865,
+            "emissions_g_co2": 3.9512900170064906,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 678.5,
+            "peak_cpu_memory_mb": 1474.1,
+            "project_name": "SevenNet_dynamat_bulkMoS2_300K_NO-VdW_J.Kioseoglou_VASP_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.03703,
+          "production_seconds": 174.551945,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkMoS2_300K_NO-VdW_J.Kioseoglou_VASP/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T19:09:37.680680",
+            "end_time": "2026-07-28T19:12:36.015237",
+            "duration_seconds": 178.33455753326416,
+            "energy_wh": 8.635476605104259,
+            "emissions_g_co2": 3.7181512554299263,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 678.5,
+            "peak_cpu_memory_mb": 1478.6,
+            "project_name": "SevenNet_dynamat_bulkMoS2_300K_NO-VdW_J.Kioseoglou_VASP_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.032475,
+          "production_seconds": 190.023543,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkMoS2_300K_NO-VdW_J.Kioseoglou_VASP/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T19:12:36.108781",
+            "end_time": "2026-07-28T19:15:49.912133",
+            "duration_seconds": 193.80335211753845,
+            "energy_wh": 9.009216828499198,
+            "emissions_g_co2": 3.8790714621964146,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 678.8,
+            "peak_cpu_memory_mb": 1483.1,
+            "project_name": "SevenNet_dynamat_bulkMoS2_300K_NO-VdW_J.Kioseoglou_VASP_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 194.80435,
+        "duration_seconds_std": 13.874252,
+        "energy_wh": 8.940546,
+        "energy_wh_std": 0.226324,
+        "emissions_g_co2": 3.849504,
+        "emissions_g_co2_std": 0.097448,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 678.6,
+        "peak_gpu_memory_mb_std": 0.141421,
+        "peak_cpu_memory_mb": 1478.6,
+        "peak_cpu_memory_mb_std": 3.674235
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "bulkPt3Co_300K_J.Kioseoglou_VASP",
+      "temperature_K": 300,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.064251,
+          "production_seconds": 267.411163,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkPt3Co_300K_J.Kioseoglou_VASP/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T19:15:50.034479",
+            "end_time": "2026-07-28T19:20:21.226084",
+            "duration_seconds": 271.19160532951355,
+            "energy_wh": 15.65890468475535,
+            "emissions_g_co2": 6.742207613401058,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1170.8,
+            "peak_cpu_memory_mb": 1487.6,
+            "project_name": "SevenNet_dynamat_bulkPt3Co_300K_J.Kioseoglou_VASP_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.052788,
+          "production_seconds": 275.062625,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkPt3Co_300K_J.Kioseoglou_VASP/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T19:20:21.337762",
+            "end_time": "2026-07-28T19:25:00.168066",
+            "duration_seconds": 278.83030366897583,
+            "energy_wh": 15.874314972549222,
+            "emissions_g_co2": 6.834956174785601,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1170.4,
+            "peak_cpu_memory_mb": 1490.6,
+            "project_name": "SevenNet_dynamat_bulkPt3Co_300K_J.Kioseoglou_VASP_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.053099,
+          "production_seconds": 269.623636,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/bulkPt3Co_300K_J.Kioseoglou_VASP/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T19:25:00.279549",
+            "end_time": "2026-07-28T19:29:34.557920",
+            "duration_seconds": 274.27837085723877,
+            "energy_wh": 15.768950996412148,
+            "emissions_g_co2": 0.06208795846989051,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1170.8,
+            "peak_cpu_memory_mb": 1496.6,
+            "project_name": "SevenNet_dynamat_bulkPt3Co_300K_J.Kioseoglou_VASP_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 274.76676,
+        "duration_seconds_std": 3.137549,
+        "energy_wh": 15.76739,
+        "energy_wh_std": 0.087948,
+        "emissions_g_co2": 4.546417,
+        "emissions_g_co2_std": 3.171126,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 1170.666667,
+        "peak_gpu_memory_mb_std": 0.188562,
+        "peak_cpu_memory_mb": 1491.6,
+        "peak_cpu_memory_mb_std": 3.741657
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "naphthalene_295K_Sharma_S",
+      "temperature_K": 295,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.102143,
+          "production_seconds": 465.65454,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/naphthalene_295K_Sharma_S/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T19:29:34.720926",
+            "end_time": "2026-07-28T19:37:24.172169",
+            "duration_seconds": 469.45124316215515,
+            "energy_wh": 27.7336163987252,
+            "emissions_g_co2": 11.941180011949914,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1949.5,
+            "peak_cpu_memory_mb": 1501.1,
+            "project_name": "SevenNet_dynamat_naphthalene_295K_Sharma_S_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.093012,
+          "production_seconds": 480.959336,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/naphthalene_295K_Sharma_S/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T19:37:24.330347",
+            "end_time": "2026-07-28T19:45:29.071749",
+            "duration_seconds": 484.7414028644562,
+            "energy_wh": 27.927609323987227,
+            "emissions_g_co2": 12.02470696380121,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1952.5,
+            "peak_cpu_memory_mb": 1502.6,
+            "project_name": "SevenNet_dynamat_naphthalene_295K_Sharma_S_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.095016,
+          "production_seconds": 485.956965,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/naphthalene_295K_Sharma_S/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T19:45:29.235448",
+            "end_time": "2026-07-28T19:53:38.946312",
+            "duration_seconds": 489.7108643054962,
+            "energy_wh": 27.920995482004397,
+            "emissions_g_co2": 12.021859261700186,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1952.5,
+            "peak_cpu_memory_mb": 1508.6,
+            "project_name": "SevenNet_dynamat_naphthalene_295K_Sharma_S_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 481.30117,
+        "duration_seconds_std": 8.621271,
+        "energy_wh": 27.86074,
+        "energy_wh_std": 0.089931,
+        "emissions_g_co2": 11.995915,
+        "emissions_g_co2_std": 0.038721,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 1951.5,
+        "peak_gpu_memory_mb_std": 1.414214,
+        "peak_cpu_memory_mb": 1504.1,
+        "peak_cpu_memory_mb_std": 3.24037
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "pentacene_295K_Sharma_S",
+      "temperature_K": 295,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.061634,
+          "production_seconds": 249.77821,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/pentacene_295K_Sharma_S/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T19:53:39.070943",
+            "end_time": "2026-07-28T19:57:52.617781",
+            "duration_seconds": 253.54683780670166,
+            "energy_wh": 14.03578657729709,
+            "emissions_g_co2": 6.043346519227077,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1068.8,
+            "peak_cpu_memory_mb": 1511.6,
+            "project_name": "SevenNet_dynamat_pentacene_295K_Sharma_S_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.049873,
+          "production_seconds": 251.381973,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/pentacene_295K_Sharma_S/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T19:57:52.735361",
+            "end_time": "2026-07-28T20:02:07.937580",
+            "duration_seconds": 255.20221853256226,
+            "energy_wh": 13.887957078681808,
+            "emissions_g_co2": 5.97969601549679,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1068.5,
+            "peak_cpu_memory_mb": 1517.6,
+            "project_name": "SevenNet_dynamat_pentacene_295K_Sharma_S_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.050458,
+          "production_seconds": 254.742554,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/pentacene_295K_Sharma_S/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T20:02:08.050303",
+            "end_time": "2026-07-28T20:06:26.567245",
+            "duration_seconds": 258.5169425010681,
+            "energy_wh": 14.155579390246688,
+            "emissions_g_co2": 6.094925351320345,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1068.5,
+            "peak_cpu_memory_mb": 1520.6,
+            "project_name": "SevenNet_dynamat_pentacene_295K_Sharma_S_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 255.755333,
+        "duration_seconds_std": 2.066388,
+        "energy_wh": 14.026441,
+        "energy_wh_std": 0.109456,
+        "emissions_g_co2": 6.039323,
+        "emissions_g_co2_std": 0.047128,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 1068.6,
+        "peak_gpu_memory_mb_std": 0.141421,
+        "peak_cpu_memory_mb": 1516.6,
+        "peak_cpu_memory_mb_std": 3.741657
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "picene_295K_Sharma_S",
+      "temperature_K": 295,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.047838,
+          "production_seconds": 239.62365,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/picene_295K_Sharma_S/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T20:06:26.682364",
+            "end_time": "2026-07-28T20:10:30.080353",
+            "duration_seconds": 243.3979890346527,
+            "energy_wh": 13.4055273551435,
+            "emissions_g_co2": 5.771977696722072,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1028.1,
+            "peak_cpu_memory_mb": 1528.1,
+            "project_name": "SevenNet_dynamat_picene_295K_Sharma_S_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.05008,
+          "production_seconds": 246.999294,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/picene_295K_Sharma_S/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T20:10:30.193011",
+            "end_time": "2026-07-28T20:14:41.085672",
+            "duration_seconds": 250.89266061782837,
+            "energy_wh": 13.535176252696054,
+            "emissions_g_co2": 5.827800233594582,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1027.3,
+            "peak_cpu_memory_mb": 1531.1,
+            "project_name": "SevenNet_dynamat_picene_295K_Sharma_S_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.047808,
+          "production_seconds": 240.857597,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/picene_295K_Sharma_S/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T20:14:41.191638",
+            "end_time": "2026-07-28T20:18:45.826505",
+            "duration_seconds": 244.63486742973328,
+            "energy_wh": 13.434838219130272,
+            "emissions_g_co2": 5.784597987496264,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 1019.9,
+            "peak_cpu_memory_mb": 1534.1,
+            "project_name": "SevenNet_dynamat_picene_295K_Sharma_S_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 246.308506,
+        "duration_seconds_std": 3.280582,
+        "energy_wh": 13.458514,
+        "energy_wh_std": 0.055513,
+        "emissions_g_co2": 5.794792,
+        "emissions_g_co2_std": 0.023902,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 1025.1,
+        "peak_gpu_memory_mb_std": 3.691432,
+        "peak_cpu_memory_mb": 1531.1,
+        "peak_cpu_memory_mb_std": 2.44949
+      }
+    },
+    {
+      "model": "SevenNet",
+      "structure": "tetracene_295K_Sharma_S",
+      "temperature_K": 295,
+      "timestep_fs": 2.0,
+      "equilibration_ps": 0.0,
+      "production_ps": 10.0,
+      "seeds": [
+        42,
+        43,
+        44
+      ],
+      "seed_results": [
+        {
+          "seed": 42,
+          "equilibration_seconds": 0.052243,
+          "production_seconds": 206.002163,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/tetracene_295K_Sharma_S/seed-42.traj",
+          "carbon": {
+            "start_time": "2026-07-28T20:18:45.942303",
+            "end_time": "2026-07-28T20:22:16.006250",
+            "duration_seconds": 210.06394696235657,
+            "energy_wh": 11.286607141466103,
+            "emissions_g_co2": 4.859640577079636,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 882.7,
+            "peak_cpu_memory_mb": 1540.1,
+            "project_name": "SevenNet_dynamat_tetracene_295K_Sharma_S_seed1",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 43,
+          "equilibration_seconds": 0.043736,
+          "production_seconds": 225.476711,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/tetracene_295K_Sharma_S/seed-43.traj",
+          "carbon": {
+            "start_time": "2026-07-28T20:22:16.120367",
+            "end_time": "2026-07-28T20:26:05.383526",
+            "duration_seconds": 229.26315903663635,
+            "energy_wh": 11.792544871813853,
+            "emissions_g_co2": 5.077480667822275,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 884.0,
+            "peak_cpu_memory_mb": 1544.6,
+            "project_name": "SevenNet_dynamat_tetracene_295K_Sharma_S_seed2",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        },
+        {
+          "seed": 44,
+          "equilibration_seconds": 0.039984,
+          "production_seconds": 224.014605,
+          "production_steps": 5000,
+          "trajectory": "MLIP/dynamat_results/SevenNet/tetracene_295K_Sharma_S/seed-44.traj",
+          "carbon": {
+            "start_time": "2026-07-28T20:26:05.485975",
+            "end_time": "2026-07-28T20:29:53.351264",
+            "duration_seconds": 227.86528897285461,
+            "energy_wh": 11.691412631709145,
+            "emissions_g_co2": 5.0339364625971115,
+            "gpu_energy_wh": 0.0,
+            "cpu_energy_wh": 0.0,
+            "ram_energy_wh": 0.0,
+            "peak_gpu_memory_mb": 882.7,
+            "peak_cpu_memory_mb": 1549.1,
+            "project_name": "SevenNet_dynamat_tetracene_295K_Sharma_S_seed3",
+            "model_name": "SevenNet",
+            "task": "inference",
+            "hardware": {
+              "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+              "gpu_count": 1,
+              "gpu_memory_gb": 31.9921875,
+              "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+              "cpu_cores": 192,
+              "ram_gb": 503.03592681884766,
+              "cuda_version": "Driver 580.82.09",
+              "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+            }
+          }
+        }
+      ],
+      "carbon_mean_over_seeds": {
+        "duration_seconds": 222.397465,
+        "duration_seconds_std": 8.739766,
+        "energy_wh": 11.590188,
+        "energy_wh_std": 0.218599,
+        "emissions_g_co2": 4.990353,
+        "emissions_g_co2_std": 0.094121,
+        "gpu_energy_wh": 0.0,
+        "gpu_energy_wh_std": 0.0,
+        "cpu_energy_wh": 0.0,
+        "cpu_energy_wh_std": 0.0,
+        "ram_energy_wh": 0.0,
+        "ram_energy_wh_std": 0.0,
+        "peak_gpu_memory_mb": 883.133333,
+        "peak_gpu_memory_mb_std": 0.612826,
+        "peak_cpu_memory_mb": 1544.6,
+        "peak_cpu_memory_mb_std": 3.674235
+      }
+    }
+  ]
+}

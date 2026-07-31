@@ -1,0 +1,145 @@
+{
+  "task": "MLIP",
+  "model": "MACE",
+  "variant": "pretrained",
+  "model_params": null,
+  "accuracy": {
+    "mean": {
+      "rdf_mae.Li-Ge": 0.011651,
+      "rdf_mae.Li-Li": 0.015285,
+      "rdf_mae.Li-P": 0.014847,
+      "rdf_mae.Li-S": 0.027659,
+      "rdf_mae.average": 0.017361,
+      "rdf_score.Li-Ge": 0.988484,
+      "rdf_score.Li-Li": 0.984949,
+      "rdf_score.Li-P": 0.985371,
+      "rdf_score.Li-S": 0.973085,
+      "rdf_score.average": 0.982936,
+      "msd_mae": 9.445853,
+      "msd_score": 0.112584,
+      "diffusivity_mlip_cm2s": 8e-06
+    },
+    "std": {
+      "rdf_mae.Li-Ge": 0.001655,
+      "rdf_mae.Li-Li": 0.002426,
+      "rdf_mae.Li-P": 0.001131,
+      "rdf_mae.Li-S": 0.000651,
+      "rdf_mae.average": 2e-05,
+      "rdf_score.Li-Ge": 0.001618,
+      "rdf_score.Li-Li": 0.002355,
+      "rdf_score.Li-P": 0.001097,
+      "rdf_score.Li-S": 0.000616,
+      "rdf_score.average": 1.9e-05,
+      "msd_mae": 4.334248,
+      "msd_score": 0.061018,
+      "diffusivity_mlip_cm2s": 3e-06
+    },
+    "CPS": 0.637
+  },
+  "trials": [
+    {
+      "seed": 42,
+      "index": 1,
+      "accuracy": {
+        "rdf_mae": {
+          "Li-Ge": 0.009848,
+          "Li-Li": 0.017383,
+          "Li-P": 0.013932,
+          "Li-S": 0.028365,
+          "average": 0.017382
+        },
+        "rdf_score": {
+          "Li-Ge": 0.990248,
+          "Li-Li": 0.982914,
+          "Li-P": 0.986259,
+          "Li-S": 0.972417,
+          "average": 0.982915
+        },
+        "msd_mae": 12.359741,
+        "msd_score": 0.074852,
+        "diffusivity_mlip_cm2s": 1.03099171904334e-05
+      }
+    },
+    {
+      "seed": 43,
+      "index": 2,
+      "accuracy": {
+        "rdf_mae": {
+          "Li-Ge": 0.013101,
+          "Li-Li": 0.012629,
+          "Li-P": 0.016111,
+          "Li-S": 0.02753,
+          "average": 0.017343
+        },
+        "rdf_score": {
+          "Li-Ge": 0.987068,
+          "Li-Li": 0.987529,
+          "Li-P": 0.984144,
+          "Li-S": 0.973208,
+          "average": 0.982953
+        },
+        "msd_mae": 4.46504,
+        "msd_score": 0.182981,
+        "diffusivity_mlip_cm2s": 4.625542674342875e-06
+      }
+    },
+    {
+      "seed": 44,
+      "index": 3,
+      "accuracy": {
+        "rdf_mae": {
+          "Li-Ge": 0.012005,
+          "Li-Li": 0.015843,
+          "Li-P": 0.014498,
+          "Li-S": 0.027083,
+          "average": 0.017357
+        },
+        "rdf_score": {
+          "Li-Ge": 0.988137,
+          "Li-Li": 0.984404,
+          "Li-P": 0.985709,
+          "Li-S": 0.973631,
+          "average": 0.982939
+        },
+        "msd_mae": 11.512777,
+        "msd_score": 0.079918,
+        "diffusivity_mlip_cm2s": 8.672878305183556e-06
+      }
+    }
+  ],
+  "timing": {
+    "equil_seconds": 217.91,
+    "prod_seconds": 1084.89,
+    "num_seeds": 3
+  },
+  "speed": {
+    "steps_per_second": 23.04,
+    "ns_per_day": 3.982,
+    "steps": 25000
+  },
+  "carbon": {
+    "duration_seconds": 1088.777272,
+    "energy_wh": 187.489249,
+    "emissions_g_co2": 80.726683,
+    "gpu_energy_wh": 0.0,
+    "cpu_energy_wh": 0.0,
+    "ram_energy_wh": 0.0,
+    "peak_gpu_memory_mb": 411.633333,
+    "peak_cpu_memory_mb": 1378.2,
+    "start_time": "2026-07-14T16:13:46.728399",
+    "end_time": "2026-07-14T16:31:55.378841",
+    "project_name": "MACE_MLIP_benchmark_seed1",
+    "model_name": "MACE",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.03592681884766,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

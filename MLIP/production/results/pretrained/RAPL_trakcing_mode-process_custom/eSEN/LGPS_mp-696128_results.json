@@ -1,0 +1,153 @@
+{
+  "task": "MLIP",
+  "model": "eSEN",
+  "variant": "pretrained",
+  "model_params": null,
+  "accuracy": {
+    "mean": {
+      "rdf_mae.Li-Ge": 0.00836,
+      "rdf_mae.Li-Li": 0.019965,
+      "rdf_mae.Li-P": 0.014583,
+      "rdf_mae.Li-S": 0.038478,
+      "rdf_mae.average": 0.020347,
+      "rdf_score.Li-Ge": 0.991711,
+      "rdf_score.Li-Li": 0.980445,
+      "rdf_score.Li-P": 0.985629,
+      "rdf_score.Li-S": 0.962982,
+      "rdf_score.average": 0.980068,
+      "msd_mae": 3.02348,
+      "msd_score": 0.327169,
+      "diffusivity_mlip_cm2s": 3e-06
+    },
+    "std": {
+      "rdf_mae.Li-Ge": 0.001588,
+      "rdf_mae.Li-Li": 0.005527,
+      "rdf_mae.Li-P": 0.00201,
+      "rdf_mae.Li-S": 0.007575,
+      "rdf_mae.average": 0.003757,
+      "rdf_score.Li-Ge": 0.001563,
+      "rdf_score.Li-Li": 0.0053,
+      "rdf_score.Li-P": 0.001954,
+      "rdf_score.Li-S": 0.007054,
+      "rdf_score.average": 0.003615,
+      "msd_mae": 2.870426,
+      "msd_score": 0.165321,
+      "diffusivity_mlip_cm2s": 2e-06
+    },
+    "CPS": 0.797
+  },
+  "trials": [
+    {
+      "seed": 42,
+      "index": 1,
+      "accuracy": {
+        "rdf_mae": {
+          "Li-Ge": 0.008708,
+          "Li-Li": 0.026228,
+          "Li-P": 0.01519,
+          "Li-S": 0.043056,
+          "average": 0.023296
+        },
+        "rdf_score": {
+          "Li-Ge": 0.991367,
+          "Li-Li": 0.974442,
+          "Li-P": 0.985037,
+          "Li-S": 0.958721,
+          "average": 0.977234
+        },
+        "msd_mae": 1.359499,
+        "msd_score": 0.423819,
+        "diffusivity_mlip_cm2s": 1.50653378684065e-06
+      }
+    },
+    {
+      "seed": 43,
+      "index": 2,
+      "accuracy": {
+        "rdf_mae": {
+          "Li-Ge": 0.006627,
+          "Li-Li": 0.015768,
+          "Li-P": 0.012339,
+          "Li-S": 0.029734,
+          "average": 0.016117
+        },
+        "rdf_score": {
+          "Li-Ge": 0.993417,
+          "Li-Li": 0.984477,
+          "Li-P": 0.987811,
+          "Li-S": 0.971125,
+          "average": 0.984139
+        },
+        "msd_mae": 6.337954,
+        "msd_score": 0.136278,
+        "diffusivity_mlip_cm2s": 5.716682706331146e-06
+      }
+    },
+    {
+      "seed": 44,
+      "index": 3,
+      "accuracy": {
+        "rdf_mae": {
+          "Li-Ge": 0.009745,
+          "Li-Li": 0.0179,
+          "Li-P": 0.016219,
+          "Li-S": 0.042643,
+          "average": 0.021627
+        },
+        "rdf_score": {
+          "Li-Ge": 0.990349,
+          "Li-Li": 0.982415,
+          "Li-P": 0.98404,
+          "Li-S": 0.959101,
+          "average": 0.978831
+        },
+        "msd_mae": 1.372988,
+        "msd_score": 0.42141,
+        "diffusivity_mlip_cm2s": 1.5778512420065881e-06
+      }
+    }
+  ],
+  "timing": {
+    "equil_seconds": 593.23,
+    "prod_seconds": 3011.4,
+    "num_seeds": 3
+  },
+  "speed": {
+    "steps_per_second": 8.3,
+    "ns_per_day": 1.4345,
+    "steps": 25000
+  },
+  "carbon": {
+    "duration_seconds": 3015.231228,
+    "duration_seconds_std": 80.981303,
+    "energy_wh": 198.582921,
+    "energy_wh_std": 3.085392,
+    "emissions_g_co2": 85.503252,
+    "emissions_g_co2_std": 1.328468,
+    "gpu_energy_wh": 0.0,
+    "gpu_energy_wh_std": 0.0,
+    "cpu_energy_wh": 0.0,
+    "cpu_energy_wh_std": 0.0,
+    "ram_energy_wh": 0.0,
+    "ram_energy_wh_std": 0.0,
+    "peak_gpu_memory_mb": 2657.766667,
+    "peak_gpu_memory_mb_std": 4.761186,
+    "peak_cpu_memory_mb": 1620.7,
+    "peak_cpu_memory_mb_std": 0.707107,
+    "start_time": "2026-07-21T11:57:48.542511",
+    "end_time": "2026-07-21T12:49:57.970161",
+    "project_name": "eSEN_MLIP_benchmark_seed1",
+    "model_name": "eSEN",
+    "task": "inference",
+    "hardware": {
+      "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+      "gpu_count": 1,
+      "gpu_memory_gb": 31.9921875,
+      "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+      "cpu_cores": 192,
+      "ram_gb": 503.03592681884766,
+      "cuda_version": "Driver 580.82.09",
+      "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+    }
+  }
+}

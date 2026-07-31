@@ -5,34 +5,34 @@
   "model_params": null,
   "accuracy": {
     "mean": {
-      "rdf_mae.Li-Ge": 0.011682,
-      "rdf_mae.Li-Li": 0.012312,
-      "rdf_mae.Li-P": 0.013474,
-      "rdf_mae.Li-S": 0.02764,
-      "rdf_mae.average": 0.016277,
-      "rdf_score.Li-Ge": 0.988455,
-      "rdf_score.Li-Li": 0.987839,
-      "rdf_score.Li-P": 0.986706,
-      "rdf_score.Li-S": 0.973104,
-      "rdf_score.average": 0.983984,
-      "msd_mae": 12.40144,
-      "msd_score": 0.095386,
-      "diffusivity_mlip_cm2s": 1.1e-05
+      "rdf_mae.Li-Ge": 0.010835,
+      "rdf_mae.Li-Li": 0.013218,
+      "rdf_mae.Li-P": 0.014645,
+      "rdf_mae.Li-S": 0.02808,
+      "rdf_mae.average": 0.016694,
+      "rdf_score.Li-Ge": 0.989283,
+      "rdf_score.Li-Li": 0.986955,
+      "rdf_score.Li-P": 0.985567,
+      "rdf_score.Li-S": 0.972687,
+      "rdf_score.average": 0.98358,
+      "msd_mae": 6.159663,
+      "msd_score": 0.152708,
+      "diffusivity_mlip_cm2s": 5e-06
     },
     "std": {
-      "rdf_mae.Li-Ge": 0.00152,
-      "rdf_mae.Li-Li": 0.001484,
-      "rdf_mae.Li-P": 0.001246,
-      "rdf_mae.Li-S": 0.000719,
-      "rdf_mae.average": 0.000578,
-      "rdf_score.Li-Ge": 0.001485,
-      "rdf_score.Li-Li": 0.001447,
-      "rdf_score.Li-P": 0.001214,
-      "rdf_score.Li-S": 0.000681,
-      "rdf_score.average": 0.00056,
-      "msd_mae": 6.698433,
-      "msd_score": 0.063271,
-      "diffusivity_mlip_cm2s": 6e-06
+      "rdf_mae.Li-Ge": 0.001756,
+      "rdf_mae.Li-Li": 0.001002,
+      "rdf_mae.Li-P": 0.000191,
+      "rdf_mae.Li-S": 0.000545,
+      "rdf_mae.average": 0.000653,
+      "rdf_score.Li-Ge": 0.001717,
+      "rdf_score.Li-Li": 0.000976,
+      "rdf_score.Li-P": 0.000186,
+      "rdf_score.Li-S": 0.000516,
+      "rdf_score.average": 0.000631,
+      "msd_mae": 2.773945,
+      "msd_score": 0.05101,
+      "diffusivity_mlip_cm2s": 3e-06
     },
     "CPS": 0.637
   },
@@ -42,22 +42,22 @@
       "index": 1,
       "accuracy": {
         "rdf_mae": {
-          "Li-Ge": 0.010146,
-          "Li-Li": 0.011575,
-          "Li-P": 0.014178,
-          "Li-S": 0.028266,
-          "average": 0.016041
+          "Li-Ge": 0.010198,
+          "Li-Li": 0.013304,
+          "Li-P": 0.014655,
+          "Li-S": 0.02764,
+          "average": 0.016449
         },
         "rdf_score": {
-          "Li-Ge": 0.989956,
-          "Li-Li": 0.988557,
-          "Li-P": 0.98602,
-          "Li-S": 0.972511,
-          "average": 0.984212
+          "Li-Ge": 0.989905,
+          "Li-Li": 0.986871,
+          "Li-P": 0.985557,
+          "Li-S": 0.973103,
+          "average": 0.983817
         },
-        "msd_mae": 4.948971,
-        "msd_score": 0.168096,
-        "diffusivity_mlip_cm2s": 3.6622243814224705e-06
+        "msd_mae": 4.071792,
+        "msd_score": 0.197169,
+        "diffusivity_mlip_cm2s": 1.6349967940391999e-06
       }
     },
     {
@@ -65,22 +65,22 @@
       "index": 2,
       "accuracy": {
         "rdf_mae": {
-          "Li-Ge": 0.011714,
-          "Li-Li": 0.014021,
-          "Li-P": 0.014209,
-          "Li-S": 0.0278,
-          "average": 0.016936
+          "Li-Ge": 0.012821,
+          "Li-Li": 0.014174,
+          "Li-P": 0.014831,
+          "Li-S": 0.02791,
+          "average": 0.017434
         },
         "rdf_score": {
-          "Li-Ge": 0.988422,
-          "Li-Li": 0.986173,
-          "Li-P": 0.98599,
-          "Li-S": 0.972952,
-          "average": 0.983346
+          "Li-Ge": 0.987341,
+          "Li-Li": 0.986024,
+          "Li-P": 0.985386,
+          "Li-S": 0.972848,
+          "average": 0.982865
         },
-        "msd_mae": 17.920587,
-        "msd_score": 0.052852,
-        "diffusivity_mlip_cm2s": 1.5384925409132994e-05
+        "msd_mae": 5.099943,
+        "msd_score": 0.163936,
+        "diffusivity_mlip_cm2s": 3.767462478217144e-06
       }
     },
     {
@@ -88,46 +88,54 @@
       "index": 3,
       "accuracy": {
         "rdf_mae": {
-          "Li-Ge": 0.013185,
-          "Li-Li": 0.011341,
-          "Li-P": 0.012036,
-          "Li-S": 0.026854,
-          "average": 0.015854
+          "Li-Ge": 0.009487,
+          "Li-Li": 0.012176,
+          "Li-P": 0.014449,
+          "Li-S": 0.02869,
+          "average": 0.0162
         },
         "rdf_score": {
-          "Li-Ge": 0.986987,
-          "Li-Li": 0.988786,
-          "Li-P": 0.988107,
-          "Li-S": 0.973848,
-          "average": 0.984393
+          "Li-Ge": 0.990602,
+          "Li-Li": 0.98797,
+          "Li-P": 0.985757,
+          "Li-S": 0.97211,
+          "average": 0.984058
         },
-        "msd_mae": 14.334763,
-        "msd_score": 0.065211,
-        "diffusivity_mlip_cm2s": 1.2806195123611425e-05
+        "msd_mae": 9.307254,
+        "msd_score": 0.097019,
+        "diffusivity_mlip_cm2s": 8.11981216342771e-06
       }
     }
   ],
   "timing": {
-    "equil_seconds": 642.36,
-    "prod_seconds": 3189.41,
+    "equil_seconds": 217.04,
+    "prod_seconds": 1072.81,
     "num_seeds": 3
   },
   "speed": {
-    "steps_per_second": 23.52,
-    "ns_per_day": 4.0634,
+    "steps_per_second": 23.3,
+    "ns_per_day": 4.0268,
     "steps": 25000
   },
   "carbon": {
-    "duration_seconds": 1068.052269,
-    "energy_wh": 54.093854,
-    "emissions_g_co2": 23.291028,
+    "duration_seconds": 1076.779892,
+    "duration_seconds_std": 18.714863,
+    "energy_wh": 37.75523,
+    "energy_wh_std": 0.448603,
+    "emissions_g_co2": 16.256156,
+    "emissions_g_co2_std": 0.193154,
     "gpu_energy_wh": 0.0,
+    "gpu_energy_wh_std": 0.0,
     "cpu_energy_wh": 0.0,
+    "cpu_energy_wh_std": 0.0,
     "ram_energy_wh": 0.0,
-    "peak_gpu_memory_mb": 412.266667,
-    "peak_cpu_memory_mb": 1362.5,
-    "start_time": "2026-03-27T19:33:06.690397",
-    "end_time": "2026-03-27T19:50:54.672855",
+    "ram_energy_wh_std": 0.0,
+    "peak_gpu_memory_mb": 411.766667,
+    "peak_gpu_memory_mb_std": 0.329983,
+    "peak_cpu_memory_mb": 1360.7,
+    "peak_cpu_memory_mb_std": 16.537835,
+    "start_time": "2026-07-22T09:53:43.984033",
+    "end_time": "2026-07-22T10:11:26.933514",
     "project_name": "MACE_MLIP_benchmark_seed1",
     "model_name": "MACE",
     "task": "inference",
@@ -137,7 +145,7 @@
       "gpu_memory_gb": 31.9921875,
       "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
       "cpu_cores": 192,
-      "ram_gb": 503.0359344482422,
+      "ram_gb": 503.03592681884766,
       "cuda_version": "Driver 580.82.09",
       "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
     }

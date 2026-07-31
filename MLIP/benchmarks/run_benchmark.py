@@ -237,7 +237,6 @@ def main():
     parser.add_argument("--model", type=str, required=True,
                         help=f"Model name: {', '.join(MODELS.keys())}")
     parser.add_argument("--variant", type=str, default="pretrained",
-                        choices=["pretrained", "finetuned"],
                         help="Model variant (default: pretrained)")
     parser.add_argument("--checkpoint", type=str, default=None,
                         help="Path to finetuned checkpoint (required if variant=finetuned)")

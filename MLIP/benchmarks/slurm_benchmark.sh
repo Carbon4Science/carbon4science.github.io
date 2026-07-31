@@ -12,20 +12,35 @@
 #SBATCH --gres=shard:5000ada:100
 #SBATCH --qos=qos_5000
 
+# Default mode is the new 8-model dynamat benchmark.  The old LGPS/RDF/MSD
+# runner remains available with DYNAMAT_LEGACY=1.
+#
 # Usage:
 #   # Single model (pretrained, default)
 #   sbatch --job-name=CHGNet MLIP/benchmarks/slurm_benchmark.sh CHGNet
 #
-#   # Single model (finetuned)
-#   sbatch --job-name=CHGNet_ft MLIP/benchmarks/slurm_benchmark.sh CHGNet finetuned
-#
-#   # All pretrained models
-#   sbatch --job-name=all_pt MLIP/benchmarks/slurm_benchmark.sh all pretrained
-#
-#   # All finetuned models
-#   sbatch --job-name=all_ft MLIP/benchmarks/slurm_benchmark.sh all finetuned
+#   # All models
+#   sbatch --job-name=all_pt MLIP/benchmarks/slurm_benchmark.sh all
 
-MODEL=${1:?"Usage: sbatch slurm_benchmark.sh MODEL [VARIANT] [extra args...]"}
+MODEL=${1:?"Usage: sbatch slurm_benchmark.sh MODEL [extra args...]"}
+
+# Keep the legacy implementation below intact, but make the new benchmark the
+# default entrypoint requested for final Slurm submissions.
+if [[ "${DYNAMAT_LEGACY:-0}" != "1" ]]; then
+    shift
+    # Some qsub wrappers duplicate the first script argument.  Do not pass a
+    # second positional MODEL through to dynamat_benchmark.py.
+    if [[ "${1:-}" == "$MODEL" ]]; then
+        shift
+    fi
+    # Keep compatibility with the old invocation style; dynamat has only
+    # pretrained models and does not use a variant argument.
+    if [[ "${1:-}" == "pretrained" ]]; then
+        shift
+    fi
+    exec bash MLIP/benchmarks/slurm_dynamat_benchmark.sh "$MODEL" "$@"
+fi
+
 VARIANT=${2:-pretrained}
 shift 2 2>/dev/null || shift 1 2>/dev/null || true
 EXTRA_ARGS="$@"

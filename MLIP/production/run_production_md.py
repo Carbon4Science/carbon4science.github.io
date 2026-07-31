@@ -215,7 +215,8 @@ def run_md_simulation(struct_cfg, calculator=None, model_name=None, track_carbon
         numeric_keys = [k for k in per_seed_carbon[0] if isinstance(per_seed_carbon[0][k], (int, float))]
         for key in numeric_keys:
             values = [m[key] for m in per_seed_carbon]
-            carbon_metrics[key] = round(sum(values) / len(values), 6)
+            carbon_metrics[key] = round(np.mean(values), 6)
+            carbon_metrics[f"{key}_std"] = round(np.std(values), 6)
         # Copy non-numeric fields from first seed
         for key in per_seed_carbon[0]:
             if key not in carbon_metrics:
@@ -606,7 +607,7 @@ def main():
         default=0,
         help="Index of structure in config (default: 0)",
     )
-    parser.add_argument("--variant", default="pretrained", choices=["pretrained", "finetuned"],
+    parser.add_argument("--variant", default="pretrained",
                         help="Model variant: pretrained or finetuned (default: pretrained)")
     parser.add_argument("--checkpoint", default=None,
                         help="Path to fine-tuned checkpoint (required when variant=finetuned)")

@@ -1,0 +1,129 @@
+{
+  "model": "Nequix",
+  "structure": "tetracene_295K_Sharma_S",
+  "temperature_K": 295,
+  "timestep_fs": 2.0,
+  "equilibration_ps": 0.0,
+  "production_ps": 10.0,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "seed_results": [
+    {
+      "seed": 42,
+      "equilibration_seconds": 0.040728,
+      "production_seconds": 205.457476,
+      "production_steps": 5000,
+      "trajectory": "MLIP/dynamat_results/Nequix/tetracene_295K_Sharma_S/seed-42.traj",
+      "carbon": {
+        "start_time": "2026-07-28T15:51:12.223585",
+        "end_time": "2026-07-28T15:54:41.967569",
+        "duration_seconds": 209.7439842224121,
+        "energy_wh": 10.687066071210783,
+        "emissions_g_co2": 4.601497977083013,
+        "gpu_energy_wh": 0.0,
+        "cpu_energy_wh": 0.0,
+        "ram_energy_wh": 0.0,
+        "peak_gpu_memory_mb": 557.6,
+        "peak_cpu_memory_mb": 1663.1,
+        "project_name": "Nequix_dynamat_tetracene_295K_Sharma_S_seed1",
+        "model_name": "Nequix",
+        "task": "inference",
+        "hardware": {
+          "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+          "gpu_count": 1,
+          "gpu_memory_gb": 31.9921875,
+          "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+          "cpu_cores": 192,
+          "ram_gb": 503.03592681884766,
+          "cuda_version": "Driver 580.82.09",
+          "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+        }
+      }
+    },
+    {
+      "seed": 43,
+      "equilibration_seconds": 0.039361,
+      "production_seconds": 206.664242,
+      "production_steps": 5000,
+      "trajectory": "MLIP/dynamat_results/Nequix/tetracene_295K_Sharma_S/seed-43.traj",
+      "carbon": {
+        "start_time": "2026-07-28T15:54:42.068284",
+        "end_time": "2026-07-28T15:58:12.565485",
+        "duration_seconds": 210.49720096588135,
+        "energy_wh": 10.707668667539934,
+        "emissions_g_co2": 4.610368775176668,
+        "gpu_energy_wh": 0.0,
+        "cpu_energy_wh": 0.0,
+        "ram_energy_wh": 0.0,
+        "peak_gpu_memory_mb": 559.7,
+        "peak_cpu_memory_mb": 1666.1,
+        "project_name": "Nequix_dynamat_tetracene_295K_Sharma_S_seed2",
+        "model_name": "Nequix",
+        "task": "inference",
+        "hardware": {
+          "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+          "gpu_count": 1,
+          "gpu_memory_gb": 31.9921875,
+          "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+          "cpu_cores": 192,
+          "ram_gb": 503.03592681884766,
+          "cuda_version": "Driver 580.82.09",
+          "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+        }
+      }
+    },
+    {
+      "seed": 44,
+      "equilibration_seconds": 0.039539,
+      "production_seconds": 205.373007,
+      "production_steps": 5000,
+      "trajectory": "MLIP/dynamat_results/Nequix/tetracene_295K_Sharma_S/seed-44.traj",
+      "carbon": {
+        "start_time": "2026-07-28T15:58:12.664234",
+        "end_time": "2026-07-28T16:01:41.825793",
+        "duration_seconds": 209.1615595817566,
+        "energy_wh": 10.65866677969034,
+        "emissions_g_co2": 4.5892701793309305,
+        "gpu_energy_wh": 0.0,
+        "cpu_energy_wh": 0.0,
+        "ram_energy_wh": 0.0,
+        "peak_gpu_memory_mb": 557.2,
+        "peak_cpu_memory_mb": 1669.1,
+        "project_name": "Nequix_dynamat_tetracene_295K_Sharma_S_seed3",
+        "model_name": "Nequix",
+        "task": "inference",
+        "hardware": {
+          "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+          "gpu_count": 1,
+          "gpu_memory_gb": 31.9921875,
+          "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+          "cpu_cores": 192,
+          "ram_gb": 503.03592681884766,
+          "cuda_version": "Driver 580.82.09",
+          "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+        }
+      }
+    }
+  ],
+  "carbon_mean_over_seeds": {
+    "duration_seconds": 209.800915,
+    "duration_seconds_std": 0.546757,
+    "energy_wh": 10.684467,
+    "energy_wh_std": 0.020089,
+    "emissions_g_co2": 4.600379,
+    "emissions_g_co2_std": 0.00865,
+    "gpu_energy_wh": 0.0,
+    "gpu_energy_wh_std": 0.0,
+    "cpu_energy_wh": 0.0,
+    "cpu_energy_wh_std": 0.0,
+    "ram_energy_wh": 0.0,
+    "ram_energy_wh_std": 0.0,
+    "peak_gpu_memory_mb": 558.166667,
+    "peak_gpu_memory_mb_std": 1.096459,
+    "peak_cpu_memory_mb": 1666.1,
+    "peak_cpu_memory_mb_std": 2.44949
+  }
+}

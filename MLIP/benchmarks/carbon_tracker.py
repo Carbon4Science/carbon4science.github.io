@@ -31,6 +31,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
+# import sys
+# sys.path.insert(0, "/home/dgd03153/apps/anaconda3/envs/chgnet/lib/python3.11/site-packages")
+# import codecarbon
+# print(f"CodeCarbon path: {codecarbon.__file__}")
+
 try:
     from codecarbon import EmissionsTracker
     CODECARBON_AVAILABLE = True
@@ -181,12 +186,16 @@ class CarbonTracker:
         model_name: str = "",
         task: str = "inference",
         save_results: bool = True,
+        tracking_mode: str = "process",  # "process" or "machine",
+        force_mode_cpu_load: bool = True,
     ):
         self.project_name = project_name
         self.output_dir = Path(output_dir)
         self.model_name = model_name
         self.task = task
         self.save_results = save_results
+        self.tracking_mode = tracking_mode
+        self.force_mode_cpu_load = force_mode_cpu_load
 
         self._tracker: Optional[EmissionsTracker] = None
         self._start_time: Optional[float] = None
@@ -225,8 +234,11 @@ class CarbonTracker:
                 self._tracker = EmissionsTracker(
                     project_name=self.project_name,
                     output_dir=str(self.output_dir),
-                    log_level="warning",
+                    log_level="debug",
                     save_to_file=False,  # We save our own format
+                    tracking_mode=self.tracking_mode,
+                    force_mode_cpu_load=self.force_mode_cpu_load,
+                    #gpu_ids=[0],
                 )
                 self._tracker.start()
             except Exception as e:

@@ -1,0 +1,129 @@
+{
+  "model": "ORB",
+  "structure": "bulkLiMgAlZnSn_600K_J_Schmidt_VASP",
+  "temperature_K": 600,
+  "timestep_fs": 2.0,
+  "equilibration_ps": 0.0,
+  "production_ps": 10.0,
+  "seeds": [
+    42,
+    43,
+    44
+  ],
+  "seed_results": [
+    {
+      "seed": 42,
+      "equilibration_seconds": 0.017706,
+      "production_seconds": 80.115298,
+      "production_steps": 5000,
+      "trajectory": "MLIP/dynamat_results/ORB/bulkLiMgAlZnSn_600K_J_Schmidt_VASP/seed-42.traj",
+      "carbon": {
+        "start_time": "2026-07-27T14:02:47.990655",
+        "end_time": "2026-07-27T14:04:12.591952",
+        "duration_seconds": 84.60129642486572,
+        "energy_wh": 4.8404751937727895,
+        "emissions_g_co2": 0.01905866933532103,
+        "gpu_energy_wh": 0.0,
+        "cpu_energy_wh": 0.0,
+        "ram_energy_wh": 0.0,
+        "peak_gpu_memory_mb": 226.5,
+        "peak_cpu_memory_mb": 1446.4,
+        "project_name": "ORB_dynamat_bulkLiMgAlZnSn_600K_J_Schmidt_VASP_seed1",
+        "model_name": "ORB",
+        "task": "inference",
+        "hardware": {
+          "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+          "gpu_count": 1,
+          "gpu_memory_gb": 31.9921875,
+          "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+          "cpu_cores": 192,
+          "ram_gb": 503.03592681884766,
+          "cuda_version": "Driver 580.82.09",
+          "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+        }
+      }
+    },
+    {
+      "seed": 43,
+      "equilibration_seconds": 0.014734,
+      "production_seconds": 89.157672,
+      "production_steps": 5000,
+      "trajectory": "MLIP/dynamat_results/ORB/bulkLiMgAlZnSn_600K_J_Schmidt_VASP/seed-43.traj",
+      "carbon": {
+        "start_time": "2026-07-27T14:04:12.679401",
+        "end_time": "2026-07-27T14:05:45.651110",
+        "duration_seconds": 92.97170948982239,
+        "energy_wh": 5.082606650675091,
+        "emissions_g_co2": 2.188402697761222,
+        "gpu_energy_wh": 0.0,
+        "cpu_energy_wh": 0.0,
+        "ram_energy_wh": 0.0,
+        "peak_gpu_memory_mb": 226.5,
+        "peak_cpu_memory_mb": 1446.4,
+        "project_name": "ORB_dynamat_bulkLiMgAlZnSn_600K_J_Schmidt_VASP_seed2",
+        "model_name": "ORB",
+        "task": "inference",
+        "hardware": {
+          "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+          "gpu_count": 1,
+          "gpu_memory_gb": 31.9921875,
+          "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+          "cpu_cores": 192,
+          "ram_gb": 503.03592681884766,
+          "cuda_version": "Driver 580.82.09",
+          "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+        }
+      }
+    },
+    {
+      "seed": 44,
+      "equilibration_seconds": 0.014803,
+      "production_seconds": 89.599976,
+      "production_steps": 5000,
+      "trajectory": "MLIP/dynamat_results/ORB/bulkLiMgAlZnSn_600K_J_Schmidt_VASP/seed-44.traj",
+      "carbon": {
+        "start_time": "2026-07-27T14:05:45.737223",
+        "end_time": "2026-07-27T14:07:19.176167",
+        "duration_seconds": 93.43894362449646,
+        "energy_wh": 5.104854504480739,
+        "emissions_g_co2": 2.1979818894307583,
+        "gpu_energy_wh": 0.0,
+        "cpu_energy_wh": 0.0,
+        "ram_energy_wh": 0.0,
+        "peak_gpu_memory_mb": 226.5,
+        "peak_cpu_memory_mb": 1447.9,
+        "project_name": "ORB_dynamat_bulkLiMgAlZnSn_600K_J_Schmidt_VASP_seed3",
+        "model_name": "ORB",
+        "task": "inference",
+        "hardware": {
+          "gpu_model": "NVIDIA RTX 5000 Ada Generation",
+          "gpu_count": 1,
+          "gpu_memory_gb": 31.9921875,
+          "cpu_model": "INTEL(R) XEON(R) PLATINUM 8558",
+          "cpu_cores": 192,
+          "ram_gb": 503.03592681884766,
+          "cuda_version": "Driver 580.82.09",
+          "platform": "Linux-5.14.0-570.17.1.el9_6.x86_64-x86_64-with-glibc2.34"
+        }
+      }
+    }
+  ],
+  "carbon_mean_over_seeds": {
+    "duration_seconds": 90.337317,
+    "duration_seconds_std": 4.060462,
+    "energy_wh": 5.009312,
+    "energy_wh_std": 0.119731,
+    "emissions_g_co2": 1.468481,
+    "emissions_g_co2_std": 1.024904,
+    "gpu_energy_wh": 0.0,
+    "gpu_energy_wh_std": 0.0,
+    "cpu_energy_wh": 0.0,
+    "cpu_energy_wh_std": 0.0,
+    "ram_energy_wh": 0.0,
+    "ram_energy_wh_std": 0.0,
+    "peak_gpu_memory_mb": 226.5,
+    "peak_gpu_memory_mb_std": 0.0,
+    "peak_cpu_memory_mb": 1446.9,
+    "peak_cpu_memory_mb_std": 0.707107
+  }
+}
